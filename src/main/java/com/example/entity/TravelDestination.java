@@ -56,4 +56,8 @@ public class TravelDestination {
     @JoinColumn(name = "CITY")
     private City city;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "THEME")
+    private Theme theme;
+
 }
