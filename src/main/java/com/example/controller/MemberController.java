@@ -9,13 +9,16 @@ import com.example.jwt.JwtUtil;
 import com.example.repository.MemberRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(value = "/member")
@@ -26,6 +29,9 @@ public class MemberController {
 
     @Autowired
     JwtUtil jwtUtil;
+
+    @Value("${tokenscretstart}")
+    private String tokenwithvalue;
 
     @GetMapping(value = "/join")
     public Map<String, Object> memberJoinGET() {
@@ -59,16 +65,15 @@ public class MemberController {
         try {
             Optional<Member> member = mRepository.findById(id.getId());
             if (member.isPresent()) {
+                map.put("status", 300);
                 map.put("result", "중복된 아이디 입니다.");
             } else {
                 map.put("status", 200);
                 map.put("result", "사용가능한 아이디 입니다.");
             }
 
-        } catch (
-
-        Exception e) {
-            map.put("status", id.getId());
+        } catch (Exception e) {
+            map.put("status", e.hashCode());
         }
         return map;
     }
@@ -92,7 +97,7 @@ public class MemberController {
             if (mRepository.findById(member.getId()).isPresent()) {
                 if (bcpe.matches(member.getPassword(), mRepository.getById(member.getId()).getPassword())) {
                     map.put("status", 200);
-                    map.put("token", jwtUtil.generateToken(member.getId()).startsWith("rhznjfflxl"));
+                    map.put("token", tokenwithvalue + jwtUtil.generateToken(member.getId()));
                 } else {
                     map.put("result", "암호가 틀립니다.");
                 }
@@ -104,5 +109,35 @@ public class MemberController {
         }
         return map;
     }
+
+    // @PostMapping(value = "/sendemail", consumes = MediaType.ALL_VALUE, produces =
+    // MediaType.APPLICATION_JSON_VALUE)
+    // public Map<String, Object> sendEmailPOST(@RequestBody Member member) {
+    // Map<String, Object> map = new HashMap<>();
+    // try {
+    // map.put("test", member);
+    // map.put("status", 200);
+    // } catch (Exception e) {
+    // map.put("status", e.hashCode());
+    // }
+    // return map;
+    // }
+
+    // @GetMapping(value = "/confirm-email", consumes = MediaType.ALL_VALUE,
+    // produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Map<String, Object> confirmEamilGET(@Validated @RequestParam("token")
+    // String token) {
+    // Map<String, Object> map = new HashMap<>();
+    // try {
+    // // userService.confirmEmail(token);
+    // map.put("token", token);
+    // map.put("status", 200);
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // map.put("status", e.hashCode());
+    // }
+    // return map;
+
+    // }
 
 }

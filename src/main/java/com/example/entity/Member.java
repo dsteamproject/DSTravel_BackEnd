@@ -35,11 +35,14 @@ public class Member {
     @Column(name = "NICNAME")
     private String nicname;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
     @Column(name = "GENDER")
     private String gender;
+
+    @Column(name = "ROLE", columnDefinition = " varchar2(255) default 'USER'")
+    private String role;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp

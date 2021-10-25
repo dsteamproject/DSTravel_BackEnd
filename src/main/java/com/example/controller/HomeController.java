@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.entity.City;
-import com.example.entity.Theme;
 import com.example.entity.TravelDestination;
 import com.example.repository.TravelDestinationRepository;
 

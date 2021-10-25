@@ -17,6 +17,11 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!--email 인증-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<!-- jjwt -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
