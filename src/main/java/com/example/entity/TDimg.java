@@ -19,17 +19,17 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 101, name = "SEQ_CITY_NO", sequenceName = "SEQ_CITY_NO", allocationSize = 1)
-@Table(name = "CITY")
-public class City {
+@SequenceGenerator(initialValue = 80001, name = "SEQ_TDIMG_NO", sequenceName = "SEQ_TDIMG_NO", allocationSize = 1)
+@Table(name = "TDIMG")
+public class TDimg {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CITY_NO")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TDIMG_NO")
     @Column(name = "NO")
-    private long cNo;
+    private Long tdimgNo;
 
-    @Column(name = "NAME")
-    private String cName;
+    @Column(name = "TITLE")
+    private String tTitle;
 
     @Lob
     @Column(name = "IMAGE")

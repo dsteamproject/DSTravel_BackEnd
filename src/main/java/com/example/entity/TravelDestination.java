@@ -26,10 +26,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 20001, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 40001, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
 @Table(name = "TRAVELDESTINATION")
 public class TravelDestination {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TD_NO")
     @Column(name = "NO")
@@ -52,12 +52,24 @@ public class TravelDestination {
     @Column(name = "REGDATE", updatable = false)
     private Date tregDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CITY")
-    private City city;
+    // FetchType 결정
+    // TravelDestination 조회시
+    // 대부분 CITY가 같이 조회된다면 EAGER(즉시로딩)으로 처리하고,
+    // 같이 조회되지 않는 경우가 많다면 LAZY(지연로딩)으로 처리한다.
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "CITY")
+    // private City city;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "THEME")
-    private Theme theme;
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "THEME")
+    // private Theme theme;
+
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "SUGMONTH")
+    // private SugMonth Mon;
+
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "TDIMG")
+    // private TDimg timg;
 
 }

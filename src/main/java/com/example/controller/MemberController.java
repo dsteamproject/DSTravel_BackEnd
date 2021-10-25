@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.example.entity.Member;
 import com.example.jwt.JwtUtil;
@@ -53,18 +54,21 @@ public class MemberController {
     }
 
     @PostMapping(value = "/idcheck", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> idCheckPOST(@RequestBody String id) {
+    public Map<String, Object> idCheckPOST(@RequestBody Member id) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (id == mRepository.getById(id).getId()) {
+            Optional<Member> member = mRepository.findById(id.getId());
+            if (member.isPresent()) {
                 map.put("result", "중복된 아이디 입니다.");
             } else {
                 map.put("status", 200);
                 map.put("result", "사용가능한 아이디 입니다.");
             }
 
-        } catch (Exception e) {
-            map.put("status", e.hashCode());
+        } catch (
+
+        Exception e) {
+            map.put("status", id.getId());
         }
         return map;
     }
