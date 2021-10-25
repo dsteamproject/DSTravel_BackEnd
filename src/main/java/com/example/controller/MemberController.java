@@ -4,21 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.entity.MailDto;
 import com.example.entity.Member;
 import com.example.jwt.JwtUtil;
 import com.example.repository.MemberRepository;
+import com.example.service.SendEmailService;
+import com.example.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping(value = "/member")
@@ -29,6 +31,12 @@ public class MemberController {
 
     @Autowired
     JwtUtil jwtUtil;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    SendEmailService sendEmailService;
 
     @Value("${tokenscretstart}")
     private String tokenwithvalue;
@@ -110,34 +118,26 @@ public class MemberController {
         return map;
     }
 
-    // @PostMapping(value = "/sendemail", consumes = MediaType.ALL_VALUE, produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public Map<String, Object> sendEmailPOST(@RequestBody Member member) {
-    // Map<String, Object> map = new HashMap<>();
-    // try {
-    // map.put("test", member);
-    // map.put("status", 200);
-    // } catch (Exception e) {
-    // map.put("status", e.hashCode());
-    // }
-    // return map;
-    // }
-
-    // @GetMapping(value = "/confirm-email", consumes = MediaType.ALL_VALUE,
-    // produces = MediaType.APPLICATION_JSON_VALUE)
-    // public Map<String, Object> confirmEamilGET(@Validated @RequestParam("token")
-    // String token) {
-    // Map<String, Object> map = new HashMap<>();
-    // try {
-    // // userService.confirmEmail(token);
-    // map.put("token", token);
-    // map.put("status", 200);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // map.put("status", e.hashCode());
-    // }
-    // return map;
-
-    // }
+    //등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
+    @PostMapping(value = "/check/findPw/sendEmail" ,consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Object> sendEmail(@RequestBody Member member){
+        Map<String,Object> map = new HashMap<>();
+        try{
+            boolean pwFindCheck = userService.userEmailCheck(member.getEmail(),member.getName());
+            if(pwFindCheck){
+                System.out.println("+++++++++++++++++++++++++++");
+                int a = sendEmailService.sendEmailTempPassword(member.getEmail(), member.getName());
+                System.out.println(a);
+                map.put("status", 200);
+            }else{
+                map.put("status", 303);
+                map.put("pwFindCheck", "가입한 이메일과 이름이 틀립니다.");
+            }
+        }catch(Exception e){
+            map.put("status", e.hashCode());
+            // map.put("error", e);
+        }
+        return map;
+    }
 
 }
