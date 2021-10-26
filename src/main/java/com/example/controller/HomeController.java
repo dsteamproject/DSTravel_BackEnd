@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.example.entity.TravelDestination;
+import com.example.listener.HttpSessionCheckingListener;
 import com.example.repository.TravelDestinationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +26,13 @@ public class HomeController {
     TravelDestinationRepository tdRepository;
 
     @GetMapping(value = "/home")
-    public Map<String, Object> homeGET() {
+    public Map<String, Object> homeGET(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            session = request.getSession(true);
+        }
+        map.put("test", "Session Test completed");
         return map;
     }
 
