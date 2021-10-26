@@ -59,17 +59,7 @@ public class SendEmailService {
         message.setSubject(dto.getTitle());
         message.setText(dto.getMessage());
         javaMailSender.send(message);
-        // SimpleMailMessage message = new SimpleMailMessage();
-        // message.setTo(userEmail);
-        // message.setFrom("ghtjd026@gmail.com");
-        // message.setSubject(userName + "님의 Travel 임시비밀번호 안내 이메일 입니다.");
-        // message.setText("안녕하세요. Travel 임시비밀번호 안내 관련 이메일 입니다." + "[" + userName + "]"
-        // + "님의 임시 비밀번호는 " + str + " 입니다.");
-        // javaMailSender.send(message);
+
         System.out.println("이메일 전송 완료!");
     }
-
-    // $2a$10$k5bOfebGJ7r2GGmnYSV8yeEJm8RJvsgnYx6YnDp/RPPgnl3/T4LO6
-    // $2a$10$k5bOfebGJ7r2GGmnYSV8yeEJm8RJvsgnYx6YnDp/RPPgnl3/T4LO6
-    // $2a$10$EV3QmeKbyUmRgGt859s6ouZm8u0uOebzPz4lsw41YVgy9n72GWYW.
 }

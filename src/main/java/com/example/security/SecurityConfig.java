@@ -1,5 +1,6 @@
 package com.example.security;
 
+import com.example.jwt.JwtRequestFilter;
 import com.example.service.MemberDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration // 환경설정 파일
 @EnableWebSecurity // security를 적용
@@ -36,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(mService).passwordEncoder(encode());
     }
 
-    // @Autowired
-    // private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -49,12 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/admin", "/admin/*").hasAnyRole("ADMIN").anyRequest().permitAll();
 
-        // // 필터 추가
-        // http.addFilterBefore(jwtRequestFilter,
-        // UsernamePasswordAuthenticationFilter.class);
+        // 필터 추가
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // // session 저장 방법
-        // http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        // session 저장 방법
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // h2-console 사용
         // 크롬에서 127.0.0.1:8080/REST/h2-console

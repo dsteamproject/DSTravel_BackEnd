@@ -1,8 +1,5 @@
 package com.example.service;
 
-
-import java.util.Optional;
-
 import com.example.entity.Member;
 import com.example.repository.MemberRepository;
 
@@ -18,10 +15,9 @@ public class UserService {
     public boolean userEmailCheck(String userEmail, String userName) {
 
         Member member = mRepository.findByEmail(userEmail);
-        if(member !=null && member.getName().equals(userName)) {
+        if (member != null && member.getName().equals(userName)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
