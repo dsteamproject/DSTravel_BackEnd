@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/member")
 public class MemberController {
@@ -118,23 +117,22 @@ public class MemberController {
         return map;
     }
 
-    //등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
-    @PostMapping(value = "/check/findPw/sendEmail" ,consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String,Object> sendEmail(@RequestBody Member member){
-        Map<String,Object> map = new HashMap<>();
-        try{
-            boolean pwFindCheck = userService.userEmailCheck(member.getEmail(),member.getName());
-            if(pwFindCheck){
-                System.out.println("+++++++++++++++++++++++++++");
-                int a = sendEmailService.sendEmailTempPassword(member.getEmail(), member.getName());
-                System.out.println(a);
+    // 등록된 이메일로 임시비밀번호를 발송하고 발송된 임시비밀번호로 사용자의 pw를 변경하는 컨트롤러
+    @PostMapping(value = "/check/findPw/sendEmail", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> sendEmail(@RequestBody Member member) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            boolean pwFindCheck = userService.userEmailCheck(member.getEmail(), member.getName());
+            if (pwFindCheck) {
+                sendEmailService.sendEmailTempPassword(member.getEmail(), member.getName());
                 map.put("status", 200);
-            }else{
+            } else {
                 map.put("status", 303);
                 map.put("pwFindCheck", "가입한 이메일과 이름이 틀립니다.");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             map.put("status", e.hashCode());
+            e.printStackTrace();
             // map.put("error", e);
         }
         return map;
