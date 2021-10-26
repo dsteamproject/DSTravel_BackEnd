@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -47,6 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/admin", "/admin/*").hasAnyRole("ADMIN").anyRequest().permitAll();
@@ -56,6 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // session 저장 방법
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        // 로그인 중복 방지
+        http.sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(false).expiredUrl("/login")
+                .sessionRegistry(sessionRegistry());
 
         // h2-console 사용
         // 크롬에서 127.0.0.1:8080/REST/h2-console

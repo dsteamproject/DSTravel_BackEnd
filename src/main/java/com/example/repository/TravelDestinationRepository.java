@@ -15,6 +15,6 @@ public interface TravelDestinationRepository extends JpaRepository<TravelDestina
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "SELECT * FROM TRAVELDESTINATION WHERE CITY=#{#:TD.city} AND THEME=#{#:TD.theme}", nativeQuery = true)
+    @Query(value = "SELECT * FROM TRAVELDESTINATION WHERE CITY=#{#:TD.city}", nativeQuery = true)
     public List<TravelDestination> querySelectTD(@Param("TD") TravelDestination TD);
 }

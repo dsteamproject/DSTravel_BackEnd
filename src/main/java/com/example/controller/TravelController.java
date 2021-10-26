@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.entity.City;
 import com.example.entity.TravelDestination;
 import com.example.repository.TravelDestinationRepository;
 
@@ -22,6 +21,7 @@ public class TravelController {
     @Autowired
     TravelDestinationRepository tdRepository;
 
+    // 미구현 장소 추가 기능
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> tdInsert(@RequestBody TravelDestination td) {
         Map<String, Object> map = new HashMap<>();
@@ -40,6 +40,7 @@ public class TravelController {
         return map;
     }
 
+    // 해당 지역에 대한 여행지 조회
     @PostMapping(value = "/select", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> tdSelect(@RequestBody TravelDestination td) {
         Map<String, Object> map = new HashMap<>();
@@ -53,4 +54,5 @@ public class TravelController {
         }
         return map;
     }
+
 }
