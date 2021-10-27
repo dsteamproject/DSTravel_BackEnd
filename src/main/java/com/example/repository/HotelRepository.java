@@ -4,17 +4,19 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.example.entity.TravelDestination;
+import com.example.entity.Hotel;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface TravelDestinationRepository extends JpaRepository<TravelDestination, Long> {
+@Repository
+public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "SELECT * FROM TRAVELDESTINATION WHERE CITY=#{#:TD.city} AND THEME=#{#:TD.theme}", nativeQuery = true)
-    public List<TravelDestination> querySelectTD(@Param("TD") TravelDestination TD);
+    @Query(value = "SELECT * FROM Hotel WHERE CITY=#{#:Hotel.city}", nativeQuery = true)
+    public List<Hotel> querySelectHotel(@Param("Hotel") Hotel Hotel);
 }

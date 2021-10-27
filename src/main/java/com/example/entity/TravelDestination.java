@@ -24,7 +24,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 40001, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 1, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
 @Table(name = "TRAVELDESTINATION")
 public class TravelDestination {
 

@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@SequenceGenerator(initialValue = 10001, name = "SEQ_HOTEL_NO", sequenceName = "SEQ_HOTEL_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 1, name = "SEQ_HOTEL_NO", sequenceName = "SEQ_HOTEL_NO", allocationSize = 1)
 @Table(name = "HOTEL")
 public class Hotel {
 
@@ -43,10 +43,10 @@ public class Hotel {
 
     @Column(name = "YLOCATION")
     private String hyLocation;
-    
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     @Column(name = "REGDATE", updatable = false)
     private Date hregDate;
-    
+
 }

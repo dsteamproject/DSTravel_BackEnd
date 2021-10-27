@@ -19,7 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 80001, name = "SEQ_TDIMG_NO", sequenceName = "SEQ_TDIMG_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 1, name = "SEQ_TDIMG_NO", sequenceName = "SEQ_TDIMG_NO", allocationSize = 1)
 @Table(name = "TDIMG")
 public class TDimg {
 

@@ -18,7 +18,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 301, name = "SEQ_THEME_NO", sequenceName = "SEQ_THEME_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 1, name = "SEQ_THEME_NO", sequenceName = "SEQ_THEME_NO", allocationSize = 1)
 @Table(name = "THEME")
 public class Theme {
 
@@ -26,7 +26,7 @@ public class Theme {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_THEME_NO")
     @Column(name = "NO")
     private long tNo;
-    
+
     @Column(name = "NAME")
     private String tName;
 }

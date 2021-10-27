@@ -19,7 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 101, name = "SEQ_CITY_NO", sequenceName = "SEQ_CITY_NO", allocationSize = 1)
+@SequenceGenerator(initialValue = 1, name = "SEQ_CITY_NO", sequenceName = "SEQ_CITY_NO", allocationSize = 1)
 @Table(name = "CITY")
 public class City {
 
