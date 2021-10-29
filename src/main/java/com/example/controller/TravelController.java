@@ -72,6 +72,7 @@ public class TravelController {
         return map;
     }
 
+    // 여행지 조회(조건 : 지역 일치)
     @PostMapping(value = "select_hotel", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> hotelSelect(@RequestBody Hotel hotel) {
         Map<String, Object> map = new HashMap<>();

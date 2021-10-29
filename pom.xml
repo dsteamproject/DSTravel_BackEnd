@@ -16,7 +16,19 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
+	<!-- 패키징 포멧  jar(개발용), war(배포용) -->
+	<packaging>war</packaging>
+
 	<dependencies>
+
+		<!-- war 배포용 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!--email 인증-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

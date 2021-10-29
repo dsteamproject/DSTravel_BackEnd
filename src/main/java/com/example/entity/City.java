@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -30,18 +29,5 @@ public class City {
 
     @Column(name = "NAME")
     private String cName;
-
-    @Lob
-    @Column(name = "IMAGE")
-    private byte[] image;
-
-    @Column(name = "IMAGENAME")
-    private String imagename;
-
-    @Column(name = "IMAGESIZE")
-    private long imagesize;
-
-    @Column(name = "IMAGETYPE")
-    private String imagetype;
 
 }

@@ -33,19 +33,38 @@ public class BoardController {
     // 게시판 목록
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
-            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "type", required = false, defaultValue = "title") String type,
+            @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(name = "orderby",required = false, defaultValue = "latest") String orderby) {
         Map<String, Object> map = new HashMap<>();
         try {
-            // List<Board> list = bRepository.findAllByOrderByNoDesc();
-
-            // 페이지숫자(0부터), 개수
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<Board> list = bRepository.findByTitleContainingOrderByNoDesc(title, pageRequest);
-            long cnt = bRepository.countByTitleContaining(title);
-            map.put("cnt", (cnt - 1) / size + 1);
-            map.put("list", list);
+            if(orderby.equals("latest") && type.equals("title")){
+                List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
+                map.put("list", list);
+                long cnt = bRepository.countByTitleContaining(keyword);
+                map.put("cnt", (cnt - 1) / size + 1);
+            }
+            else if(orderby.equals("latest") && type.equals("writer")){
+                List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
+                map.put("list", list);
+                long cnt = bRepository.countByWriterContaining(keyword);
+                map.put("cnt", (cnt - 1) / size + 1);
+            }
+            else if(orderby.equals("old") && type.equals("title")){
+                List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
+                map.put("list", list);
+                long cnt = bRepository.countByTitleContaining(keyword);
+                map.put("cnt", (cnt - 1) / size + 1);
+            }
+            else if(orderby.equals("old") && type.equals("writer")){
+                List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
+                map.put("list", list);
+                long cnt = bRepository.countByWriterContaining(keyword);
+                map.put("cnt", (cnt - 1) / size + 1);
+            }
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
