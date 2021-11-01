@@ -36,6 +36,7 @@ public class Board {
     @Column(name = "TITLE")
     private String title = null; // 글제목
 
+    @Lob
     @Column(name = "CONTENT")
     private String content = null; // 내용
 
@@ -53,16 +54,17 @@ public class Board {
     // long => number
     // byte[] => blob
     // 오라클에서 byte[]을 저장하는 타입을 BLOB CLOB
-    @Lob
-    @Column(name = "IMAGE")
-    private byte[] image = null; // 이미지데이터
+    // @Lob
+    // @Column(name = "IMAGE")
+    // private byte[] image = null; // 이미지데이터
 
-    @Column(name = "IMAGENAME")
-    private String imagename = null; // 파일명
+    // @Column(name = "IMAGENAME")
+    // private String imagename = null; // 파일명
 
-    @Column(name = "IMAGESIZE", nullable = false, columnDefinition = "long default 0")
-    private long imagesize = 0L; // 파일 사이즈
+    // @Column(name = "IMAGESIZE", nullable = false, columnDefinition = "long
+    // default 0")
+    // private long imagesize = 0L; // 파일 사이즈
 
-    @Column(name = "IMAGETYPE")
-    private String imagetype = null; // 파일 종류
+    // @Column(name = "IMAGETYPE")
+    // private String imagetype = null; // 파일 종류
 }

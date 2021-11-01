@@ -28,17 +28,21 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     // 글번호기준 내림차순
     // 페이지 네이션
     List<Board> findByTitleIgnoreCaseContainingOrderByNoDesc(String title, Pageable pageable);
+
     // 글번호기준 오름차순
     List<Board> findByTitleIgnoreCaseContainingOrderByNoAsc(String title, Pageable pageable);
+
     // 작성자에 단어포함(대소문자구분하지 않음)
     // 글번호 기준 내림차순
-    List<Board> findByWriterIgnoreCaseContainingOrderByNoDesc(String title, Pageable pageable);
+    List<Board> findByWriterIgnoreCaseContainingOrderByNoDesc(String keyword, Pageable pageable);
+
     // 글번호기준 오름차순
-    List<Board> findByWriterIgnoreCaseContainingOrderByNoAsc(String title, Pageable pageable);
+    List<Board> findByWriterIgnoreCaseContainingOrderByNoAsc(String keyword, Pageable pageable);
 
     // 제목에 단어가 포함된 전체 개수
     long countByTitleContaining(String title);
-    long countByWriterContaining(String writer);
+
+    long countByWriterContaining(String wirter);
 
     // 이전글 현재글이 20번이면 작은것중에서 가장큰것 1개
     Optional<Board> findTop1ByNoLessThanOrderByNoDesc(long no);

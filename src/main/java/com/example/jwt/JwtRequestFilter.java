@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             // const headers = {"Content-Type":"application/json", "token" :'123456_aaaa'}
-            String token = request.getHeader("token");
+            String token = request.getHeader("TOKEN");
             String username = null;
 
             if (token != null) {
@@ -46,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // 시큐리티에 로그인 처리루틴
                 UserDetails userDetails = mService.loadUserByUsername(username);
 
-                if (jwtUtil.validateToken(token, userDetails.getUsername())) {
+                if (jwtUtil.validateToken(token.substring(6), userDetails.getUsername())) {
                     UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(userDetails,
                             null, userDetails.getAuthorities());
                     upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

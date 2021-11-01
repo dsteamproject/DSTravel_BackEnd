@@ -33,7 +33,7 @@ public class MemberDetailsService implements UserDetailsService {
 
         // 이메일, 암호, 권한 정보를 리턴
         // import ...security.core.userdetails.User;
-        User user = new User(member.getEmail(), member.getPassword(), roles);
+        User user = new User(member.getId(), member.getPassword(), roles);
         return user;
     }
 

@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,6 +30,7 @@ public class Member {
     private String Id;
 
     @Column(name = "PASSWORD")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "NAME")

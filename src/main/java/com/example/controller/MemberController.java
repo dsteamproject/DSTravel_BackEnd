@@ -13,11 +13,14 @@ import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,6 +29,9 @@ public class MemberController {
 
     @Autowired
     MemberRepository mRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -135,6 +141,26 @@ public class MemberController {
             // map.put("error", e);
         }
         return map;
+    }
+
+    @GetMapping(value = "/mypage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> mypageGet(@RequestParam(name = "menu", defaultValue = "1") int menu,
+            @RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
+                if (menu == 1) {
+                    Member member = mRepository.findById(jwtUtil.extractUsername(token.substring(6))).orElseThrow();
+                    map.put("member", member);
+                    map.put("status", 200);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
     }
 
 }

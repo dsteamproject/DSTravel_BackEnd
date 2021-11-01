@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
+import com.example.repository.MemberRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,12 @@ public class BoardController {
     @Autowired
     private BoardRepository bRepository;
 
+    @Autowired
+    MemberRepository mRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // 게시판 목록
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
@@ -37,29 +46,26 @@ public class BoardController {
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "orderby",required = false, defaultValue = "latest") String orderby) {
+            @RequestParam(name = "orderby", required = false, defaultValue = "latest") String orderby) {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            if(orderby.equals("latest") && type.equals("title")){
+            if (orderby.equals("latest") && type.equals("title")) {
                 List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByTitleContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
-            }
-            else if(orderby.equals("latest") && type.equals("writer")){
+            } else if (orderby.equals("latest") && type.equals("writer")) {
                 List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByWriterContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
-            }
-            else if(orderby.equals("old") && type.equals("title")){
+            } else if (orderby.equals("old") && type.equals("title")) {
                 List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByTitleContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
-            }
-            else if(orderby.equals("old") && type.equals("writer")){
+            } else if (orderby.equals("old") && type.equals("writer")) {
                 List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByWriterContaining(keyword);
@@ -75,11 +81,16 @@ public class BoardController {
 
     // 게시판 등록
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPost(@RequestBody Board board) {
+    public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            bRepository.save(board);
-            map.put("status", 200);
+            if (jwtUtil.validateToken(token, jwtUtil.extractUsername(token.substring(6)))) {
+                board.setWriter(jwtUtil.extractUsername(token.substring(6)));
+                bRepository.save(board);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -94,7 +105,6 @@ public class BoardController {
         try {
             if (no == 0) {
                 map.put("status", 300);
-                map.put("error", "파라미터가 전달되지 않았습니다.");
             } else {
                 Board board = bRepository.findById(no).orElseThrow();
                 map.put("board", board);
@@ -136,15 +146,18 @@ public class BoardController {
 
     // POST : 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
     @PostMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updatePost(@RequestBody Board board) {
+    public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Board board1 = bRepository.findById(board.getNo()).orElseThrow();
-            board1.setTitle(board.getTitle());
-            board1.setContent(board.getContent());
-
-            bRepository.save(board1);
-            map.put("status", 200);
+            if (jwtUtil.validateToken(token, jwtUtil.extractUsername(token.substring(6)))) {
+                Board board1 = bRepository.findById(board.getNo()).orElseThrow();
+                board1.setTitle(board.getTitle());
+                board1.setContent(board.getContent());
+                bRepository.save(board1);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
