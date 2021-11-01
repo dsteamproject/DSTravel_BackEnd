@@ -63,6 +63,7 @@ public class MemberController {
         try {
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             member.setPassword(bcpe.encode(member.getPassword()));
+            member.setRole("USER");
             mRepository.save(member);
             map.put("status", 200);
         } catch (Exception e) {
