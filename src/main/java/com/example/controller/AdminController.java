@@ -20,7 +20,7 @@ public class AdminController {
     private JwtUtil jwtUtil;
 
     @GetMapping(value = "/mypage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> mypageGet(@RequestHeader("TOKEN") String token) {
+    public Map<String, Object> mypageGet(@RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {

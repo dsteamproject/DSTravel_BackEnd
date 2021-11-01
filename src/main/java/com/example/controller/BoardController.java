@@ -84,7 +84,7 @@ public class BoardController {
     public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (jwtUtil.validateToken(token, jwtUtil.extractUsername(token.substring(6)))) {
+            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
                 board.setWriter(jwtUtil.extractUsername(token.substring(6)));
                 bRepository.save(board);
                 map.put("status", 200);
@@ -146,7 +146,7 @@ public class BoardController {
 
     // POST : 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
     @PostMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
+    public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (jwtUtil.validateToken(token, jwtUtil.extractUsername(token.substring(6)))) {

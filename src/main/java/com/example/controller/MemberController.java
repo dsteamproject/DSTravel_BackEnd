@@ -145,7 +145,7 @@ public class MemberController {
 
     @GetMapping(value = "/mypage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> mypageGet(@RequestParam(name = "menu", defaultValue = "1") int menu,
-            @RequestHeader("TOKEN") String token) {
+            @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {

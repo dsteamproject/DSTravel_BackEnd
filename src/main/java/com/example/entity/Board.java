@@ -36,6 +36,9 @@ public class Board {
     @Column(name = "TITLE")
     private String title = null; // 글제목
 
+    @Column(name = "KEYWORD")
+    private String keyword = null;
+
     @Lob
     @Column(name = "CONTENT")
     private String content = null; // 내용
