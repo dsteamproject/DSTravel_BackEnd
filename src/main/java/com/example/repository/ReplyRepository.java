@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.example.entity.Board;
 import com.example.entity.Reply;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "SELECT * FROM Reply WHERE Bno.no=#{#:NO}", nativeQuery = true)
+    @Query(value = "SELECT * FROM Reply WHERE BNO=:NO", nativeQuery = true)
     public List<Reply> querySelectReply(@Param("NO") Long no);
 
     @Transactional

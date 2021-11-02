@@ -34,6 +34,9 @@ public class Reply {
     @Column(name = "REPLY")
     private String reply;
 
+    @Column(name = "WRITER")
+    private String writer;
+
     @Column(name = "REGDATE")
     private Date regdate;
 

@@ -242,18 +242,18 @@ public class BoardController {
 
     @PostMapping(value = "/reply", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> replyPost(@RequestHeader("TOKEN") String token, @RequestParam("no") Long no,
-            @RequestBody String reply) {
+            @RequestBody Reply reply) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Reply newReply = new Reply();
                 newReply.setBoard(bRepository.getById(no));
-                newReply.setReply(reply);
+                newReply.setReply(reply.getReply());
+                newReply.setWriter(id);
                 reRepository.save(newReply);
 
                 int countreply = reRepository.queryCountSelectReply(no);
-                map.put("a", countreply);
                 Board board = bRepository.getById(no);
                 board.setCountreply(countreply);
                 bRepository.save(board);
