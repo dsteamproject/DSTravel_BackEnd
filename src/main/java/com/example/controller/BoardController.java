@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
-import com.example.entity.Member;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
 import com.example.repository.MemberRepository;
@@ -87,7 +86,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
                 board.setWriter(id);
                 bRepository.save(board);
                 map.put("status", 200);
@@ -155,7 +154,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Board board1 = bRepository.findById(board.getNo()).orElseThrow();
                 board1.setTitle(board.getTitle());
                 board1.setContent(board.getContent());
@@ -177,7 +176,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
