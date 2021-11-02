@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.entity.Member;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
 import com.example.repository.MemberRepository;
@@ -17,6 +18,7 @@ import com.example.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -84,8 +86,9 @@ public class BoardController {
     public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
-                board.setWriter(jwtUtil.extractUsername(token.substring(6)));
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
+                board.setWriter(id);
                 bRepository.save(board);
                 map.put("status", 200);
             } else {
@@ -100,13 +103,15 @@ public class BoardController {
 
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOne(@RequestParam(name = "no", defaultValue = "0") long no) {
+    public Map<String, Object> selectOne(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (no == 0) {
                 map.put("status", 300);
             } else {
                 Board board = bRepository.findById(no).orElseThrow();
+                map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
                 map.put("board", board);
                 Optional<Board> prev = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
                 if (prev.isPresent()) {
@@ -146,10 +151,11 @@ public class BoardController {
 
     // POST : 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
     @PostMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "token") String token) {
+    public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (jwtUtil.validateToken(token, jwtUtil.extractUsername(token.substring(6)))) {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
                 Board board1 = bRepository.findById(board.getNo()).orElseThrow();
                 board1.setTitle(board.getTitle());
                 board1.setContent(board.getContent());
@@ -158,6 +164,27 @@ public class BoardController {
             } else {
                 map.put("status", 578);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> deleteOne(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "no", defaultValue = "0") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
+                if (no == 0) {
+                    map.put("status", 300);
+                } else {
+                    bRepository.deleteById(no);
+                    map.put("status", 200);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
