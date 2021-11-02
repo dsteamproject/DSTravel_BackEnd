@@ -176,7 +176,8 @@ public class BoardController {
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
@@ -184,7 +185,6 @@ public class BoardController {
                     map.put("status", 200);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
