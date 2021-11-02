@@ -4,10 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -54,9 +56,9 @@ public class TravelDestination {
     // TravelDestination 조회시
     // 대부분 CITY가 같이 조회된다면 EAGER(즉시로딩)으로 처리하고,
     // 같이 조회되지 않는 경우가 많다면 LAZY(지연로딩)으로 처리한다.
-    // @ManyToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "CITY")
-    // private City city;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CITY")
+    private City city;
 
     // @ManyToOne(fetch = FetchType.EAGER)
     // @JoinColumn(name = "THEME")

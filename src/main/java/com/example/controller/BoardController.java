@@ -142,12 +142,17 @@ public class BoardController {
 
     // GET : 게시판 수정 페이지
     @GetMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updateGET(@RequestParam("no") long no) {
+    public Map<String, Object> updateGET(@RequestHeader("TOKEN") String token, @RequestParam("no") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Board board = bRepository.findById(no).orElseThrow();
-            map.put("board", board);
-            map.put("status", 200);
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Board board = bRepository.findById(no).orElseThrow();
+                map.put("board", board);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -187,7 +192,7 @@ public class BoardController {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
-                    bRepository.deleteById(no);
+                    // bRepository.deleteById(no);
                     map.put("status", 200);
                 }
             }

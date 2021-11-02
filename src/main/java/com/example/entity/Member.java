@@ -45,11 +45,15 @@ public class Member {
     @Column(name = "GENDER")
     private String gender;
 
-    @Column(name = "ROLE", columnDefinition = " varchar2(255) default 'USER'")
+    @Column(name = "ROLE")
     private String role;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "STATE")
+    private int state = 1;
+
+    // "yyyy-MM-dd HH:mm:ss"
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "REGDATE", updatable = false)
     private Date regdate;
 

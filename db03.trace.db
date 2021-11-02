@@ -1,0 +1,3 @@
+2021-11-02 16:10:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CASCADE" not found; SQL statement:
+DELETE CASCADE * FROM BOARD WHERE NO=? [42102-200]

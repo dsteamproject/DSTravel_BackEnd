@@ -1,15 +1,17 @@
 package com.example.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -58,21 +60,10 @@ public class Board {
     @Column(updatable = false, name = "REGDATE")
     private Date regdate = null; // 날짜
 
-    // String => varchar2
-    // long => number
-    // byte[] => blob
-    // 오라클에서 byte[]을 저장하는 타입을 BLOB CLOB
-    // @Lob
-    // @Column(name = "IMAGE")
-    // private byte[] image = null; // 이미지데이터
+    @Column(name = "STATE")
+    private int state = 1;
 
-    // @Column(name = "IMAGENAME")
-    // private String imagename = null; // 파일명
-
-    // @Column(name = "IMAGESIZE", nullable = false, columnDefinition = "long
-    // default 0")
-    // private long imagesize = 0L; // 파일 사이즈
-
-    // @Column(name = "IMAGETYPE")
-    // private String imagetype = null; // 파일 종류
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @Column(name = "REPLY")
+    private List<Reply> reply = new ArrayList<>();
 }

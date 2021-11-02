@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +40,9 @@ public class Reply {
     @Column(name = "WRITER")
     private String writer;
 
-    @Column(name = "REGDATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @CreationTimestamp
+    @Column(name = "REGDATE", updatable = false)
     private Date regdate;
 
     @JoinColumn(name = "BNO")

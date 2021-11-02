@@ -3,11 +3,15 @@ package com.example.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import com.example.entity.Board;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -49,4 +53,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     // 다음글 현재글이 20번이면 큰것중에서 가장 작은것 1개
     Optional<Board> findTop1ByNoGreaterThanOrderByNoAsc(Long no);
+
 }
