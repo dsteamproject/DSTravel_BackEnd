@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -48,6 +50,9 @@ public class Board {
 
     @Column(name = "HIT")
     private int hit = 1; // 조회수
+
+    @Column(name = "COUNTREPLY")
+    private int countreply = 0;
 
     @CreationTimestamp // 날짜는 자동으로 추가
     @Column(updatable = false, name = "REGDATE")

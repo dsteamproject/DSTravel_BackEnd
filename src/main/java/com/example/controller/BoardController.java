@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.entity.Reply;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
 import com.example.repository.MemberRepository;
+import com.example.repository.ReplyRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,9 @@ public class BoardController {
 
     @Autowired
     MemberRepository mRepository;
+
+    @Autowired
+    ReplyRepository reRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -110,7 +115,9 @@ public class BoardController {
                 map.put("status", 300);
             } else {
                 Board board = bRepository.findById(no).orElseThrow();
+                List<Reply> replylist = reRepository.querySelectReply(no);
                 map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
+                map.put("reply", replylist);
                 map.put("board", board);
                 Optional<Board> prev = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
                 if (prev.isPresent()) {
@@ -231,6 +238,36 @@ public class BoardController {
             map.put("status", e.hashCode());
         }
         return map;
+    }
+
+    @PostMapping(value = "/reply", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> replyPost(@RequestHeader("TOKEN") String token, @RequestParam("no") Long no,
+            @RequestBody String reply) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Reply newReply = new Reply();
+                newReply.setBoard(bRepository.getById(no));
+                newReply.setReply(reply);
+                reRepository.save(newReply);
+
+                int countreply = reRepository.queryCountSelectReply(no);
+                map.put("a", countreply);
+                Board board = bRepository.getById(no);
+                board.setCountreply(countreply);
+                bRepository.save(board);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", map.hashCode());
+        }
+        return map;
+
     }
 
 }
