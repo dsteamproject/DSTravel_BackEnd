@@ -2616,3 +2616,6 @@ SELECT * FROM Board WHERE TITLE LIKE '%' || ? || '%' AND CATEGORY=? ORDER BY NO 
 2021-11-03 12:42:30 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE %[*]? LIKE '%' || ? || '%' AND CATEGORY=? ORDER BY NO ASC LIMIT ?"; expected "NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
 SELECT * FROM Board WHERE %? LIKE '%' || ? || '%' AND CATEGORY=? ORDER BY NO ASC limit ? [42001-200]
+2021-11-03 12:51:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE[*] # #B  LIKE '%' || ? || '%' AND CATEGORY=? ORDER BY NO ASC LIMIT ?"; SQL statement:
+SELECT * FROM Board WHERE # #b  LIKE '%' || ? || '%' AND CATEGORY=? ORDER BY NO ASC limit ? [42000-200]

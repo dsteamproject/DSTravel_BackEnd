@@ -48,12 +48,12 @@ public class BoardController {
     // 게시판 목록
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
-            @RequestParam(name = "category", required = false, defaultValue = "a") String category,
-            @RequestParam(name = "type", required = false, defaultValue = "TITLE") String type,
+            @RequestParam(name = "category", required = false, defaultValue = "review") String category,
+            @RequestParam(name = "type", required = false, defaultValue = "title") String type,
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "orderby", required = false, defaultValue = "DESC") String orderby) {
+            @RequestParam(name = "orderby", required = false, defaultValue = "latest") String orderby) {
         Map<String, Object> map = new HashMap<>();
         try {
 
@@ -194,7 +194,7 @@ public class BoardController {
         return map;
     }
 
-    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteOne(@RequestHeader("TOKEN") String token,
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
@@ -204,7 +204,7 @@ public class BoardController {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
-                    // bRepository.deleteById(no);
+                    bRepository.queryDelete(no);
                     map.put("status", 200);
                 }
             }
