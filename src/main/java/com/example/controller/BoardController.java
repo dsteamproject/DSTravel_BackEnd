@@ -122,8 +122,8 @@ public class BoardController {
             if (no == 0) {
                 map.put("status", 300);
             } else {
-                Board board = bRepository.findById(no).orElseThrow();
-                List<Reply> replylist = reRepository.querySelectReply(no);
+                Board board = bRepository.querySelectById(no);
+                List<Reply> replylist = reRepository.querySelectReplyAllByBno(no);
                 if (token != null) {
                     map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
                 }
@@ -159,7 +159,7 @@ public class BoardController {
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
-                Board board = bRepository.findById(no).orElseThrow();
+                Board board = bRepository.querySelectById(no);
                 map.put("board", board);
                 map.put("status", 200);
             } else {
@@ -172,14 +172,14 @@ public class BoardController {
         return map;
     }
 
-    // POST : 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
-    @PostMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
+    @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
-                Board board1 = bRepository.findById(board.getNo()).orElseThrow();
+                Board board1 = bRepository.querySelectById(board.getNo());
                 board1.setTitle(board.getTitle());
                 board1.setContent(board.getContent());
                 bRepository.save(board1);
@@ -298,9 +298,27 @@ public class BoardController {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
-                    reRepository.deleteById(no);
+                    reRepository.queryReplyDelete(no);
                     map.put("status", 200);
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PutMapping(value = "/reply_update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> replyUpdate(@RequestHeader("TOKEN") String token, @RequestBody Reply reply) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Reply reply1 = reRepository.querySelectReply(reply.getNo());
+                reply1.setReply(reply.getReply());
+                reRepository.save(reply1);
+                map.put("status", 200);
             }
         } catch (Exception e) {
             e.printStackTrace();

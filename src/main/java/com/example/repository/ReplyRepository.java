@@ -15,15 +15,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(value = "SELECT * FROM Reply WHERE BNO=:NO", nativeQuery = true)
-    public List<Reply> querySelectReply(@Param("NO") Long no);
+    // @Transactional
+    // @Modifying(clearAutomatically = true)
+    @Query(value = "SELECT * FROM Reply WHERE BNO=:NO AND State=1", nativeQuery = true)
+    public List<Reply> querySelectReplyAllByBno(@Param("NO") Long no);
 
-    @Transactional
+    @Query(value = "SELECT * FROM Reply WHERE NO=:NO AND State=1", nativeQuery = true)
+    public Reply querySelectReply(@Param("NO") Long no);
+
+    // @Transactional
     // @Modifying(clearAutomatically = true)
     @Query(value = "SELECT COUNT(*) FROM Reply WHERE BNO=:NO AND State=1", nativeQuery = true)
     public int queryCountSelectReply(@Param("NO") Long no);
+
+    @Transactional
+    @Query(value = "UPDATE Reply reply set reply.state=0 where reply.no=:a", nativeQuery = true)
+    @Modifying(clearAutomatically = true)
+    public int queryReplyDelete(@Param("a") long no);
 
     // List<Reply> findByBno_No(long no);
 }
