@@ -48,37 +48,45 @@ public class BoardController {
     // 게시판 목록
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
-            @RequestParam(name = "type", required = false, defaultValue = "title") String type,
+            @RequestParam(name = "category", required = false, defaultValue = "a") String category,
+            @RequestParam(name = "type", required = false, defaultValue = "TITLE") String type,
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "orderby", required = false, defaultValue = "latest") String orderby) {
+            @RequestParam(name = "orderby", required = false, defaultValue = "DESC") String orderby) {
         Map<String, Object> map = new HashMap<>();
         try {
+
             PageRequest pageRequest = PageRequest.of(page - 1, size);
+            // System.out.println(type);
+            // List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(type,
+            // keyword, category, pageRequest);
+            // map.put("list", list);
             if (orderby.equals("latest") && type.equals("title")) {
-                List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
+                List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByTitleContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("latest") && type.equals("writer")) {
-                List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoDesc(keyword, pageRequest);
+                List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByWriterContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("title")) {
-                List<Board> list = bRepository.findByTitleIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
+                List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByTitleContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("writer")) {
-                List<Board> list = bRepository.findByWriterIgnoreCaseContainingOrderByNoAsc(keyword, pageRequest);
+                List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
                 map.put("list", list);
                 long cnt = bRepository.countByWriterContaining(keyword);
                 map.put("cnt", (cnt - 1) / size + 1);
             }
             map.put("status", 200);
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
         }
@@ -250,27 +258,28 @@ public class BoardController {
     }
 
     @PostMapping(value = "/reply", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> replyPost(@RequestHeader("TOKEN") String token, @RequestParam("no") Long no,
-            @RequestBody Reply reply) {
+    public Map<String, Object> replyPost(@RequestHeader(required = false, name = "TOKEN") String token,
+            @RequestParam("no") Long no, @RequestBody Reply reply) {
         Map<String, Object> map = new HashMap<>();
         try {
-            String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
-                Reply newReply = new Reply();
-                newReply.setBoard(bRepository.getById(no));
-                newReply.setReply(reply.getReply());
-                newReply.setWriter(id);
-                reRepository.save(newReply);
+            if (token != null) {
+                String id = jwtUtil.extractUsername(token.substring(6));
+                if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                    Reply newReply = new Reply();
+                    newReply.setBoard(bRepository.getById(no));
+                    newReply.setReply(reply.getReply());
+                    newReply.setWriter(id);
+                    reRepository.save(newReply);
 
-                int countreply = reRepository.queryCountSelectReply(no);
-                Board board = bRepository.getById(no);
-                board.setCountreply(countreply);
-                bRepository.save(board);
-                map.put("status", 200);
-            } else {
-                map.put("status", 578);
+                    int countreply = reRepository.queryCountSelectReply(no);
+                    Board board = bRepository.getById(no);
+                    board.setCountreply(countreply);
+                    bRepository.save(board);
+                    map.put("status", 200);
+                } else {
+                    map.put("status", 578);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", map.hashCode());

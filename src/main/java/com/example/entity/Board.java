@@ -40,8 +40,8 @@ public class Board {
     @Column(name = "TITLE")
     private String title = null; // 글제목
 
-    @Column(name = "KEYWORD")
-    private String keyword = null;
+    @Column(name = "CATEGORY")
+    private String category = null;
 
     @Lob
     @Column(name = "CONTENT")

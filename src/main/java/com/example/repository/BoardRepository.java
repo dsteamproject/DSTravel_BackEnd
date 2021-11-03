@@ -54,4 +54,34 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     // 다음글 현재글이 20번이면 큰것중에서 가장 작은것 1개
     Optional<Board> findTop1ByNoGreaterThanOrderByNoAsc(Long no);
 
+    // @Transactional
+    // @Modifying(clearAutomatically = true)
+    @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a ORDER BY NO DESC", nativeQuery = true)
+    public List<Board> querySelectAllByTitleOrderByDesc(
+            // @Param("b") String type,
+            @Param("Keyword") String keyword, @Param("a") String category1,
+            // @Param("c") String orderby,
+            Pageable pageable);
+
+    @Query(value = "SELECT * FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a ORDER BY NO DESC", nativeQuery = true)
+    public List<Board> querySelectAllByWriterOrderByDesc(
+            // @Param("b") String type,
+            @Param("Keyword") String keyword, @Param("a") String category1,
+            // @Param("c") String orderby,
+            Pageable pageable);
+
+    @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a ORDER BY NO ASC", nativeQuery = true)
+    public List<Board> querySelectAllByTitleOrderByAsc(
+            // @Param("b") String type,
+            @Param("Keyword") String keyword, @Param("a") String category1,
+            // @Param("c") String orderby,
+            Pageable pageable);
+
+    @Query(value = "SELECT * FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a ORDER BY NO ASC", nativeQuery = true)
+    public List<Board> querySelectAllByWriterOrderByAsc(
+            // @Param("b") String type,
+            @Param("Keyword") String keyword, @Param("a") String category1,
+            // @Param("c") String orderby,
+            Pageable pageable);
+
 }
