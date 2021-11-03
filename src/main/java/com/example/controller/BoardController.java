@@ -93,6 +93,7 @@ public class BoardController {
         return map;
     }
 
+    // token 유효성 검사 수정필요!!!!! ( 이전 토큰을 사용해도 계속해서 인증이 완료됨 )
     // 게시판 등록
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
@@ -113,6 +114,7 @@ public class BoardController {
         return map;
     }
 
+    // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨)
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
@@ -215,6 +217,7 @@ public class BoardController {
         return map;
     }
 
+    // state=1인것만 조회수 증가하도록 수정필요
     // 조회수 1 증가 (쿠키사용)
     @PutMapping(value = "/updateHit", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> updateHit(@RequestParam("no") long no, HttpServletRequest request,
@@ -257,6 +260,7 @@ public class BoardController {
         return map;
     }
 
+    // 댓글등록
     @PostMapping(value = "/reply", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> replyPost(@RequestHeader(required = false, name = "TOKEN") String token,
             @RequestParam("no") Long no, @RequestBody Reply reply) {
@@ -288,6 +292,7 @@ public class BoardController {
 
     }
 
+    // 댓글 삭제
     @PutMapping(value = "/reply_delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> replyDeleteOne(@RequestHeader("TOKEN") String token,
             @RequestParam(name = "no", defaultValue = "0") long no) {
@@ -309,6 +314,7 @@ public class BoardController {
         return map;
     }
 
+    // 댓글 수정
     @PutMapping(value = "/reply_update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> replyUpdate(@RequestHeader("TOKEN") String token, @RequestBody Reply reply) {
         Map<String, Object> map = new HashMap<>();
