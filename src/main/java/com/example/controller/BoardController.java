@@ -107,7 +107,7 @@ public class BoardController {
 
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOne(@RequestHeader("TOKEN") String token,
+    public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -116,7 +116,9 @@ public class BoardController {
             } else {
                 Board board = bRepository.findById(no).orElseThrow();
                 List<Reply> replylist = reRepository.querySelectReply(no);
-                map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
+                if (token != null) {
+                    map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
+                }
                 map.put("reply", replylist);
                 map.put("board", board);
                 Optional<Board> prev = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
@@ -133,7 +135,9 @@ public class BoardController {
                 }
                 map.put("status", 200);
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
         }
