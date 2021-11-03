@@ -288,3 +288,6 @@ UPDATE Board SET STATE=0 WHERE NO=? [90002-200]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+2021-11-03 16:30:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE WRITER CATEGORY[*]=? AND NO<? AND STATE=1 ORDER BY NO DESC LIMIT 1;"; SQL statement:
+SELECT * FROM Board WHERE WRITER CATEGORY=? AND NO<? AND STATE=1 ORDER BY NO DESC LIMIT 1; [42000-200]

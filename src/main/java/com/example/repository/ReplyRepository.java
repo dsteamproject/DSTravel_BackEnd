@@ -22,7 +22,7 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     @Transactional
     // @Modifying(clearAutomatically = true)
-    @Query(value = "SELECT COUNT(*) FROM Reply WHERE BNO=:NO", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM Reply WHERE BNO=:NO AND State=1", nativeQuery = true)
     public int queryCountSelectReply(@Param("NO") Long no);
 
     // List<Reply> findByBno_No(long no);

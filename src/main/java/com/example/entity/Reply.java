@@ -45,6 +45,9 @@ public class Reply {
     @Column(name = "REGDATE", updatable = false)
     private Date regdate;
 
+    @Column(name = "STATE")
+    private int state = 1;
+
     @JoinColumn(name = "BNO")
     @ManyToOne
     private Board board;

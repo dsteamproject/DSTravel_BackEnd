@@ -18,16 +18,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-        // 제목에 단어가 포함된 전체 개수
-        long countByTitleContaining(String title);
 
-        long countByWriterContaining(String wirter);
+        @Query(value = "SELECT COUNT(*) FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
+        public int queryCountByTitle(@Param("Keyword") String keyword, @Param("a") String category1);
 
-        // 이전글 현재글이 20번이면 작은것중에서 가장큰것 1개
-        Optional<Board> findTop1ByNoLessThanOrderByNoDesc(long no);
+        @Query(value = "SELECT COUNT(*) FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
+        public int queryCountByWriter(@Param("Keyword") String keyword, @Param("a") String category1);
 
-        // 다음글 현재글이 20번이면 큰것중에서 가장 작은것 1개
-        Optional<Board> findTop1ByNoGreaterThanOrderByNoAsc(Long no);
+        @Query(value = "SELECT * FROM Board WHERE CATEGORY=:a AND NO<:b AND STATE=1 ORDER BY NO DESC LIMIT 1;", nativeQuery = true)
+        public Board queryByCategoryTop1OrderByNoDesc(@Param("a") String category1, @Param("b") long no);
+
+        @Query(value = "SELECT * FROM Board WHERE CATEGORY=:a AND NO>:b AND STATE=1 ORDER BY NO ASC LIMIT 1;", nativeQuery = true)
+        public Board queryByCategoryTop1OrderByNoAsc(@Param("a") String category1, @Param("b") long no);
 
         @Transactional
         @Query(value = "UPDATE Board board set board.state=0 where board.no=:a", nativeQuery = true)

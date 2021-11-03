@@ -65,22 +65,22 @@ public class BoardController {
             if (orderby.equals("latest") && type.equals("title")) {
                 List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
                 map.put("list", list);
-                long cnt = bRepository.countByTitleContaining(keyword);
+                int cnt = bRepository.queryCountByTitle(keyword, category);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("latest") && type.equals("writer")) {
                 List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
                 map.put("list", list);
-                long cnt = bRepository.countByWriterContaining(keyword);
+                int cnt = bRepository.queryCountByWriter(keyword, category);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("title")) {
                 List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
                 map.put("list", list);
-                long cnt = bRepository.countByTitleContaining(keyword);
+                int cnt = bRepository.queryCountByTitle(keyword, category);
                 map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("writer")) {
                 List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
                 map.put("list", list);
-                long cnt = bRepository.countByWriterContaining(keyword);
+                int cnt = bRepository.queryCountByWriter(keyword, category);
                 map.put("cnt", (cnt - 1) / size + 1);
             }
             map.put("status", 200);
@@ -116,7 +116,7 @@ public class BoardController {
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
-            @RequestParam(name = "no", defaultValue = "0") long no) {
+            @RequestParam(name = "category") String category, @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (no == 0) {
@@ -129,15 +129,15 @@ public class BoardController {
                 }
                 map.put("reply", replylist);
                 map.put("board", board);
-                Optional<Board> prev = bRepository.findTop1ByNoLessThanOrderByNoDesc(no);
-                if (prev.isPresent()) {
-                    map.put("prev", prev.get().getNo());
+                Board prev = bRepository.queryByCategoryTop1OrderByNoDesc(category, no);
+                if (prev != null) {
+                    map.put("prev", prev.getNo());
                 } else {
                     map.put("prev", 0);
                 }
-                Optional<Board> next = bRepository.findTop1ByNoGreaterThanOrderByNoAsc(no);
-                if (next.isPresent()) {
-                    map.put("next", next.get().getNo());
+                Board next = bRepository.queryByCategoryTop1OrderByNoAsc(category, no);
+                if (next != null) {
+                    map.put("next", next.getNo());
                 } else {
                     map.put("next", 0);
                 }
@@ -286,6 +286,27 @@ public class BoardController {
         }
         return map;
 
+    }
+
+    @PutMapping(value = "/reply_delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> replyDeleteOne(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "no", defaultValue = "0") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                if (no == 0) {
+                    map.put("status", 300);
+                } else {
+                    reRepository.deleteById(no);
+                    map.put("status", 200);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
     }
 
 }
