@@ -39,11 +39,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=1;", nativeQuery = true)
         public Board querySelectById(@Param("b") long no);
 
-        @Transactional
-        @Query(value = "UPDATE Reply reply set reply.state=0 where reply.no=:a", nativeQuery = true)
-        @Modifying(clearAutomatically = true)
-        public int queryReplyDelete(@Param("a") long no);
-
         // @Modifying(clearAutomatically = true)
         @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
         public List<Board> querySelectAllByTitleOrderByDesc(
