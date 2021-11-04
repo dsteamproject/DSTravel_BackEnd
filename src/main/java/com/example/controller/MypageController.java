@@ -131,6 +131,7 @@ public class MypageController {
                     member1.setPassword(bcpe.encode(member.get("newpw").toString()));
                     mRepository.save(member1);
                 }
+                map.put("id", id);
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
