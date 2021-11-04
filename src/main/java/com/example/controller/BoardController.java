@@ -118,7 +118,8 @@ public class BoardController {
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
-            @RequestParam(name = "category") String category, @RequestParam(name = "no", defaultValue = "0") long no) {
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (no == 0) {
@@ -300,8 +301,8 @@ public class BoardController {
 
     // 댓글 삭제
     @PutMapping(value = "/reply_delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> replyDeleteOne(@RequestHeader("TOKEN") String token,
-            @RequestParam(name = "no", defaultValue = "0") long no) {
+    public Map<String, Object> replyDeleteOne(@RequestHeader("TOKEN") String token, @RequestParam("no") Long no,
+            @RequestBody Board board) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -312,6 +313,11 @@ public class BoardController {
                     map.put("status", 300);
                 } else {
                     reRepository.queryReplyDelete(no);
+
+                    int countreply = reRepository.queryCountSelectReply(no);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setCountreply(countreply);
+                    bRepository.save(board1);
                     map.put("status", 200);
                 }
             }

@@ -3,11 +3,14 @@ package com.example.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.example.entity.Board;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
 import com.example.jwt.JwtUtil;
+import com.example.repository.BoardRepository;
 import com.example.repository.MemberImgRepository;
 import com.example.repository.MemberRepository;
 
@@ -18,9 +21,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,14 +49,17 @@ public class MypageController {
     MemberRepository mRepository;
 
     @Autowired
+    BoardRepository bRepository;
+
+    @Autowired
     MemberImgRepository mImgRepository;
 
-    // 127.0.0.1:8080/REST/mypage/select_image?no=
+    // 127.0.0.1:8080/REST/mypage/select_image?id=
     // 이미지주소
     @GetMapping(value = "/select_image")
-    public ResponseEntity<byte[]> selectImage(@RequestParam("no") long no) throws IOException {
+    public ResponseEntity<byte[]> selectImage(@RequestParam("id") String id) throws IOException {
         try {
-            MemberImg mImg = mImgRepository.getById(no);
+            MemberImg mImg = mRepository.querySelectByid(id).getMemberimg();
             if (mImg.getImage().length > 0) {
                 HttpHeaders headers = new HttpHeaders();
                 if (mImg.getImagetype().equals("image/jpeg")) {
@@ -80,7 +88,7 @@ public class MypageController {
     }
 
     // 이미지 등록(수정)
-    @PutMapping(value = "/insertMemberImg")
+    @PutMapping(value = "/insertMemberImg", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> memberimgPut(@RequestHeader("TOKEN") String token, @ModelAttribute MemberImg memberImg,
             @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
@@ -89,12 +97,87 @@ public class MypageController {
             Member member = mRepository.getById(id);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
+
                 memberImg.setImage(file.getBytes());
                 memberImg.setImagename(file.getOriginalFilename());
                 memberImg.setImagesize(file.getSize());
                 memberImg.setImagetype(file.getContentType());
                 memberImg.setMember(member);
-                mImgRepository.save(memberImg);
+                member.setMemberimg(memberImg);
+                mRepository.save(member);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 비밀번호 변경 ( body : {password: 기존암호, newpw: 변경할암호} )
+    @PutMapping(value = "/memberpwchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> memberpwchange(@RequestHeader("TOKEN") String token,
+            @RequestBody Map<String, Object> member) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.getById(id);
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                if (bcpe.matches(member.get("password").toString(), member1.getPassword())) {
+                    member1.setPassword(bcpe.encode(member.get("newpw").toString()));
+                    mRepository.save(member1);
+                }
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 회원정보 변경
+    @PutMapping(value = "/memberchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> memberchange(@RequestHeader("TOKEN") String token, @RequestBody Member member) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.getById(id);
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                member1.setName(member.getName());
+                member1.setNicname(member.getNicname());
+                member1.setEmail(member.getEmail());
+                member1.setGender(member.getGender());
+                mRepository.save(member1);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 내가 등록한 게시물
+    @GetMapping(value = "/myboard")
+    public Map<String, Object> myboardGET(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.getById(id);
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                List<Board> myboardlist = bRepository.querySelectByWriter(member1.getId());
+                map.put("myboardlist", myboardlist);
                 map.put("status", 200);
             } else {
                 map.put("status", 578);

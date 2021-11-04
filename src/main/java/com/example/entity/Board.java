@@ -7,10 +7,13 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -66,4 +69,8 @@ public class Board {
     @OneToMany(cascade = CascadeType.PERSIST)
     @Column(name = "REPLY")
     private List<Reply> reply = new ArrayList<>();
+
+    // @Column(name = "good")
+    // private Object good =
+
 }

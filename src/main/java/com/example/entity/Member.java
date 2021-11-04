@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;

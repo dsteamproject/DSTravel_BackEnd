@@ -56,4 +56,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         public List<Board> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
                         @Param("a") String category1, Pageable pageable);
 
+        @Query(value = "SELECT * FROM Board WHERE WRITER=:writer ORDER BY NO DESC", nativeQuery = true)
+        public List<Board> querySelectByWriter(@Param("writer") String writer);
 }
