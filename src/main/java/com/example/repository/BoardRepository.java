@@ -1,11 +1,8 @@
 package com.example.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
-
-// import javax.transaction.Transactional;
 
 import com.example.entity.Board;
 
@@ -48,24 +45,15 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
                         Pageable pageable);
 
         @Query(value = "SELECT * FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
-        public List<Board> querySelectAllByWriterOrderByDesc(
-                        // @Param("b") String type,
-                        @Param("Keyword") String keyword, @Param("a") String category1,
-                        // @Param("c") String orderby,
-                        Pageable pageable);
+        public List<Board> querySelectAllByWriterOrderByDesc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
 
         @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
-        public List<Board> querySelectAllByTitleOrderByAsc(
-                        // @Param("b") String type,
-                        @Param("Keyword") String keyword, @Param("a") String category1,
-                        // @Param("c") String orderby,
-                        Pageable pageable);
+        public List<Board> querySelectAllByTitleOrderByAsc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
 
         @Query(value = "SELECT * FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
-        public List<Board> querySelectAllByWriterOrderByAsc(
-                        // @Param("b") String type,
-                        @Param("Keyword") String keyword, @Param("a") String category1,
-                        // @Param("c") String orderby,
-                        Pageable pageable);
+        public List<Board> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
 
 }

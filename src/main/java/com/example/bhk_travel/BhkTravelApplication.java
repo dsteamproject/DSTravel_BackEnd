@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"com.example.service" })
 @EntityScan(basePackages = { "com.example.entity" })
 @EnableJpaRepositories(basePackages = { "com.example.repository" })
-public class BhkTravelApplication extends SpringBootServletInitializer{
+public class BhkTravelApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BhkTravelApplication.class, args);
@@ -28,6 +28,5 @@ public class BhkTravelApplication extends SpringBootServletInitializer{
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(BhkTravelApplication.class);
 	}
-	
 
 }

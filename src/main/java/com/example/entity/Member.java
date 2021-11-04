@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -51,10 +54,17 @@ public class Member {
     @Column(name = "STATE")
     private int state = 1;
 
+    @Column(name = "TOKEN")
+    private String token;
+
     // "yyyy-MM-dd HH:mm:ss"
     @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "REGDATE", updatable = false)
     private Date regdate;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MIMG")
+    private MemberImg memberimg;
 
 }

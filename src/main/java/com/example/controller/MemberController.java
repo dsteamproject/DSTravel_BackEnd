@@ -109,8 +109,13 @@ public class MemberController {
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             if (mRepository.findById(member.getId()).isPresent()) {
                 if (bcpe.matches(member.getPassword(), mRepository.getById(member.getId()).getPassword())) {
+                    String token = jwtUtil.generateToken(member.getId());
+                    Member member1 = mRepository.getById(member.getId());
+                    member1.setToken(token);
+                    mRepository.save(member1);
                     map.put("status", 200);
-                    map.put("token", tokenwithvalue + jwtUtil.generateToken(member.getId()));
+                    map.put("token", tokenwithvalue + token);
+
                 } else {
                     map.put("result", "암호가 틀립니다.");
                 }
@@ -146,7 +151,7 @@ public class MemberController {
 
     @GetMapping(value = "/mypage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> mypageGet(@RequestParam(name = "menu", defaultValue = "1") int menu,
-            @RequestHeader("token") String token) {
+            @RequestHeader("TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {

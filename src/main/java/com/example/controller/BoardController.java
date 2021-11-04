@@ -3,13 +3,13 @@ package com.example.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.entity.Member;
 import com.example.entity.Reply;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
@@ -19,7 +19,6 @@ import com.example.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -93,14 +92,15 @@ public class BoardController {
         return map;
     }
 
-    // token 유효성 검사 수정필요!!!!! ( 이전 토큰을 사용해도 계속해서 인증이 완료됨 )
     // 게시판 등록
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.getById(id);
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 board.setWriter(id);
                 bRepository.save(board);
                 map.put("status", 200);
@@ -114,7 +114,7 @@ public class BoardController {
         return map;
     }
 
-    // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨)
+    // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
@@ -180,7 +180,9 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.getById(id);
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Board board1 = bRepository.querySelectById(board.getNo());
                 board1.setTitle(board.getTitle());
                 board1.setContent(board.getContent());
@@ -196,13 +198,16 @@ public class BoardController {
         return map;
     }
 
+    // 게시판 삭제 (state =0)
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteOne(@RequestHeader("TOKEN") String token,
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.getById(id);
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
@@ -217,8 +222,7 @@ public class BoardController {
         return map;
     }
 
-    // state=1인것만 조회수 증가하도록 수정필요
-    // 조회수 1 증가 (쿠키사용)
+    // 조회수 1 증가 (쿠키사용) (state=1인 게시물만)
     @PutMapping(value = "/updateHit", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> updateHit(@RequestParam("no") long no, HttpServletRequest request,
             HttpServletResponse response) {
@@ -235,7 +239,7 @@ public class BoardController {
             }
             if (oldCookie != null) {
                 if (!oldCookie.getValue().contains("[" + no + "]")) {
-                    Board board = bRepository.getById(no);
+                    Board board = bRepository.querySelectById(no);
                     board.setHit(board.getHit() + 1);
                     bRepository.save(board);
                     oldCookie.setValue(oldCookie.getValue() + "_[" + no + "]");
@@ -244,7 +248,7 @@ public class BoardController {
                     response.addCookie(oldCookie);
                 }
             } else {
-                Board board = bRepository.getById(no);
+                Board board = bRepository.querySelectById(no);
                 board.setHit(board.getHit() + 1);
                 bRepository.save(board);
                 Cookie newCookie = new Cookie("postView", "[" + no + "]");
@@ -268,15 +272,17 @@ public class BoardController {
         try {
             if (token != null) {
                 String id = jwtUtil.extractUsername(token.substring(6));
-                if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Member member = mRepository.getById(id);
+                if (member != null && member.getToken().equals(token.substring(6))
+                        && !jwtUtil.isTokenExpired(token.substring(6))) {
                     Reply newReply = new Reply();
-                    newReply.setBoard(bRepository.getById(no));
+                    newReply.setBoard(bRepository.querySelectById(no));
                     newReply.setReply(reply.getReply());
                     newReply.setWriter(id);
                     reRepository.save(newReply);
 
                     int countreply = reRepository.queryCountSelectReply(no);
-                    Board board = bRepository.getById(no);
+                    Board board = bRepository.querySelectById(no);
                     board.setCountreply(countreply);
                     bRepository.save(board);
                     map.put("status", 200);
@@ -299,7 +305,9 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.getById(id);
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
                     map.put("status", 300);
                 } else {
@@ -320,7 +328,9 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.getById(id);
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Reply reply1 = reRepository.querySelectReply(reply.getNo());
                 reply1.setReply(reply.getReply());
                 reRepository.save(reply1);
