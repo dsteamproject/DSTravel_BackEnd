@@ -1051,3 +1051,27 @@ UPDATE memberImg Set image=?, imagename=?, imagesize=?, imagetype=? WHERE mid.id
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+2021-11-05 10:49:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:51:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:53:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:54:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:56:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:59:16 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:59:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]
+2021-11-05 10:59:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, primary key (no)) [42001-200]

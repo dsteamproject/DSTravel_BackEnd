@@ -24,7 +24,7 @@ public interface MemberImgRepository extends JpaRepository<MemberImg, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "INSERT INTO memberImg VALUES (SEQ_MEMBERIMG_NO.NEXTVAL, :#{#file.image}, :#{#file.imagename}, :#{#file.imagesize}, :#{#file.imagetype}, :#{#file.mid}) ", nativeQuery = true)
+    @Query(value = "INSERT INTO memberImg VALUES (SEQ_MEMBERIMG_NO.NEXTVAL, :#{#file.image}, :#{#file.imagename}, :#{#file.imagesize}, :#{#file.imagetype}, :#{#file.member}) ", nativeQuery = true)
     public int queryinsert(@Param("file") MemberImg memberimg);
 
 }

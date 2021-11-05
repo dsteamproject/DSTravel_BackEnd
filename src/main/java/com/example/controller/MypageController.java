@@ -104,11 +104,33 @@ public class MypageController {
                 memberimg.setImagetype(file.getContentType());
                 if (mImgRepository.querySelectByMemberId(member) != null) {
                     mImgRepository.queryupdate(memberimg, member);
+                    map.put("a", "수정완료");
                 } else {
                     memberimg.setMember(member);
                     mImgRepository.queryinsert(memberimg);
-
+                    map.put("a", "등록완료");
                 }
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 마이페이지 홈
+    @GetMapping(value = "/home")
+    public Map<String, Object> home(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.getById(id);
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                map.put("member", mRepository.querySelectmemberprojection(id));
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
@@ -122,21 +144,22 @@ public class MypageController {
 
     // 비밀번호 변경 ( body : {password: 기존암호, newpw: 변경할암호} )
     @PutMapping(value = "/memberpwchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> memberpwchange(@RequestHeader("TOKEN") String token,
-            @RequestBody Map<String, Object> member) {
+    public Map<String, Object> memberpwchange(@RequestHeader("TOKEN") String token, @RequestBody Member member) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             Member member1 = mRepository.getById(id);
+            BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
-                if (bcpe.matches(member.get("password").toString(), member1.getPassword())) {
-                    member1.setPassword(bcpe.encode(member.get("newpw").toString()));
+                if (bcpe.matches(member.getPassword(), member1.getPassword())) {
+                    member1.setPassword(bcpe.encode(member.getNewpw()));
                     mRepository.save(member1);
+                    map.put("status", 200);
+                } else {
+                    map.put("status", 301);
                 }
-                map.put("id", id);
-                map.put("status", 200);
+
             } else {
                 map.put("status", 578);
             }

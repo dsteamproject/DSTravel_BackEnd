@@ -37,6 +37,10 @@ public class Member {
     @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
+    @Column(name = "NEWPW")
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private String newpw;
+
     @Column(name = "NAME")
     private String name;
 
