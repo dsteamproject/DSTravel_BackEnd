@@ -31,4 +31,7 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
 
     public List<GoodProjection> findAllByMember(Member member);
 
+    public List<Good> findAllByBoard(Board board);
+
+    public int countByBoard_no(long no);
 }

@@ -67,6 +67,11 @@ public class Board {
     private int state = 1;
 
     @OneToMany(cascade = CascadeType.PERSIST)
-    @Column(name = "REPLY")
+    @JoinColumn(name = "REPLY")
     private List<Reply> reply = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "GOOD")
+    private List<Good> good = new ArrayList<>();
+
 }

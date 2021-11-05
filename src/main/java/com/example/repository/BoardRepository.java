@@ -58,4 +58,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
         @Query(value = "SELECT * FROM Board WHERE WRITER=:writer ORDER BY NO DESC", nativeQuery = true)
         public List<Board> querySelectByWriter(@Param("writer") String writer);
+
 }

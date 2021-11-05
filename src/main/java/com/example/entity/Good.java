@@ -30,11 +30,11 @@ public class Good {
     @Column(name = "NO")
     private Long no;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BOARD")
     private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER")
     private Member member;
 

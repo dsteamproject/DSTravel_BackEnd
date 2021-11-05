@@ -8,6 +8,7 @@ import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.MemberProjection;
 import com.example.jwt.JwtUtil;
+import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 
@@ -32,6 +33,9 @@ public class GoodApiController {
     @Autowired
     GoodRepository goodRepository;
 
+    @Autowired
+    BoardRepository bRepository;
+
     // 좋아요 추가하고 좋아요 갯수 전달
     @PostMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> addgood(@RequestHeader("TOKEN") String token, @RequestBody Board board) {
@@ -46,6 +50,7 @@ public class GoodApiController {
                     good.setBoard(board);
                     good.setMember(member);
                     goodRepository.save(good);
+
                 } else {
                     Good good1 = goodRepository.queryselectgood(board, member);
                     good1.setBoard(null);

@@ -13,6 +13,7 @@ import com.example.entity.Member;
 import com.example.entity.Reply;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
+import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.ReplyRepository;
 
@@ -44,6 +45,9 @@ public class BoardController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    GoodRepository goodRepository;
+
     // 게시판 목록
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
@@ -63,6 +67,11 @@ public class BoardController {
             // map.put("list", list);
             if (orderby.equals("latest") && type.equals("title")) {
                 List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+
+                for (Board board : list) {
+                    System.out.println(board.getNo() + "," + goodRepository.countByBoard_no(board.getNo()));
+                }
+
                 map.put("list", list);
                 int cnt = bRepository.queryCountByTitle(keyword, category);
                 map.put("cnt", (cnt - 1) / size + 1);
@@ -130,6 +139,8 @@ public class BoardController {
                 if (token != null) {
                     map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
                 }
+                goodRepository.queryCountByBoard(board);
+                map.put("good", goodRepository);
                 map.put("reply", replylist);
                 map.put("board", board);
                 Board prev = bRepository.queryByCategoryTop1OrderByNoDesc(category, no);
