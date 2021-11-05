@@ -89,7 +89,7 @@ public class MypageController {
 
     // 이미지 등록(수정)
     @PutMapping(value = "/insertMemberImg", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> memberimgPut(@RequestHeader("TOKEN") String token, @ModelAttribute MemberImg memberImg,
+    public Map<String, Object> memberimgPut(@RequestHeader("TOKEN") String token,
             @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -97,14 +97,18 @@ public class MypageController {
             Member member = mRepository.getById(id);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
+                MemberImg memberimg = new MemberImg();
+                memberimg.setImage(file.getBytes());
+                memberimg.setImagename(file.getOriginalFilename());
+                memberimg.setImagesize(file.getSize());
+                memberimg.setImagetype(file.getContentType());
+                if (mImgRepository.querySelectByMemberId(member) != null) {
+                    mImgRepository.queryupdate(memberimg, member);
+                } else {
+                    memberimg.setMember(member);
+                    mImgRepository.queryinsert(memberimg);
 
-                memberImg.setImage(file.getBytes());
-                memberImg.setImagename(file.getOriginalFilename());
-                memberImg.setImagesize(file.getSize());
-                memberImg.setImagetype(file.getContentType());
-                memberImg.setMember(member);
-                member.setMemberimg(memberImg);
-                mRepository.save(member);
+                }
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
