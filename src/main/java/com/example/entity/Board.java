@@ -69,8 +69,4 @@ public class Board {
     @OneToMany(cascade = CascadeType.PERSIST)
     @Column(name = "REPLY")
     private List<Reply> reply = new ArrayList<>();
-
-    // @Column(name = "good")
-    // private Object good =
-
 }

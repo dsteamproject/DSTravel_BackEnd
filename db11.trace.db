@@ -1,0 +1,18 @@
+2021-11-05 12:52:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD_NO BIGINT, MEMBER_ID VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, board_no bigint, member_id varchar(100), primary key (no)) [42001-200]
+2021-11-05 12:52:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKFSUYVNAVPYVF9ADAFN4G2YJW FOREIGN KEY (BOARD_NO) REFERENCES BOARD"; expected "identifier"; SQL statement:
+alter table like add constraint FKfsuyvnavpyvf9adafn4g2yjw foreign key (board_no) references board [42001-200]
+2021-11-05 12:52:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKDLTJ7TCXJPDEB0QMB26RN2YEV FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER"; expected "identifier"; SQL statement:
+alter table like add constraint FKdltj7tcxjpdeb0qmb26rn2yev foreign key (member_id) references member [42001-200]
+2021-11-05 14:07:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD_NO BIGINT, MEMBER_ID VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
+create table like (no bigint not null, board_no bigint, member_id varchar(100), primary key (no)) [42001-200]
+2021-11-05 14:07:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKFSUYVNAVPYVF9ADAFN4G2YJW FOREIGN KEY (BOARD_NO) REFERENCES BOARD"; expected "identifier"; SQL statement:
+alter table like add constraint FKfsuyvnavpyvf9adafn4g2yjw foreign key (board_no) references board [42001-200]
+2021-11-05 14:07:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKDLTJ7TCXJPDEB0QMB26RN2YEV FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER"; expected "identifier"; SQL statement:
+alter table like add constraint FKdltj7tcxjpdeb0qmb26rn2yev foreign key (member_id) references member [42001-200]

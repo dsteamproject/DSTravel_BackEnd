@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.entity.Board;
+import com.example.entity.Good;
+import com.example.entity.GoodProjection;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
+import com.example.entity.MemberProjection;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
+import com.example.repository.GoodRepository;
 import com.example.repository.MemberImgRepository;
 import com.example.repository.MemberRepository;
 
@@ -54,12 +58,15 @@ public class MypageController {
     @Autowired
     MemberImgRepository mImgRepository;
 
+    @Autowired
+    GoodRepository goodRepository;
+
     // 127.0.0.1:8080/REST/mypage/select_image?id=
     // 이미지주소
     @GetMapping(value = "/select_image")
-    public ResponseEntity<byte[]> selectImage(@RequestParam("id") String id) throws IOException {
+    public ResponseEntity<byte[]> selectImage(@RequestParam("id") Member member) throws IOException {
         try {
-            MemberImg mImg = mRepository.querySelectByid(id).getMemberimg();
+            MemberImg mImg = mImgRepository.querySelectByMemberId(member);
             if (mImg.getImage().length > 0) {
                 HttpHeaders headers = new HttpHeaders();
                 if (mImg.getImagetype().equals("image/jpeg")) {
@@ -215,6 +222,31 @@ public class MypageController {
             map.put("status", e.hashCode());
         }
         return map;
+    }
+
+    @GetMapping(value = "mygoodboard")
+    public Map<String, Object> mygoodboardGET(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.getById(id);
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+
+                List<GoodProjection> list = goodRepository.findAllByMember(member1);
+
+                map.put("board", list);
+                map.put("status", 200);
+
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
     }
 
 }
