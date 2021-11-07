@@ -111,11 +111,11 @@ public class MypageController {
                 memberimg.setImagetype(file.getContentType());
                 if (mImgRepository.querySelectByMemberId(member) != null) {
                     mImgRepository.queryupdate(memberimg, member);
-                    map.put("a", "수정완료");
+                    map.put("result", "수정완료");
                 } else {
                     memberimg.setMember(member);
                     mImgRepository.queryinsert(memberimg);
-                    map.put("a", "등록완료");
+                    map.put("result", "등록완료");
                 }
                 map.put("status", 200);
             } else {
@@ -211,8 +211,8 @@ public class MypageController {
             Member member1 = mRepository.getById(id);
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                List<Board> myboardlist = bRepository.querySelectByWriter(member1.getId());
-                map.put("myboardlist", myboardlist);
+                // List<Board> myboardlist = bRepository.querySelectByWriter(member1.getId());
+                // map.put("myboardlist", myboardlist);
                 map.put("status", 200);
             } else {
                 map.put("status", 578);

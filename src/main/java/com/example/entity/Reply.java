@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,11 +35,8 @@ public class Reply {
     @Column(name = "NO")
     private long no;
 
-    @Column(name = "REPLY")
-    private String reply;
-
-    @Column(name = "WRITER")
-    private String writer;
+    @Column(name = "REPLYCONTNENT")
+    private String replycontent;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
@@ -48,8 +46,12 @@ public class Reply {
     @Column(name = "STATE")
     private int state = 1;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MEMBER")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BNO")
-    @ManyToOne
     private Board board;
 
 }

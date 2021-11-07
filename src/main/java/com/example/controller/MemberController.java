@@ -45,18 +45,6 @@ public class MemberController {
     @Value("${tokenscretstart}")
     private String tokenwithvalue;
 
-    @GetMapping(value = "/join")
-    public Map<String, Object> memberJoinGET() {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            map.put("status", 200);
-        } catch (Exception e) {
-            map.put("status", e.hashCode());
-        }
-        return map;
-
-    }
-
     @PostMapping(value = "/join", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> memberJoinPOST(@RequestBody Member member) {
         Map<String, Object> map = new HashMap<>();

@@ -1,78 +1,31 @@
-2021-11-05 14:13:24 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD BIGINT, MEMBER VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, board bigint, member varchar(100), primary key (no)) [42001-200]
-2021-11-05 14:13:24 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKBRDM2YI9RXUWFUQB56JHAVSGU FOREIGN KEY (BOARD) REFERENCES BOARD"; expected "identifier"; SQL statement:
-alter table like add constraint FKbrdm2yi9rxuwfuqb56jhavsgu foreign key (board) references board [42001-200]
-2021-11-05 14:13:25 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FK2U6XW7JBA8XVL364E12UGA67F FOREIGN KEY (MEMBER) REFERENCES MEMBER"; expected "identifier"; SQL statement:
-alter table like add constraint FK2u6xw7jba8xvl364e12uga67f foreign key (member) references member [42001-200]
-2021-11-05 14:14:59 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD BIGINT, MEMBER VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, board bigint, member varchar(100), primary key (no)) [42001-200]
-2021-11-05 14:14:59 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKBRDM2YI9RXUWFUQB56JHAVSGU FOREIGN KEY (BOARD) REFERENCES BOARD"; expected "identifier"; SQL statement:
-alter table like add constraint FKbrdm2yi9rxuwfuqb56jhavsgu foreign key (board) references board [42001-200]
-2021-11-05 14:14:59 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FK2U6XW7JBA8XVL364E12UGA67F FOREIGN KEY (MEMBER) REFERENCES MEMBER"; expected "identifier"; SQL statement:
-alter table like add constraint FK2u6xw7jba8xvl364e12uga67f foreign key (member) references member [42001-200]
-2021-11-05 14:15:53 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD BIGINT, MEMBER VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, board bigint, member varchar(100), primary key (no)) [42001-200]
-2021-11-05 14:15:53 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKBRDM2YI9RXUWFUQB56JHAVSGU FOREIGN KEY (BOARD) REFERENCES BOARD"; expected "identifier"; SQL statement:
-alter table like add constraint FKbrdm2yi9rxuwfuqb56jhavsgu foreign key (board) references board [42001-200]
-2021-11-05 14:15:53 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FK2U6XW7JBA8XVL364E12UGA67F FOREIGN KEY (MEMBER) REFERENCES MEMBER"; expected "identifier"; SQL statement:
-alter table like add constraint FK2u6xw7jba8xvl364e12uga67f foreign key (member) references member [42001-200]
-2021-11-05 14:18:01 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD BIGINT, MEMBER VARCHAR(100), PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, board bigint, member varchar(100), primary key (no)) [42001-200]
-2021-11-05 14:18:01 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKBRDM2YI9RXUWFUQB56JHAVSGU FOREIGN KEY (BOARD) REFERENCES BOARD"; expected "identifier"; SQL statement:
-alter table like add constraint FKbrdm2yi9rxuwfuqb56jhavsgu foreign key (board) references board [42001-200]
-2021-11-05 14:18:01 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FK2U6XW7JBA8XVL364E12UGA67F FOREIGN KEY (MEMBER) REFERENCES MEMBER"; expected "identifier"; SQL statement:
-alter table like add constraint FK2u6xw7jba8xvl364e12uga67f foreign key (member) references member [42001-200]
-2021-11-05 14:21:03 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, BOARD BIGINT, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, board bigint, primary key (no)) [42001-200]
-2021-11-05 14:21:03 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE LIKE[*] ADD CONSTRAINT FKBRDM2YI9RXUWFUQB56JHAVSGU FOREIGN KEY (BOARD) REFERENCES BOARD"; expected "identifier"; SQL statement:
-alter table like add constraint FKbrdm2yi9rxuwfuqb56jhavsgu foreign key (board) references board [42001-200]
-2021-11-05 14:21:25 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, primary key (no)) [42001-200]
-2021-11-05 14:22:10 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE LIKE[*] (NO BIGINT NOT NULL, PRIMARY KEY (NO))"; expected "identifier"; SQL statement:
-create table like (no bigint not null, primary key (no)) [42001-200]
-2021-11-05 15:29:34 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELET[*] COUNT(*) FROM GOOD WHERE BOARD=?"; expected "SET, SAVEPOINT, SCRIPT, SHUTDOWN, SHOW"; SQL statement:
-SELET COUNT(*) FROM good WHERE Board=? [42001-200]
-2021-11-05 16:11:32 jdbc[13]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "BOARD[*]"; expected "BACKUP, BEGIN"; SQL statement:
-BOARD [42001-200]
-2021-11-05 16:23:41 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "no" not found [42122-200]
+2021-11-08 00:10:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "MEMBER.ID" not found; SQL statement:
+SELECT * FROM Board WHERE member.id LIKE '%' || ? || '%' AND CATEGORY=? AND STATE=1 ORDER BY NO DESC limit ? [42122-200]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:453)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
 	at org.h2.message.DbException.get(DbException.java:205)
 	at org.h2.message.DbException.get(DbException.java:181)
-	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3195)
-	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:3268)
-	at org.h2.jdbc.JdbcResultSet.getLong(JdbcResultSet.java:680)
-	at com.zaxxer.hikari.pool.HikariProxyResultSet.getLong(HikariProxyResultSet.java)
-	at org.hibernate.type.descriptor.sql.BigIntTypeDescriptor$2.doExtract(BigIntTypeDescriptor.java:63)
-	at org.hibernate.type.descriptor.sql.BasicExtractor.extract(BasicExtractor.java:47)
-	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:257)
-	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:253)
-	at org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:243)
-	at org.hibernate.type.AbstractStandardBasicType.hydrate(AbstractStandardBasicType.java:329)
-	at org.hibernate.loader.Loader.extractKeysFromResultSet(Loader.java:803)
-	at org.hibernate.loader.Loader.getRowFromResultSet(Loader.java:727)
-	at org.hibernate.loader.Loader.getRowsFromResultSet(Loader.java:1039)
-	at org.hibernate.loader.Loader.processResultSet(Loader.java:990)
-	at org.hibernate.loader.Loader.doQuery(Loader.java:959)
+	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:163)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:145)
+	at org.h2.expression.condition.CompareLike.optimize(CompareLike.java:102)
+	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:135)
+	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:135)
+	at org.h2.command.dml.Select.prepare(Select.java:1209)
+	at org.h2.command.Parser.prepareCommand(Parser.java:744)
+	at org.h2.engine.Session.prepareLocal(Session.java:657)
+	at org.h2.engine.Session.prepareCommand(Session.java:595)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1235)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:76)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:352)
+	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:337)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
+	at org.hibernate.engine.jdbc.internal.StatementPreparerImpl$5.doPrepare(StatementPreparerImpl.java:149)
+	at org.hibernate.engine.jdbc.internal.StatementPreparerImpl$StatementPreparationTemplate.prepareStatement(StatementPreparerImpl.java:176)
+	at org.hibernate.engine.jdbc.internal.StatementPreparerImpl.prepareQueryStatement(StatementPreparerImpl.java:151)
+	at org.hibernate.loader.Loader.prepareQueryStatement(Loader.java:2097)
+	at org.hibernate.loader.Loader.executeQueryStatement(Loader.java:2034)
+	at org.hibernate.loader.Loader.executeQueryStatement(Loader.java:2012)
+	at org.hibernate.loader.Loader.doQuery(Loader.java:948)
 	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:349)
 	at org.hibernate.loader.Loader.doList(Loader.java:2843)
 	at org.hibernate.loader.Loader.doList(Loader.java:2825)
@@ -106,8 +59,8 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "no" not found [42122-200]
 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
-	at com.sun.proxy.$Proxy977.queryselectgoodByMember(Unknown Source)
-	at com.example.controller.MypageController.mygoodboardGET(MypageController.java:236)
+	at com.sun.proxy.$Proxy111.querySelectAllByWriterOrderByDesc(Unknown Source)
+	at com.example.controller.BoardController.selectAll(BoardController.java:70)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -199,12 +152,3 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "no" not found [42122-200]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:829)
-2021-11-05 17:47:37 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "testreply"; SQL statement:
-alter table reply add constraint FK6dhfwb9fitbcxim739454t4m2 foreign key (reply) references board [22018-200]
-2021-11-05 17:48:18 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "testreply"; SQL statement:
-alter table reply add constraint FK6dhfwb9fitbcxim739454t4m2 foreign key (reply) references board [22018-200]
-2021-11-05 17:49:34 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "testreply"; SQL statement:
-alter table reply add constraint FK6dhfwb9fitbcxim739454t4m2 foreign key (reply) references board [22018-200]

@@ -1,10 +1,7 @@
 package com.example.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -50,14 +46,8 @@ public class Board {
     @Column(name = "CONTENT")
     private String content = null; // 내용
 
-    @Column(name = "WRITER")
-    private String writer = null; // 작성자
-
     @Column(name = "HIT")
     private int hit = 1; // 조회수
-
-    @Column(name = "COUNTREPLY")
-    private int countreply = 0;
 
     @CreationTimestamp // 날짜는 자동으로 추가
     @Column(updatable = false, name = "REGDATE")
@@ -66,12 +56,10 @@ public class Board {
     @Column(name = "STATE")
     private int state = 1;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "REPLY")
-    private List<Reply> reply = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MEMBER")
+    private Member member;
 
-    @OneToMany
-    @JoinColumn(name = "GOOD")
-    private List<Good> good = new ArrayList<>();
+
 
 }

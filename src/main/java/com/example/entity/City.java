@@ -35,9 +35,9 @@ public class City {
     @Column(name = "NAME")
     private String cName;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @Column(name = "TD")
-    private List<TravelDestination> td = new ArrayList<>();
+    // @OneToMany(cascade = CascadeType.PERSIST)
+    // @Column(name = "TD")
+    // private List<TravelDestination> td = new ArrayList<>();
 
     // @ManyToOne(fetch = FetchType.EAGER)
     // @JoinColumn(name = "Hotel")

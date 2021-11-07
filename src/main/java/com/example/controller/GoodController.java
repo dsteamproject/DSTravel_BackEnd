@@ -6,7 +6,6 @@ import java.util.Map;
 import com.example.entity.Board;
 import com.example.entity.Good;
 import com.example.entity.Member;
-import com.example.entity.MemberProjection;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/good")
-public class GoodApiController {
+public class GoodController {
 
     @Autowired
     JwtUtil jwtUtil;

@@ -59,42 +59,30 @@ public class BoardController {
             @RequestParam(name = "orderby", required = false, defaultValue = "latest") String orderby) {
         Map<String, Object> map = new HashMap<>();
         try {
-
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            // System.out.println(type);
-            // List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(type,
-            // keyword, category, pageRequest);
-            // map.put("list", list);
             if (orderby.equals("latest") && type.equals("title")) {
-                List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
-
-                for (Board board : list) {
-                    System.out.println(board.getNo() + "," + goodRepository.countByBoard_no(board.getNo()));
-                }
-
-                map.put("list", list);
-                int cnt = bRepository.queryCountByTitle(keyword, category);
-                map.put("cnt", (cnt - 1) / size + 1);
+                // List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+                // map.put("list", list);
+                // int cnt = bRepository.queryCountByTitle(keyword, category);
+                // map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("latest") && type.equals("writer")) {
-                List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
-                map.put("list", list);
-                int cnt = bRepository.queryCountByWriter(keyword, category);
-                map.put("cnt", (cnt - 1) / size + 1);
+                // List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+                // map.put("list", list);
+                // int cnt = bRepository.queryCountByWriter(keyword, category);
+                // map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("title")) {
-                List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
-                map.put("list", list);
-                int cnt = bRepository.queryCountByTitle(keyword, category);
-                map.put("cnt", (cnt - 1) / size + 1);
+                // List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
+                // map.put("list", list);
+                // int cnt = bRepository.queryCountByTitle(keyword, category);
+                // map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("writer")) {
-                List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
-                map.put("list", list);
-                int cnt = bRepository.queryCountByWriter(keyword, category);
-                map.put("cnt", (cnt - 1) / size + 1);
+                // List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
+                // map.put("list", list);
+                // int cnt = bRepository.queryCountByWriter(keyword, category);
+                // map.put("cnt", (cnt - 1) / size + 1);
             }
             map.put("status", 200);
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
         }
@@ -110,7 +98,7 @@ public class BoardController {
             Member member = mRepository.getById(id);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                board.setWriter(id);
+                board.setMember(member);
                 bRepository.save(board);
                 map.put("status", 200);
             } else {
@@ -126,7 +114,8 @@ public class BoardController {
     // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
+    public Map<String, Object> selectOne(
+        @RequestHeader(required = false, name = "TOKEN") String token,
             @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
@@ -139,8 +128,8 @@ public class BoardController {
                 if (token != null) {
                     map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
                 }
-                goodRepository.queryCountByBoard(board);
-                map.put("good", goodRepository);
+                int CntGood = goodRepository.queryCountByBoard(board);
+                map.put("CntGood", CntGood);
                 map.put("reply", replylist);
                 map.put("board", board);
                 Board prev = bRepository.queryByCategoryTop1OrderByNoDesc(category, no);
@@ -157,9 +146,7 @@ public class BoardController {
                 }
                 map.put("status", 200);
             }
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
         }
@@ -285,18 +272,14 @@ public class BoardController {
             if (token != null) {
                 String id = jwtUtil.extractUsername(token.substring(6));
                 Member member = mRepository.getById(id);
+                // map.put("a", reply);
                 if (member != null && member.getToken().equals(token.substring(6))
                         && !jwtUtil.isTokenExpired(token.substring(6))) {
                     Reply newReply = new Reply();
                     newReply.setBoard(bRepository.querySelectById(no));
-                    newReply.setReply(reply.getReply());
-                    newReply.setWriter(id);
+                    newReply.setReplycontent(reply.getReplycontent());
+                    newReply.setMember(member);
                     reRepository.save(newReply);
-
-                    int countreply = reRepository.queryCountSelectReply(no);
-                    Board board = bRepository.querySelectById(no);
-                    board.setCountreply(countreply);
-                    bRepository.save(board);
                     map.put("status", 200);
                 } else {
                     map.put("status", 578);
@@ -324,11 +307,6 @@ public class BoardController {
                     map.put("status", 300);
                 } else {
                     reRepository.queryReplyDelete(no);
-
-                    int countreply = reRepository.queryCountSelectReply(no);
-                    Board board1 = bRepository.querySelectById(board.getNo());
-                    board1.setCountreply(countreply);
-                    bRepository.save(board1);
                     map.put("status", 200);
                 }
             }
@@ -349,7 +327,7 @@ public class BoardController {
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Reply reply1 = reRepository.querySelectReply(reply.getNo());
-                reply1.setReply(reply.getReply());
+                reply1.setReplycontent(reply.getReplycontent());
                 reRepository.save(reply1);
                 map.put("status", 200);
             }
