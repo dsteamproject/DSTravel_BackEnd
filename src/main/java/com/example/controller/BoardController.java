@@ -61,25 +61,25 @@ public class BoardController {
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
             if (orderby.equals("latest") && type.equals("title")) {
-                // List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
-                // map.put("list", list);
-                // int cnt = bRepository.queryCountByTitle(keyword, category);
-                // map.put("cnt", (cnt - 1) / size + 1);
+                List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+                map.put("list", list);
+                int cnt = bRepository.queryCountByTitle(keyword, category);
+                map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("latest") && type.equals("writer")) {
-                // List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
-                // map.put("list", list);
-                // int cnt = bRepository.queryCountByWriter(keyword, category);
-                // map.put("cnt", (cnt - 1) / size + 1);
+                List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+                map.put("list", list);
+                int cnt = bRepository.queryCountByWriter(keyword, category);
+                map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("title")) {
-                // List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
-                // map.put("list", list);
-                // int cnt = bRepository.queryCountByTitle(keyword, category);
-                // map.put("cnt", (cnt - 1) / size + 1);
+                List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
+                map.put("list", list);
+                int cnt = bRepository.queryCountByTitle(keyword, category);
+                map.put("cnt", (cnt - 1) / size + 1);
             } else if (orderby.equals("old") && type.equals("writer")) {
-                // List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
-                // map.put("list", list);
-                // int cnt = bRepository.queryCountByWriter(keyword, category);
-                // map.put("cnt", (cnt - 1) / size + 1);
+                List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
+                map.put("list", list);
+                int cnt = bRepository.queryCountByWriter(keyword, category);
+                map.put("cnt", (cnt - 1) / size + 1);
             }
             map.put("status", 200);
         } catch (Exception e) {
@@ -114,8 +114,7 @@ public class BoardController {
     // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
     // 상세페이지
     @GetMapping(value = "/selectone", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOne(
-        @RequestHeader(required = false, name = "TOKEN") String token,
+    public Map<String, Object> selectOne(@RequestHeader(required = false, name = "TOKEN") String token,
             @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "no", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();

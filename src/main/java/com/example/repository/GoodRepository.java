@@ -6,7 +6,6 @@ import javax.transaction.Transactional;
 
 import com.example.entity.Board;
 import com.example.entity.Good;
-import com.example.entity.GoodProjection;
 import com.example.entity.Member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,7 +28,7 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
     @Query(value = "SELECT COUNT(*) FROM good WHERE Board=:board", nativeQuery = true)
     public int queryCountByBoard(@Param("board") Board board);
 
-    public List<GoodProjection> findAllByMember(Member member);
+    public List<Good> findAllByMember(Member member);
 
     public List<Good> findAllByBoard(Board board);
 

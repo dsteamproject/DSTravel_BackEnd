@@ -60,6 +60,4 @@ public class Board {
     @JoinColumn(name = "MEMBER")
     private Member member;
 
-
-
 }

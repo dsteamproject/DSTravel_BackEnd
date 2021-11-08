@@ -10,7 +10,9 @@ import com.example.repository.HotelRepository;
 import com.example.repository.TravelDestinationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,9 @@ public class TravelController {
 
     @Autowired
     HotelRepository hRepository;
+
+    @Value("${openapi.url}")
+    private String openapiurl;
 
     // 미구현 장소 추가 기능
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

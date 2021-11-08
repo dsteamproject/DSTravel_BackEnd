@@ -60,6 +60,7 @@ public class Member {
     private int state = 1;
 
     @Column(name = "TOKEN")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String token;
 
     // "yyyy-MM-dd HH:mm:ss"
@@ -67,9 +68,5 @@ public class Member {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "REGDATE", updatable = false)
     private Date regdate;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MIMG")
-    private MemberImg memberimg;
 
 }

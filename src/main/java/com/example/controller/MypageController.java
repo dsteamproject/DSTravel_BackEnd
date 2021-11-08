@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.example.entity.Board;
 import com.example.entity.Good;
-import com.example.entity.GoodProjection;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
 import com.example.entity.MemberProjection;
@@ -208,11 +207,12 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.getById(id);
-            if (member1 != null && member1.getToken().equals(token.substring(6))
+            Member member = mRepository.findById(id).get();
+            System.out.println(member);
+            if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                // List<Board> myboardlist = bRepository.querySelectByWriter(member1.getId());
-                // map.put("myboardlist", myboardlist);
+                List<Board> list = bRepository.findAllByMember(member);
+                map.put("list", list);
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
@@ -229,11 +229,11 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.getById(id);
+            Member member1 = mRepository.findById(id).get();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
 
-                List<GoodProjection> list = goodRepository.findAllByMember(member1);
+                List<Good> list = goodRepository.findAllByMember(member1);
 
                 map.put("board", list);
                 map.put("status", 200);
@@ -247,6 +247,28 @@ public class MypageController {
         }
         return map;
 
+    }
+
+    // 회원탈퇴
+    @PutMapping(value = "/memberdelete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> memberdelete(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).get();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                member.setState(0);
+                mRepository.save(member);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
     }
 
 }

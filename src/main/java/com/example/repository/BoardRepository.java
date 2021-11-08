@@ -20,7 +20,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Query(value = "SELECT COUNT(*) FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
         public int queryCountByTitle(@Param("Keyword") String keyword, @Param("a") String category1);
 
-        @Query(value = "SELECT COUNT(*) FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
+        @Query(value = "SELECT COUNT(*) FROM Board WHERE board.member LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
         public int queryCountByWriter(@Param("Keyword") String keyword, @Param("a") String category1);
 
         @Query(value = "SELECT * FROM Board WHERE CATEGORY=:a AND NO<:b AND STATE=1 ORDER BY NO DESC LIMIT 1;", nativeQuery = true)
@@ -37,24 +37,22 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=1;", nativeQuery = true)
         public Board querySelectById(@Param("b") long no);
 
-        // @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
-        // public List<Board> querySelectAllByTitleOrderByDesc(
-        //                 @Param("Keyword") String keyword, @Param("a") String category1,
-        //                 Pageable pageable);
-
-        @Query(value = "SELECT * FROM Board WHERE MEMBER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
-        public List<Board> querySelectAllByWriterOrderByDesc(@Param("Keyword") Member member,
+        @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
+        public List<Board> querySelectAllByTitleOrderByDesc(@Param("Keyword") String keyword,
                         @Param("a") String category1, Pageable pageable);
 
-        // @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
-        // public List<Board> querySelectAllByTitleOrderByAsc(@Param("Keyword") String keyword,
-        //                 @Param("a") String category1, Pageable pageable);
+        @Query(value = "SELECT * FROM Board WHERE board.member LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
+        public List<Board> querySelectAllByWriterOrderByDesc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
 
-        // @Query(value = "SELECT * FROM Board WHERE WRITER LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
-        // public List<Board> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
-        //                 @Param("a") String category1, Pageable pageable);
+        @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
+        public List<Board> querySelectAllByTitleOrderByAsc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
 
-        // @Query(value = "SELECT * FROM Board WHERE WRITER=:writer ORDER BY NO DESC", nativeQuery = true)
-        // public List<Board> querySelectByWriter(@Param("writer") String writer);
+        @Query(value = "SELECT * FROM Board WHERE board.member LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO ASC", nativeQuery = true)
+        public List<Board> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
+                        @Param("a") String category1, Pageable pageable);
+
+        public List<Board> findAllByMember(Member member);
 
 }
