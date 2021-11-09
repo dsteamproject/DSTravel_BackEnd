@@ -48,7 +48,8 @@ public class BoardController {
     @Autowired
     GoodRepository goodRepository;
 
-    // 게시판 목록
+    // 게시판 목록 {no, title, category, content, hit, good(int), reply(int), regdate,
+    // state, member}
     @GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectAll(
             @RequestParam(name = "category", required = false, defaultValue = "review") String category,
@@ -279,6 +280,11 @@ public class BoardController {
                     newReply.setReplycontent(reply.getReplycontent());
                     newReply.setMember(member);
                     reRepository.save(newReply);
+
+                    Board board = bRepository.querySelectById(no);
+                    board.setReply(reRepository.queryCountSelectReply(no));
+                    bRepository.save(board);
+
                     map.put("status", 200);
                 } else {
                     map.put("status", 578);
@@ -306,6 +312,11 @@ public class BoardController {
                     map.put("status", 300);
                 } else {
                     reRepository.queryReplyDelete(no);
+                    int countreply = reRepository.queryCountSelectReply(board.getNo());
+                    System.out.println(countreply);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setReply(countreply);
+                    bRepository.save(board1);
                     map.put("status", 200);
                 }
             }

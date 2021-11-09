@@ -1,8 +1,5 @@
 package com.example.bhk_travel;
 
-import java.net.URL;
-import java.net.URLEncoder;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

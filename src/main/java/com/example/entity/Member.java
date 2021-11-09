@@ -47,7 +47,7 @@ public class Member {
     @Column(name = "NICNAME")
     private String nicname;
 
-    @Column(name = "EMAIL", nullable = false, unique = true)
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
     @Column(name = "GENDER")

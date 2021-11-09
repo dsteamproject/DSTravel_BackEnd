@@ -22,6 +22,20 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
+		</dependency>
+
+
+		<!--OkHttp-->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+
 		<!-- war 배포용 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

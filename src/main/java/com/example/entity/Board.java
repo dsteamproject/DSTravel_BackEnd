@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -48,6 +49,12 @@ public class Board {
 
     @Column(name = "HIT")
     private int hit = 1; // 조회수
+
+    @Column(name = "GOOD")
+    private int good = 0; // 좋아요수
+
+    @Column(name = "reply")
+    private int reply = 0; // 리플수
 
     @CreationTimestamp // 날짜는 자동으로 추가
     @Column(updatable = false, name = "REGDATE")

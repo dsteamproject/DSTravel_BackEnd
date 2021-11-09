@@ -33,4 +33,7 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
     public List<Good> findAllByBoard(Board board);
 
     public int countByBoard_no(long no);
+
+    @Query(value = "SELECT COUNT(*), good.board FROM good GROUP BY board", nativeQuery = true)
+    public List<Good> queryCountAllByBoard();
 }

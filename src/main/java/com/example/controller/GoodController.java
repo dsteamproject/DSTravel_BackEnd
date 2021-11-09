@@ -49,12 +49,18 @@ public class GoodController {
                     good.setBoard(board);
                     good.setMember(member);
                     goodRepository.save(good);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setGood(goodRepository.countByBoard_no(board.getNo()));
+                    bRepository.save(board1);
 
                 } else {
                     Good good1 = goodRepository.queryselectgood(board, member);
                     good1.setBoard(null);
                     good1.setMember(null);
                     goodRepository.delete(good1);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setGood(goodRepository.countByBoard_no(board.getNo()));
+                    bRepository.save(board1);
                 }
                 int goodCnt = goodRepository.queryCountByBoard(board);
                 map.put("status", 200);
