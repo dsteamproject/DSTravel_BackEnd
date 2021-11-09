@@ -9,11 +9,6 @@ import com.example.entity.Hotel;
 import com.example.entity.TravelDestination;
 import com.example.repository.HotelRepository;
 import com.example.repository.TravelDestinationRepository;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.function.ServerResponse.SseBuilder;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -46,6 +40,7 @@ public class TravelController {
     private String tourApiKey;
 
     // 지역코드조회
+    // 서울 1, 부산 6
     @GetMapping(value = "/tourapi/city")
     public Map<String, Object> gettourapicity(@RequestParam(name = "cnt", defaultValue = "1") String cnt,
             @RequestParam("page") String page, @RequestParam(name = "areacode", defaultValue = "") String areacode) {
@@ -94,10 +89,12 @@ public class TravelController {
     }
 
     // tourapi [국문]
+    // page , cnt = 검색수 , arrange = P (조회수순), O(제목순), contentTypeId= 폴더안에 엑셀파일 참조,
+    // areacode= 서울1,부산6...
     @GetMapping(value = "/tourapi/select")
-    public Map<String, Object> gettourapi(@RequestParam("page") String page, @RequestParam("cnt") String cnt,
-            @RequestParam("arrange") String arrange, @RequestParam("contentTypeId") String contentTypeId,
-            @RequestParam("areaCode") String areaCode) {
+    public Map<String, Object> gettourapiselect(@RequestParam(name = "page", defaultValue = "1") String page,
+            @RequestParam("cnt") String cnt, @RequestParam("arrange") String arrange,
+            @RequestParam("contentTypeId") String contentTypeId, @RequestParam("areaCode") String areaCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?serviceKey="
@@ -136,6 +133,60 @@ public class TravelController {
                     }
                     // System.out.println(list1);
                     map.put("list", list1);
+                }
+            } else
+                System.err.println("Error Occurred");
+
+            map.put("status", 200);
+            // System.out.println(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
+    }
+
+    // tourapi 상세페이지
+    // contentId
+    @GetMapping(value = "/tourapi/selectone")
+    public Map<String, Object> gettourapiselectone(@RequestParam("contentId") String contentId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+
+            String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?serviceKey="
+                    + tourApiKey + "&MobileOS=ETC&MobileApp=AppTest&contentId=" + contentId
+                    + "&defaultYN=Y&firstImageYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&_type=json";
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request.Builder builder = new Request.Builder().url(url).get();
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                ResponseBody body = response.body();
+
+                if (body != null) {
+                    String bodyString = body.string();
+                    // System.out.println("Response :" + bodyString);
+                    JSONObject jsonObject = new JSONObject(bodyString);
+
+                    JSONObject j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
+                            .getJSONObject("item");
+
+                    // System.out.println(j1);
+
+                    Map<String, Object> a = new HashMap<>();
+                    a.put("title", j1.getString("title"));
+                    a.put("addr", j1.getString("addr1"));
+                    a.put("firstimage", j1.getString("firstimage"));
+                    a.put("firstimage2", j1.getString("firstimage2"));
+                    a.put("overview", j1.getString("overview"));
+                    a.put("mapx", j1.getFloat("mapx"));
+                    a.put("mapy", j1.getFloat("mapy"));
+
+                    map.put("list", a);
                 }
             } else
                 System.err.println("Error Occurred");
