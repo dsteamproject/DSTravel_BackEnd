@@ -70,8 +70,10 @@ public class TravelController {
                     List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
                     for (int i = 0; i < j1.length(); i++) {
                         Map<String, Object> a = new HashMap<>();
-                        a.put("code", j1.getJSONObject(i).getInt("code"));
-                        a.put("name", j1.getJSONObject(i).getString("name"));
+                        if (!j1.getJSONObject(i).isNull("code"))
+                            a.put("code", j1.getJSONObject(i).getInt("code"));
+                        if (!j1.getJSONObject(i).isNull("name"))
+                            a.put("name", j1.getJSONObject(i).getString("name"));
                         list1.add(a);
 
                     }
@@ -94,7 +96,8 @@ public class TravelController {
     @GetMapping(value = "/tourapi/select")
     public Map<String, Object> gettourapiselect(@RequestParam(name = "page", defaultValue = "1") String page,
             @RequestParam("cnt") String cnt, @RequestParam("arrange") String arrange,
-            @RequestParam("contentTypeId") String contentTypeId, @RequestParam("areaCode") String areaCode) {
+            @RequestParam(name = "contentTypeId", defaultValue = "") String contentTypeId,
+            @RequestParam("areaCode") String areaCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?serviceKey="
@@ -117,22 +120,33 @@ public class TravelController {
 
                     JSONArray j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
                             .getJSONArray("item");
+
+                    Integer totalCount = jsonObject.getJSONObject("response").getJSONObject("body")
+                            .getInt("totalCount");
                     // System.out.println(j1.getJSONObject(1));
                     List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
                     for (int i = 0; i < j1.length(); i++) {
                         Map<String, Object> a = new HashMap<>();
-                        a.put("title", j1.getJSONObject(i).getString("title"));
-                        a.put("addr", j1.getJSONObject(i).getString("addr1"));
-                        a.put("areacode", j1.getJSONObject(i).getInt("areacode"));
-                        a.put("contentid", j1.getJSONObject(i).getInt("contentid"));
-                        a.put("firstimage", j1.getJSONObject(i).getString("firstimage"));
-                        a.put("mapx", j1.getJSONObject(i).getFloat("mapx"));
-                        a.put("mapy", j1.getJSONObject(i).getFloat("mapy"));
+                        if (!j1.getJSONObject(i).isNull("mapx") && !j1.getJSONObject(i).isNull("mapy")) {
+                            if (!j1.getJSONObject(i).isNull("title"))
+                                a.put("title", j1.getJSONObject(i).getString("title"));
+                            if (!j1.getJSONObject(i).isNull("addr1"))
+                                a.put("addr", j1.getJSONObject(i).getString("addr1"));
+                            if (!j1.getJSONObject(i).isNull("areacode"))
+                                a.put("areacode", j1.getJSONObject(i).getInt("areacode"));
+                            if (!j1.getJSONObject(i).isNull("contentid"))
+                                a.put("contentid", j1.getJSONObject(i).getInt("contentid"));
+                            if (!j1.getJSONObject(i).isNull("firstimage"))
+                                a.put("firstimage", j1.getJSONObject(i).getString("firstimage"));
+                            a.put("mapx", j1.getJSONObject(i).getFloat("mapx"));
+                            a.put("mapy", j1.getJSONObject(i).getFloat("mapy"));
+                        }
                         list1.add(a);
 
                     }
                     // System.out.println(list1);
                     map.put("list", list1);
+                    map.put("areatotal", totalCount);
                 }
             } else
                 System.err.println("Error Occurred");
@@ -175,17 +189,22 @@ public class TravelController {
                     JSONObject j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
                             .getJSONObject("item");
 
-                    // System.out.println(j1);
-
+                    // System.out.println(j1.isNull("mayp"));
                     Map<String, Object> a = new HashMap<>();
-                    a.put("title", j1.getString("title"));
-                    a.put("addr", j1.getString("addr1"));
-                    a.put("firstimage", j1.getString("firstimage"));
-                    a.put("firstimage2", j1.getString("firstimage2"));
-                    a.put("overview", j1.getString("overview"));
-                    a.put("mapx", j1.getFloat("mapx"));
-                    a.put("mapy", j1.getFloat("mapy"));
-
+                    if (!j1.isNull("mapx") && !j1.isNull("mapy")) {
+                        if (!j1.isNull("title"))
+                            a.put("title", j1.getString("title"));
+                        if (!j1.isNull("addr1"))
+                            a.put("addr", j1.getString("addr1"));
+                        if (!j1.isNull("firstimage"))
+                            a.put("firstimage", j1.getString("firstimage"));
+                        if (!j1.isNull("firstimage2"))
+                            a.put("firstimage2", j1.getString("firstimage2"));
+                        if (!j1.isNull("overview"))
+                            a.put("overview", j1.getString("overview"));
+                        a.put("mapx", j1.getFloat("mapx"));
+                        a.put("mapy", j1.getFloat("mapy"));
+                    }
                     map.put("list", a);
                 }
             } else
@@ -199,6 +218,111 @@ public class TravelController {
         }
         return map;
 
+    }
+
+    @GetMapping(value = "/distance")
+    public Map<String, Object> locationDistance(@RequestParam("areaCode") String areaCode,
+            @RequestParam("totalCount") String totalCount, @RequestParam("xmap") Float xmap,
+            @RequestParam("ymap") Float ymap, @RequestParam("contentTypeId") String contentTypeId,
+            @RequestParam(name = "kilometer", defaultValue = "15") double kilometer) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?serviceKey="
+                    + tourApiKey + "&numOfRows=" + totalCount + "&contentTypeId" + contentTypeId
+                    + "&MobileApp=AppTest&MobileOS=ETC&arrange=P&areaCode=" + areaCode + "&listYN=Y&_type=json";
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request.Builder builder = new Request.Builder().url(url).get();
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                ResponseBody body = response.body();
+
+                if (body != null) {
+                    String bodyString = body.string();
+                    // System.out.println("Response :" + bodyString);
+                    JSONObject jsonObject = new JSONObject(bodyString);
+
+                    JSONArray j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
+                            .getJSONArray("item");
+                    System.out.println(j1.getJSONObject(1).getString("addr1"));
+                    List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
+                    for (int i = 0; i < j1.length(); i++) {
+                        Map<String, Object> a = new HashMap<>();
+                        if (!j1.getJSONObject(i).isNull("mapx") && !j1.getJSONObject(i).isNull("mapy")) {
+                            if (distance(ymap, xmap, j1.getJSONObject(i).getFloat("mapy"),
+                                    j1.getJSONObject(i).getFloat("mapx"), "kilometer") < kilometer) {
+                                if (!j1.getJSONObject(i).isNull("title"))
+                                    a.put("title", j1.getJSONObject(i).getString("title"));
+                                if (!j1.getJSONObject(i).isNull("addr1"))
+                                    a.put("addr", j1.getJSONObject(i).getString("addr1"));
+                                if (!j1.getJSONObject(i).isNull("areacode"))
+                                    a.put("areacode", j1.getJSONObject(i).getInt("areacode"));
+                                if (!j1.getJSONObject(i).isNull("contentid"))
+                                    a.put("contentid", j1.getJSONObject(i).getInt("contentid"));
+                                if (!j1.getJSONObject(i).isNull("firstimage"))
+                                    a.put("firstimage", j1.getJSONObject(i).getString("firstimage"));
+                                a.put("mapx", j1.getJSONObject(i).getFloat("mapx"));
+                                a.put("mapy", j1.getJSONObject(i).getFloat("mapy"));
+                                a.put("distanceKiloMeter", distance(ymap, xmap, j1.getJSONObject(i).getFloat("mapy"),
+                                        j1.getJSONObject(i).getFloat("mapx"), "kilometer"));
+                                list1.add(a);
+                            }
+                        }
+                    }
+                    System.out.println(list1.size());
+                    // System.out.println(list1);
+                    System.out.println(distance(ymap, xmap, j1.getJSONObject(1).getFloat("mapy"),
+                            j1.getJSONObject(1).getFloat("mapx"), "kilometer"));
+                    map.put("list", list1);
+                }
+            } else
+                System.err.println("Error Occurred");
+
+            map.put("status", 200);
+            // System.out.println(map);
+        } catch (
+
+        Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
+    }
+
+    // lat1 지점 1 위도
+    // lon1 지점 1 경도
+    // lat2 지점 2 위도
+    // lon2 지점 2 경도
+    // unit 거리 표출단위
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if (unit == "meter") {
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
     // 미구현 장소 추가 기능
