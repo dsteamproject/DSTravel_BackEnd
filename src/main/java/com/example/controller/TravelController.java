@@ -222,13 +222,14 @@ public class TravelController {
 
     @GetMapping(value = "/distance")
     public Map<String, Object> locationDistance(@RequestParam("areaCode") String areaCode,
-            @RequestParam("totalCount") String totalCount, @RequestParam("xmap") Float xmap,
-            @RequestParam("ymap") Float ymap, @RequestParam("contentTypeId") String contentTypeId,
+            @RequestParam("totalCount") String Cnt, @RequestParam("xmap") Float xmap,
+            @RequestParam("pageNo") String pageNo, @RequestParam("ymap") Float ymap,
+            @RequestParam("contentTypeId") String contentTypeId,
             @RequestParam(name = "kilometer", defaultValue = "15") double kilometer) {
         Map<String, Object> map = new HashMap<>();
         try {
             String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?serviceKey="
-                    + tourApiKey + "&numOfRows=" + totalCount + "&contentTypeId" + contentTypeId
+                    + tourApiKey + "&pageNo=" + pageNo + "&numOfRows=" + Cnt + "&contentTypeId=" + contentTypeId
                     + "&MobileApp=AppTest&MobileOS=ETC&arrange=P&areaCode=" + areaCode + "&listYN=Y&_type=json";
 
             OkHttpClient client = new OkHttpClient();
