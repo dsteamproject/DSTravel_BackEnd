@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
+// import com.example.listener.HttpSessionCheckingListener;
 import com.example.repository.TravelDestinationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,12 @@ public class HomeController {
     @Autowired
     TravelDestinationRepository tdRepository;
 
+    // @Autowired
+    // HttpSessionCheckingListener listener;
+
     @GetMapping(value = "/home")
     public Map<String, Object> homeGET(HttpServletRequest request, HttpServletResponse response) {
+
         Map<String, Object> map = new HashMap<>();
         HttpSession session = request.getSession(false);
         if (session == null) {
