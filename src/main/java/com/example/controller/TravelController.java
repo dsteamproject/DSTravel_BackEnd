@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.entity.City;
+import com.example.entity.Sigungu;
 import com.example.repository.CityRepository;
+import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,17 +37,18 @@ public class TravelController {
     @Autowired
     CityRepository cityRepository;
 
-    // 지역코드조회
-    // 서울 1, 부산 6
-    @GetMapping(value = "/tourapi/city")
-    public Map<String, Object> gettourapicity(@RequestParam(name = "cnt", defaultValue = "1") String cnt,
-            @RequestParam("page") String page, @RequestParam(name = "areacode", defaultValue = "") String areacode) {
+    @Autowired
+    SigunguRepository sigunguRepository;
+
+    // 전체지역코드조회 [DB저장]
+    @GetMapping(value = "/tourapi/DB/city")
+    public Map<String, Object> gettourapicityDB(@RequestParam(name = "cnt", defaultValue = "40") String cnt,
+            @RequestParam(name = "areacode", defaultValue = "") String areacode) {
         Map<String, Object> map = new HashMap<>();
         try {
 
             String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaCode?serviceKey=" + tourApiKey
-                    + "&numOfRows=" + cnt + "&pageNo=" + page + "&MobileOS=ETC&MobileApp=AppTest&areaCode=" + areacode
-                    + "&_type=json";
+                    + "&numOfRows=" + cnt + "&MobileOS=ETC&MobileApp=AppTest&areaCode=" + areacode + "&_type=json";
 
             OkHttpClient client = new OkHttpClient();
 
@@ -56,34 +59,95 @@ public class TravelController {
             if (response.isSuccessful()) {
                 ResponseBody body = response.body();
 
+                // System.out.println(areacode + 1);
+
                 if (body != null) {
                     String bodyString = body.string();
                     // System.out.println("Response :" + bodyString);
                     JSONObject jsonObject = new JSONObject(bodyString);
+
+                    System.out
+                            .println(jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items"));
                     JSONArray j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
                             .getJSONArray("item");
 
-                    if (areacode != null) {
-                        List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
+                    // System.out.println(sigungu.toString());
+                    // System.out.println(areacode);
+                    if (areacode.equals("")) {
+
+                        // List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
+                        // Map<String, Object> a = new HashMap<>();
                         for (int i = 0; i < j1.length(); i++) {
-                            Map<String, Object> a = new HashMap<>();
-                            if (!j1.getJSONObject(i).isNull("code"))
-                                a.put("code", j1.getJSONObject(i).getInt("code"));
-                            if (!j1.getJSONObject(i).isNull("name"))
-                                a.put("name", j1.getJSONObject(i).getString("name"));
-
-                            // City city = new City();
-
-                            // if(!cityRepository.findById(j1.getJSONObject(i).getInt("code")).isPresent()){
-                            // cityRepository.save(entity)
-                            // }
+                            City city = new City();
+                            if (!j1.getJSONObject(i).isNull("code")) {
+                                // a.put("code", j1.getJSONObject(i).getInt("code"));
+                                city.setCode(j1.getJSONObject(i).getInt("code"));
+                            }
+                            if (!j1.getJSONObject(i).isNull("name")) {
+                                // a.put("name", j1.getJSONObject(i).getString("name"));
+                                city.setName(j1.getJSONObject(i).getString("name"));
+                            }
+                            // if (a.size() != 0)
+                            // list1.add(a);
+                            if (!cityRepository.findById(j1.getJSONObject(i).getInt("code")).isPresent()) {
+                                cityRepository.save(city);
+                                // map.put("result", "DB에 저장 성공");
+                                System.out.println("DB에 저장됨");
+                            } else {
+                                // map.put("result", "중복된 데이터");
+                                System.out.println("DB에 존재하는 데이터");
+                            }
+                        }
+                        // map.put("list", list1);
+                    } else {
+                        for (int i = 0; i < j1.length(); i++) {
+                            Sigungu sigungu = new Sigungu();
+                            sigungu.setCity(cityRepository.findById(Integer.parseInt(areacode)).orElseThrow());
+                            if (!j1.getJSONObject(i).isNull("code")) {
+                                // a.put("code", j1.getJSONObject(i).getInt("code"));
+                                sigungu.setCode(j1.getJSONObject(i).getInt("code"));
+                            }
+                            if (!j1.getJSONObject(i).isNull("name")) {
+                                // a.put("name", j1.getJSONObject(i).getString("name"));
+                                sigungu.setName(j1.getJSONObject(i).getString("name"));
+                            }
+                            // if (a.size() != 0)
+                            // list1.add(a);
+                            if (!sigunguRepository
+                                    .queryfindByCode(j1.getJSONObject(i).getInt("code"),
+                                            cityRepository.findById(Integer.parseInt(areacode)).orElseThrow())
+                                    .isPresent()) {
+                                System.err.println(sigungu.toString());
+                                sigunguRepository.save(sigungu);
+                                // map.put("result", "DB에 저장 성공");
+                                System.out.println("DB에 저장됨");
+                            } else {
+                                // map.put("result", "중복된 데이터");
+                                System.out.println("DB에 존재하는 데이터");
+                            }
                         }
                     }
 
-                    // map.put("list", list1);
                 }
-            } else
+            } else {
                 System.err.println("Error Occurred");
+            }
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
+    }
+
+    @GetMapping(value = "/tourapi/city")
+    public Map<String, Object> gettourapicity(@RequestParam(name = "cnt", defaultValue = "1") String cnt,
+            @RequestParam("page") String page, @RequestParam(name = "areacode", defaultValue = "") String areacode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<City> list = cityRepository.findAll();
+            map.put("Citylist", list);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
