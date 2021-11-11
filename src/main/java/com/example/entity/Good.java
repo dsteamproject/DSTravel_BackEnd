@@ -38,4 +38,8 @@ public class Good {
     @JoinColumn(name = "MEMBER")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TD")
+    private TD td;
+
 }

@@ -132,7 +132,6 @@ public class MemberController {
         } catch (Exception e) {
             map.put("status", e.hashCode());
             e.printStackTrace();
-            // map.put("error", e);
         }
         return map;
     }
@@ -142,9 +141,11 @@ public class MemberController {
             @RequestHeader("TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (jwtUtil.validateToken(token.substring(6), jwtUtil.extractUsername(token.substring(6)))) {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (menu == 1) {
-                    Member member = mRepository.findById(jwtUtil.extractUsername(token.substring(6))).orElseThrow();
                     map.put("member", member);
                     map.put("status", 200);
                 }

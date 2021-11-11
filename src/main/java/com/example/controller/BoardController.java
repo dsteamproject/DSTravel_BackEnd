@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Reply;
 import com.example.jwt.JwtUtil;
@@ -96,7 +97,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 board.setMember(member);
@@ -159,7 +160,9 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            if (mRepository.findById(id).isPresent() && !jwtUtil.isTokenExpired(token.substring(6))) {
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Board board = bRepository.querySelectById(no);
                 map.put("board", board);
                 map.put("status", 200);
@@ -179,7 +182,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Board board1 = bRepository.querySelectById(board.getNo());
@@ -204,7 +207,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
@@ -271,7 +274,7 @@ public class BoardController {
         try {
             if (token != null) {
                 String id = jwtUtil.extractUsername(token.substring(6));
-                Member member = mRepository.getById(id);
+                Member member = mRepository.findById(id).orElseThrow();
                 // map.put("a", reply);
                 if (member != null && member.getToken().equals(token.substring(6))
                         && !jwtUtil.isTokenExpired(token.substring(6))) {
@@ -305,7 +308,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 if (no == 0) {
@@ -333,7 +336,7 @@ public class BoardController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Reply reply1 = reRepository.querySelectReply(reply.getNo());
@@ -341,6 +344,50 @@ public class BoardController {
                 reRepository.save(reply1);
                 map.put("status", 200);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 좋아요 기능
+    // Header : token 필요
+    // Body : 게시판 번호 필요
+    // return : 같은아이디로 1번누르면 좋아요1증가 2번누르면 좋아요1감소
+    @PostMapping(value = "/good", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> addgood(@RequestHeader("TOKEN") String token, @RequestBody Board board) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Good good = new Good();
+                if (goodRepository.queryselectgood(board, member) == null) {
+                    good.setBoard(board);
+                    good.setMember(member);
+                    goodRepository.save(good);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setGood(goodRepository.countByBoard_no(board.getNo()));
+                    bRepository.save(board1);
+
+                } else {
+                    Good good1 = goodRepository.queryselectgood(board, member);
+                    good1.setBoard(null);
+                    good1.setMember(null);
+                    goodRepository.delete(good1);
+                    Board board1 = bRepository.querySelectById(board.getNo());
+                    board1.setGood(goodRepository.countByBoard_no(board.getNo()));
+                    bRepository.save(board1);
+                }
+                int goodCnt = goodRepository.queryCountByBoard(board);
+                map.put("status", 200);
+                map.put("good", goodCnt);
+            } else {
+                map.put("status", 578);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

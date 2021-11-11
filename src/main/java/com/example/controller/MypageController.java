@@ -98,7 +98,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 MemberImg memberimg = new MemberImg();
@@ -131,7 +131,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.getById(id);
+            Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 map.put("member", mRepository.querySelectmemberprojection(id));
@@ -152,7 +152,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.getById(id);
+            Member member1 = mRepository.findById(id).orElseThrow();
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
@@ -180,7 +180,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.getById(id);
+            Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 member1.setName(member.getName());
@@ -205,7 +205,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.findById(id).get();
+            Member member = mRepository.findById(id).orElseThrow();
             System.out.println(member);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
@@ -227,7 +227,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member1 = mRepository.findById(id).get();
+            Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
 
@@ -253,7 +253,7 @@ public class MypageController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.findById(id).get();
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 member.setState(0);

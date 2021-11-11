@@ -45,7 +45,7 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 List<Member> memberlist = mRepository.findAll();
@@ -70,7 +70,7 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 // Member member2 = mRepository.findById(member1.getId());
@@ -94,7 +94,7 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 List<Board> boardlist = bRepository.findAll();
@@ -117,7 +117,7 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
-            Member member = mRepository.getById(id);
+            Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 vcRepository.save(visitorCount);

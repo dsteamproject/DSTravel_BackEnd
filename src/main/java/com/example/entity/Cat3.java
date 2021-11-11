@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,8 +15,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@Table(name = "CITY")
-public class City {
+@Table(name = "CAT3")
+public class Cat3 {
 
     @Id
     @Column(name = "Code")
@@ -23,5 +24,4 @@ public class City {
 
     @Column(name = "NAME")
     private String Name;
-
 }

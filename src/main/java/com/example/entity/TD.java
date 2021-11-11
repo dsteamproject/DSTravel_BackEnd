@@ -1,20 +1,13 @@
 package com.example.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,39 +19,59 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@SequenceGenerator(initialValue = 1, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
-@Table(name = "TRAVELDESTINATION")
-public class TravelDestination {
+@Table(name = "TD")
+public class TD {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TD_NO")
     @Column(name = "NO")
-    private Long tNo;
+    private Integer no;
 
     @Column(name = "TITLE")
-    private String tTitle;
+    private String title;
 
-    @Column(name = "ADDRESS")
-    private String tAddress;
+    @Column(name = "ADDR")
+    private String addr;
 
     @Column(name = "XLOCATION")
-    private String txLocation;
+    private Float xlocaion;
 
     @Column(name = "YLOCATION")
-    private String tyLocation;
+    private Float ylocation;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @CreationTimestamp
-    @Column(name = "REGDATE", updatable = false)
-    private Date tregDate;
+    @Column(name = "TEL")
+    private String tel;
+
+    @Column(name = "GOOD")
+    private int good = 0; // 좋아요수
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TYPE")
+    private Type type;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CAT1")
+    private Cat1 cat1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CAT2")
+    private Cat2 cat2;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CAT3")
+    private Cat3 cat3;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CITY")
+    private City city;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SIGUNGU")
+    private Sigungu sigungu;
 
     // FetchType 결정
     // TravelDestination 조회시
     // 대부분 CITY가 같이 조회된다면 EAGER(즉시로딩)으로 처리하고,
     // 같이 조회되지 않는 경우가 많다면 LAZY(지연로딩)으로 처리한다.
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "CITY")
-    private City city;
 
     // @ManyToOne(fetch = FetchType.EAGER)
     // @JoinColumn(name = "THEME")
