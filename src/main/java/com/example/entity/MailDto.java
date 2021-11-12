@@ -23,7 +23,7 @@ public class MailDto {
 
     @Column(name = "TITLE")
     private String title;
-    
+
     @Column(name = "MESSAGE")
     private String message;
 }
