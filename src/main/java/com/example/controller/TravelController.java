@@ -135,7 +135,7 @@ public class TravelController {
             int cnt = tdRepository.CountSelectdistanceTD(areaCode, contentTypeId, xmap, ymap, kilometer);
             System.out.println(cnt);
             map.put("cnt", (cnt - 1) / size + 1);
-            map.put("distanceList", "반경" + kilometer + "km이내:" + list1);
+            map.put("distanceList", list1);
             map.put("status", 200);
 
         } catch (
