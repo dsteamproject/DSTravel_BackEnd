@@ -3,10 +3,12 @@ package com.example.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -19,12 +21,17 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@SequenceGenerator(initialValue = 1, name = "SEQ_TD_NO", sequenceName = "SEQ_TD_NO", allocationSize = 1)
 @Table(name = "TD")
 public class TD {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TD_NO")
     @Column(name = "NO")
     private Integer no;
+
+    @Column(name = "CODE")
+    private Integer code;
 
     @Column(name = "TITLE")
     private String title;
@@ -40,6 +47,9 @@ public class TD {
 
     @Column(name = "TEL")
     private String tel;
+
+    @Column(name = "FIRSTIMAGE")
+    private String firstimage;
 
     @Column(name = "GOOD")
     private int good = 0; // 좋아요수

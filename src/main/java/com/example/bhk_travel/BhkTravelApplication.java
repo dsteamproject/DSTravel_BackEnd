@@ -1,10 +1,5 @@
 package com.example.bhk_travel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -29,13 +24,6 @@ public class BhkTravelApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		SpringApplication.run(BhkTravelApplication.class, args);
 		System.out.println("server start");
-
-		// List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
-		// Map<String, Object> a = new HashMap<>();
-		// // a.put("a", "a");
-		// if (a.size() != 0)
-		// list1.add(a);
-		// System.out.println(list1);
 
 	}
 

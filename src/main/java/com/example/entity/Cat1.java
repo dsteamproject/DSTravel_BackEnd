@@ -20,7 +20,7 @@ public class Cat1 {
 
     @Id
     @Column(name = "Code")
-    private Integer Code;
+    private String Code;
 
     @Column(name = "NAME")
     private String Name;
