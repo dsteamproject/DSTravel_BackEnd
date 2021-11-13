@@ -58,6 +58,7 @@ public class MypageController {
     @Autowired
     GoodRepository goodRepository;
 
+    
     // 127.0.0.1:8080/REST/mypage/select_image?id=
     // 이미지주소
     @GetMapping(value = "/select_image")

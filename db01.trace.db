@@ -1058,3 +1058,6 @@ SELECT *,(6371*acos(cos(radians(?))*cos(radians(YLOCATION))*cos(radians(XLOCATIO
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+2021-11-13 09:00:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "undefined"; SQL statement:
+SELECT * FROM TD WHERE CODE=? [22018-200]
