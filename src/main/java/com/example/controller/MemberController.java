@@ -27,6 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/member")
 public class MemberController {
 
+    @Value("${kakao.client_key}")
+    private String kakaoClientKey;
+
+    @Value("${kakao.redirect_key}")
+    private String kakaoRedirectKey;
+
     @Autowired
     MemberRepository mRepository;
 
@@ -51,7 +57,6 @@ public class MemberController {
         try {
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             member.setPassword(bcpe.encode(member.getPassword()));
-            member.setRole("USER");
             mRepository.save(member);
             map.put("status", 200);
         } catch (Exception e) {

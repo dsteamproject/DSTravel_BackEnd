@@ -50,7 +50,7 @@ public class Member {
     private String gender;
 
     @Column(name = "ROLE")
-    private String role;
+    private String role = "USER";
 
     @Column(name = "STATE")
     private int state = 1;
