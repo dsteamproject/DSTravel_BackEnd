@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/board")
@@ -93,7 +94,8 @@ public class BoardController {
 
     // 게시판 등록
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
+    public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token,
+            @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -101,7 +103,12 @@ public class BoardController {
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 board.setMember(member);
+                // board.setImage(file.getBytes());
+                // board.setImagename(file.getOriginalFilename());
+                // board.setImagetype(file.getContentType());
+                // board.setImagesize(file.getSize());
                 bRepository.save(board);
+
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
@@ -112,6 +119,29 @@ public class BoardController {
         }
         return map;
     }
+
+    // @RequestMapping(value = "/insert_all", method = RequestMethod.POST)
+    // public String insertAllPost(@RequestParam(name = "title") String[] title,
+    // @RequestParam(name = "content") String[] content, @RequestParam(name =
+    // "writer") String[] writer,
+    // @RequestParam(name = "file") MultipartFile[] file) throws IOException {
+
+    // List<Board> list = new ArrayList<>();
+    // for (int i = 0; i < title.length; i++) {
+    // Board board = new Board();
+    // board.setTitle(title[i]);
+    // board.setContent(content[i]);
+    // board.setWriter(writer[i]);
+
+    // board.setImage(file[i].getBytes());
+    // board.setImagename(file[i].getOriginalFilename());
+    // board.setImagesize(file[i].getSize());
+    // board.setImagetype(file[i].getContentType());
+    // list.add(board);
+    // }
+    // bRepository.saveAll(list);
+    // return "redirect:select_all";
+    // }
 
     // 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
     // 상세페이지

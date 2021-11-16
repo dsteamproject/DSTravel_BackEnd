@@ -54,6 +54,9 @@ public class TD {
     @Column(name = "GOOD")
     private int good = 0; // 좋아요수
 
+    @Column(name = "PRICE")
+    private int price;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TYPE")
     private Type type;

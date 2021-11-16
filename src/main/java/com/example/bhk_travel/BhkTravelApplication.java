@@ -1,5 +1,6 @@
 package com.example.bhk_travel;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -15,7 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ServletComponentScan(basePackages = { "com.example.listener" })
 @PropertySource("classpath:global.properties")
 @ComponentScan(basePackages = { "com.example.controller", "com.example.security", "com.example.jwt",
-		"com.example.service" })
+		"com.example.service", "com.example.mybatis" })
+@MapperScan(basePackages = { "com.example.mappers" })
 @EntityScan(basePackages = { "com.example.entity" })
 @EnableJpaRepositories(basePackages = { "com.example.repository" })
 @EnableScheduling

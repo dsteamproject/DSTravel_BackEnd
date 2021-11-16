@@ -21,6 +21,7 @@
 	<packaging>war</packaging>
 
 	<dependencies>
+	<!-- oauth2 인증-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -71,6 +72,13 @@
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+
+		<!-- mybatis : SQL문으로 처리 -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 
 		<!-- JPA vs mybatis -->

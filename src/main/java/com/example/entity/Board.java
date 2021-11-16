@@ -62,6 +62,19 @@ public class Board {
     @Column(name = "STATE")
     private int state = 1;
 
+    // @Lob
+    // @Column(name = "IMAGE")
+    // private byte[] image;
+
+    // @Column(name = "IMAGENAME")
+    // private String imagename;
+
+    // @Column(name = "IMAGESIZE")
+    // private long imagesize;
+
+    // @Column(name = "IMAGETYPE")
+    // private String imagetype;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER")
     private Member member;

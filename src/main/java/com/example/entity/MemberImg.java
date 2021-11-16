@@ -29,7 +29,7 @@ public class MemberImg {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MEMBERIMG_NO")
     @Column(name = "NO")
-    private Long tdimgNo;
+    private Long no;
 
     @Lob
     @Column(name = "IMAGE")
