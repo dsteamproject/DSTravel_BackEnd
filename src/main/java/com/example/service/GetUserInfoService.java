@@ -14,6 +14,7 @@ public class GetUserInfoService {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity request = new HttpEntity(headers);
 

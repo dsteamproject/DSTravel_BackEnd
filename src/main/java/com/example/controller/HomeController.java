@@ -68,13 +68,14 @@ public class HomeController {
                 map.put("status", "error");
                 return map;
             }
+            System.out.println(accessTokenJsonData);
 
             // JSON String -> JSON Object
             JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
 
             // access_token 추출
             String accessToken = accessTokenJsonObject.get("access_token").toString();
-            // System.out.println(accessToken);
+            System.out.println(accessToken);
 
             // 유저 정보가 포함된 JSON String을 받아온다.
             GetUserInfoService getUserInfoService = new GetUserInfoService();
