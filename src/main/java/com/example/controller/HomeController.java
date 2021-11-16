@@ -1,5 +1,9 @@
 package com.example.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 
 import java.util.Map;
@@ -12,11 +16,13 @@ import com.example.repository.MemberRepository;
 import com.example.service.GetUserInfoService;
 import com.example.service.RestJsonService;
 
+import org.springframework.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
@@ -24,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 public class HomeController {
@@ -47,14 +55,15 @@ public class HomeController {
         return map;
     }
 
+    // https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ce61cbedf2c1d5758c73ec734dc1af08&redirect_uri=http://localhost:8080/login/oauth2/code/kakao
     @PostMapping("/kakaologin")
-    public Map<String, Object> receiveAC(@RequestParam("code") String code) {
+    public Map<String, Object> kakaologin(@RequestParam("code") String code) {
         Map<String, Object> map = new HashMap<>();
         RestJsonService restJsonService = new RestJsonService();
         try {
 
             // access_token이 포함된 JSON String을 받아온다.
-            String accessTokenJsonData = restJsonService.getAccessTokenJsonData(code);
+            String accessTokenJsonData = restJsonService.getAccessTokenJsonDataKakao(code);
             if (accessTokenJsonData == "error") {
                 map.put("status", "error");
                 return map;
@@ -69,7 +78,7 @@ public class HomeController {
 
             // 유저 정보가 포함된 JSON String을 받아온다.
             GetUserInfoService getUserInfoService = new GetUserInfoService();
-            String userInfo = getUserInfoService.getUserInfo(accessToken);
+            String userInfo = getUserInfoService.getUserInfoKakao(accessToken);
 
             System.out.println("--------------" + userInfo);
 
@@ -101,20 +110,28 @@ public class HomeController {
             MemberImg mImg = new MemberImg();
             if (!mRepository.findById(id).isPresent()) {
                 member.setId(id);
-                if (!email.equals("약관 동의 안함"))
-                    member.setEmail(email);
-                if (!nickname.equals("약관 동의 안함"))
-                    member.setNicname(nickname);
-                // if(!profile_image_url.equals("약관 동의 안함"))
+                member.setToken(token);
+                member.setEmail(email);
+                member.setNicname(nickname);
+                mRepository.save(member);
 
+                URL u = new URL(profile_image_url);
+                InputStream is = null;
+                is = u.openStream();
+                byte[] imageBytes = IOUtils.toByteArray(is);
+                ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+                String mimeType = URLConnection.guessContentTypeFromStream(bais);
+                mImg.setImage(imageBytes);
+                mImg.setImagetype(mimeType);
+                mImg.setMember(member);
+                mImgRepository.save(mImg);
+            } else {
+                Member member1 = mRepository.findById(id).orElseThrow();
+                member1.setToken(token);
+                mRepository.save(member1);
             }
-
-            member.setToken(token);
-            mRepository.save(member);
-
             map.put("status", 200);
             map.put("token", tokenwithvalue + token);
-            map.put("profile_image_url", profile_image_url);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -122,4 +139,184 @@ public class HomeController {
 
         return map;
     }
+
+    // https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=WCxe47guG90KEPP6lIWu&redirect_uri=http://localhost:8080/login/oauth2/code/naver
+    @PostMapping("/naverlogin")
+    public Map<String, Object> naverlogin(@RequestParam("code") String code) {
+        Map<String, Object> map = new HashMap<>();
+        RestJsonService restJsonService = new RestJsonService();
+        try {
+
+            // access_token이 포함된 JSON String을 받아온다.
+            String accessTokenJsonData = restJsonService.getAccessTokenJsonDataNaver(code);
+            if (accessTokenJsonData == "error") {
+                map.put("status", "error");
+                return map;
+            }
+
+            // JSON String -> JSON Object
+            JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
+
+            // access_token 추출
+            String accessToken = accessTokenJsonObject.get("access_token").toString();
+            System.out.println("1.--------------------" + accessToken);
+
+            // 유저 정보가 포함된 JSON String을 받아온다.
+            GetUserInfoService getUserInfoService = new GetUserInfoService();
+            String userInfo = getUserInfoService.getUserInfoNaver(accessToken);
+
+            System.out.println("2.--------------" + userInfo);
+
+            // JSON String -> JSON Object
+            JSONObject userInfoJsonObject = new JSONObject(userInfo);
+
+            // 유저의 Email 추출
+
+            JSONObject naverAccountJsonObject = (JSONObject) userInfoJsonObject.get("response");
+            String id = naverAccountJsonObject.get("id").toString();
+            String email;
+
+            try {
+                email = naverAccountJsonObject.getString("email").toString();
+            } catch (Exception e) {
+                email = "약관 동의 안함";
+            }
+
+            String token = jwtUtil.generateToken(id);
+            Member member = new Member();
+
+            if (!mRepository.findById(id).isPresent()) {
+                member.setId(id);
+                member.setToken(token);
+                member.setEmail(email);
+                mRepository.save(member);
+            } else {
+                Member member1 = mRepository.findById(id).orElseThrow();
+                member1.setToken(token);
+                mRepository.save(member1);
+            }
+            map.put("status", 200);
+            map.put("token", tokenwithvalue + token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+
+        return map;
+    }
+
+    // https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=74537161972-j2r3otdejq6fs24eeo09tlpsm5lho3u0.apps.googleusercontent.com&redirect_uri=http://localhost:8080/login/oauth2/code/google&scope=email%20profile%20openid
+    @PostMapping("/googlelogin")
+    public Map<String, Object> googlelogin(@RequestParam("code") String code) {
+        Map<String, Object> map = new HashMap<>();
+        RestJsonService restJsonService = new RestJsonService();
+        try {
+
+            // access_token이 포함된 JSON String을 받아온다.
+            String accessTokenJsonData = restJsonService.getAccessTokenJsonDataGoogle(code);
+            if (accessTokenJsonData == "error") {
+                map.put("status", "error");
+                return map;
+            }
+
+            // JSON String -> JSON Object
+            JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
+
+            // access_token 추출
+            String accessToken = accessTokenJsonObject.get("access_token").toString();
+            System.out.println("1.--------------------" + accessToken);
+
+            // 유저 정보가 포함된 JSON String을 받아온다.
+            GetUserInfoService getUserInfoService = new GetUserInfoService();
+            System.out.println("2.--------------^^^^^^^^^^^^^^^^^^^^^^^^^^");
+            String userInfo = getUserInfoService.getUserInfoGoogle(accessToken);
+
+            System.out.println("2.--------------" + userInfo);
+
+            // JSON String -> JSON Object
+            JSONObject userInfoJsonObject = new JSONObject(userInfo);
+
+            // 유저의 Email 추출
+            String id = userInfoJsonObject.get("id").toString();
+            String nickname;
+            String email;
+
+            try {
+                email = userInfoJsonObject.getString("email").toString();
+                nickname = userInfoJsonObject.getString("name").toString();
+            } catch (Exception e) {
+                email = "약관 동의 안함";
+                nickname = "약관 동의 안함";
+            }
+
+            String token = jwtUtil.generateToken(id);
+            Member member = new Member();
+
+            if (!mRepository.findById(id).isPresent()) {
+                member.setId(id);
+                member.setNicname(nickname);
+                member.setToken(token);
+                member.setEmail(email);
+                mRepository.save(member);
+            } else {
+                Member member1 = mRepository.findById(id).orElseThrow();
+                member1.setToken(token);
+                mRepository.save(member1);
+            }
+            map.put("status", 200);
+            map.put("token", tokenwithvalue + token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+
+        return map;
+    }
+
+    @PostMapping("/googlelogout")
+    public Map<String, Object> googlelogout(@RequestParam("code") String code) {
+        Map<String, Object> map = new HashMap<>();
+        RestJsonService restJsonService = new RestJsonService();
+        try {
+
+            // access_token이 포함된 JSON String을 받아온다.
+            String accessTokenJsonData = restJsonService.getAccessTokenJsonDataGoogle(code);
+            if (accessTokenJsonData == "error") {
+                map.put("status", "error");
+                return map;
+            }
+
+            // JSON String -> JSON Object
+            JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
+
+            // access_token 추출
+            String accessToken = accessTokenJsonObject.get("access_token").toString();
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            HttpEntity request = new HttpEntity(headers);
+
+            UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+                    .fromHttpUrl("https://oauth2.googleapis.com/revoke?token=" + accessToken);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uriComponentsBuilder.toUriString(),
+                    HttpMethod.POST, request, String.class);
+
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                map.put("status", 200);
+            } else {
+                map.put("status", "error");
+                return map;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+
+        return map;
+    }
+
 }
