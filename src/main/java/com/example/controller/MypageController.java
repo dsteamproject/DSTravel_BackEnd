@@ -97,8 +97,11 @@ public class MypageController {
             @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
+            // System.out.println(token);
             String id = jwtUtil.extractUsername(token.substring(6));
+            // System.out.println("--------------------------------" + id);
             Member member = mRepository.findById(id).orElseThrow();
+            // System.out.println(member);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 MemberImg memberimg = new MemberImg();

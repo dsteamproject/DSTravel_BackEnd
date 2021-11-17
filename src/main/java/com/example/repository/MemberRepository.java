@@ -15,6 +15,11 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
     Member findByName(String name);
 
+    // 아이디로 회원정보 조회
+    // @Query(value = "SELECT * FROM member WHERE id=:id state=1", nativeQuery =
+    // true)
+    // public Member querySelectByid(@Param("id") String id);
+
     @Query(value = "SELECT * FROM member WHERE id=:id state=1", nativeQuery = true)
     public Member querySelectByid(@Param("id") String id);
 

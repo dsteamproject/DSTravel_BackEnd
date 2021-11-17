@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -98,8 +99,8 @@ public class BoardController {
     }
 
     // 게시판 등록
-    @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token,
+    @PutMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertPost(@ModelAttribute Board board, @RequestHeader("TOKEN") String token,
             @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -112,15 +113,15 @@ public class BoardController {
                 board1.setContent(board.getContent());
                 board1.setTitle(board.getTitle());
                 board1.setMember(member);
-                bRepository.save(board1);
-
-                BoardImg boardImg = new BoardImg();
-                boardImg.setBoard(board1);
-                boardImg.setImage(file.getBytes());
-                boardImg.setImagename(file.getOriginalFilename());
-                boardImg.setImagetype(file.getContentType());
-                boardImg.setImagesize(file.getSize());
-                bImgRepository.save(boardImg);
+                if (file != null) {
+                    BoardImg boardImg = new BoardImg();
+                    boardImg.setBoard(bRepository.save(board1));
+                    boardImg.setImage(file.getBytes());
+                    boardImg.setImagename(file.getOriginalFilename());
+                    boardImg.setImagetype(file.getContentType());
+                    boardImg.setImagesize(file.getSize());
+                    bImgRepository.save(boardImg);
+                }
 
                 map.put("status", 200);
             } else {

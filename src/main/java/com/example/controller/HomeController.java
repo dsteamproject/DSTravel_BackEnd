@@ -114,7 +114,7 @@ public class HomeController {
                 member.setLogin("SNS");
                 member.setToken(token);
                 member.setEmail(email);
-                member.setNicname("익명" + member.getNo());
+                member.setNicname("익명");
                 mRepository.save(member);
 
                 URL u = new URL(profile_image_url);
@@ -192,7 +192,7 @@ public class HomeController {
                 member.setPassword(bcpe.encode("naver"));
                 member.setLogin("SNS");
                 member.setId(id);
-                member.setNicname("익명" + member.getNo());
+                member.setNicname("익명");
                 member.setToken(token);
                 member.setEmail(email);
                 mRepository.save(member);
@@ -260,7 +260,7 @@ public class HomeController {
                 member.setPassword(bcpe.encode("google"));
                 member.setLogin("SNS");
                 member.setId(id);
-                member.setNicname("익명" + member.getNo());
+                member.setNicname("익명");
                 member.setToken(token);
                 member.setEmail(email);
                 mRepository.save(member);
