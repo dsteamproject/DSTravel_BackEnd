@@ -45,6 +45,7 @@ public class AdminController {
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
 
+	// 12dajfkvnajfnvjk
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberGET(@RequestHeader("token") String token) {
@@ -119,7 +120,8 @@ public class AdminController {
 
 	// 방문자수 저장(방문자수만 넘어오면 됨. 하루에 한번만 넘어와야함.)
 	@PostMapping(value = "/visitorCount", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> visitorPOST(@RequestHeader("token") String token, @RequestBody VisitorCount visitorCount) {
+	public Map<String, Object> visitorPOST(@RequestHeader("token") String token,
+			@RequestBody VisitorCount visitorCount) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
