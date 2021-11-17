@@ -45,9 +45,19 @@ public class AdminController {
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
 
+<<<<<<< Updated upstream
 
 	// 12dajfkvnajfnvjk42142142142121
 
+=======
+<<<<<<< HEAD
+	// 12dajfkvnajfnvjk421421421421212141235fgag
+=======
+
+	// 12dajfkvnajfnvjk42142142142121
+
+>>>>>>> 14381d646f189646898f4843fc12b6fe5a00f9a4
+>>>>>>> Stashed changes
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberGET(@RequestHeader("token") String token) {
