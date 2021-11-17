@@ -17,6 +17,7 @@ import com.example.service.GetUserInfoService;
 import com.example.service.RestJsonService;
 
 import org.springframework.http.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,29 +92,29 @@ public class HomeController {
             JSONObject kakaoAccountJsonObject = (JSONObject) userInfoJsonObject.get("kakao_account");
             String id = userInfoJsonObject.get("id").toString();
 
-            String nickname;
             String email;
             String profile_image_url;
             try {
-                nickname = kakaoAccountJsonObject.getJSONObject("profile").getString("nickname").toString();
                 profile_image_url = kakaoAccountJsonObject.getJSONObject("profile").getString("profile_image_url")
                         .toString();
                 email = kakaoAccountJsonObject.get("email").toString();
 
             } catch (Exception e) {
-                email = "약관 동의 안함";
-                nickname = "약관 동의 안함";
-                profile_image_url = "약관 동의 안함";
+                email = "";
+                profile_image_url = "";
             }
 
             String token = jwtUtil.generateToken(id);
             Member member = new Member();
             MemberImg mImg = new MemberImg();
             if (!mRepository.findById(id).isPresent()) {
+                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                member.setPassword(bcpe.encode("kakao"));
                 member.setId(id);
+                member.setLogin("SNS");
                 member.setToken(token);
                 member.setEmail(email);
-                member.setNicname(nickname);
+                member.setNicname("익명" + member.getNo());
                 mRepository.save(member);
 
                 URL u = new URL(profile_image_url);
@@ -187,7 +188,11 @@ public class HomeController {
             Member member = new Member();
 
             if (!mRepository.findById(id).isPresent()) {
+                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                member.setPassword(bcpe.encode("naver"));
+                member.setLogin("SNS");
                 member.setId(id);
+                member.setNicname("익명" + member.getNo());
                 member.setToken(token);
                 member.setEmail(email);
                 mRepository.save(member);
@@ -239,23 +244,23 @@ public class HomeController {
 
             // 유저의 Email 추출
             String id = userInfoJsonObject.get("id").toString();
-            String nickname;
             String email;
 
             try {
                 email = userInfoJsonObject.getString("email").toString();
-                nickname = userInfoJsonObject.getString("name").toString();
             } catch (Exception e) {
                 email = "약관 동의 안함";
-                nickname = "약관 동의 안함";
             }
 
             String token = jwtUtil.generateToken(id);
             Member member = new Member();
 
             if (!mRepository.findById(id).isPresent()) {
+                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                member.setPassword(bcpe.encode("google"));
+                member.setLogin("SNS");
                 member.setId(id);
-                member.setNicname(nickname);
+                member.setNicname("익명" + member.getNo());
                 member.setToken(token);
                 member.setEmail(email);
                 mRepository.save(member);
@@ -274,50 +279,52 @@ public class HomeController {
         return map;
     }
 
-    @PostMapping("/googlelogout")
-    public Map<String, Object> googlelogout(@RequestParam("code") String code) {
-        Map<String, Object> map = new HashMap<>();
-        RestJsonService restJsonService = new RestJsonService();
-        try {
+    // @PostMapping("/googlelogout")
+    // public Map<String, Object> googlelogout(@RequestParam("code") String code) {
+    // Map<String, Object> map = new HashMap<>();
+    // RestJsonService restJsonService = new RestJsonService();
+    // try {
 
-            // access_token이 포함된 JSON String을 받아온다.
-            String accessTokenJsonData = restJsonService.getAccessTokenJsonDataGoogle(code);
-            if (accessTokenJsonData == "error") {
-                map.put("status", "error");
-                return map;
-            }
+    // // access_token이 포함된 JSON String을 받아온다.
+    // String accessTokenJsonData =
+    // restJsonService.getAccessTokenJsonDataGoogle(code);
+    // if (accessTokenJsonData == "error") {
+    // map.put("status", "error");
+    // return map;
+    // }
 
-            // JSON String -> JSON Object
-            JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
+    // // JSON String -> JSON Object
+    // JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
 
-            // access_token 추출
-            String accessToken = accessTokenJsonObject.get("access_token").toString();
+    // // access_token 추출
+    // String accessToken = accessTokenJsonObject.get("access_token").toString();
 
-            RestTemplate restTemplate = new RestTemplate();
+    // RestTemplate restTemplate = new RestTemplate();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            HttpEntity request = new HttpEntity(headers);
+    // HttpHeaders headers = new HttpHeaders();
+    // headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    // HttpEntity request = new HttpEntity(headers);
 
-            UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-                    .fromHttpUrl("https://oauth2.googleapis.com/revoke?token=" + accessToken);
+    // UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+    // .fromHttpUrl("https://oauth2.googleapis.com/revoke?token=" + accessToken);
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(uriComponentsBuilder.toUriString(),
-                    HttpMethod.POST, request, String.class);
+    // ResponseEntity<String> responseEntity =
+    // restTemplate.exchange(uriComponentsBuilder.toUriString(),
+    // HttpMethod.POST, request, String.class);
 
-            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                map.put("status", 200);
-            } else {
-                map.put("status", "error");
-                return map;
-            }
+    // if (responseEntity.getStatusCode() == HttpStatus.OK) {
+    // map.put("status", 200);
+    // } else {
+    // map.put("status", "error");
+    // return map;
+    // }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("status", e.hashCode());
-        }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // map.put("status", e.hashCode());
+    // }
 
-        return map;
-    }
+    // return map;
+    // }
 
 }

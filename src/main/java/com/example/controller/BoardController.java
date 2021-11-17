@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.entity.Board;
+import com.example.entity.BoardImg;
 import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Reply;
 import com.example.jwt.JwtUtil;
+import com.example.repository.BoardImgRepository;
 import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
@@ -49,6 +51,9 @@ public class BoardController {
 
     @Autowired
     GoodRepository goodRepository;
+
+    @Autowired
+    BoardImgRepository bImgRepository;
 
     // 게시판 목록 {no, title, category, content, hit, good(int), reply(int), regdate,
     // state, member}
@@ -102,12 +107,20 @@ public class BoardController {
             Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                board.setMember(member);
-                // board.setImage(file.getBytes());
-                // board.setImagename(file.getOriginalFilename());
-                // board.setImagetype(file.getContentType());
-                // board.setImagesize(file.getSize());
-                bRepository.save(board);
+                Board board1 = new Board();
+                board1.setCategory(board.getCategory());
+                board1.setContent(board.getContent());
+                board1.setTitle(board.getTitle());
+                board1.setMember(member);
+                bRepository.save(board1);
+
+                BoardImg boardImg = new BoardImg();
+                boardImg.setBoard(board1);
+                boardImg.setImage(file.getBytes());
+                boardImg.setImagename(file.getOriginalFilename());
+                boardImg.setImagetype(file.getContentType());
+                boardImg.setImagesize(file.getSize());
+                bImgRepository.save(boardImg);
 
                 map.put("status", 200);
             } else {
