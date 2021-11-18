@@ -16,7 +16,6 @@ import com.example.repository.MemberRepository;
 import com.example.service.GetUserInfoService;
 import com.example.service.RestJsonService;
 
-import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,13 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 public class HomeController {

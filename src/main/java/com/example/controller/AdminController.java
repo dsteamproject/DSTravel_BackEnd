@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.dto.BoardDTO;
-import com.example.entity.Board;
 import com.example.entity.Member;
 import com.example.entity.TodayVisitCount;
 import com.example.entity.VisitorCount;
