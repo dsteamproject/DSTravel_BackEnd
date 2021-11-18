@@ -2,6 +2,8 @@ package com.example.dto;
 
 import java.util.Date;
 
+import com.example.entity.Member;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,6 @@ public class BoardDTO {
     private int reply = 0; // 리플수
     private Date regdate = null; // 날짜
     private int state = 1;
-    private MemberDTO member;
+    private String member;
 
 }
