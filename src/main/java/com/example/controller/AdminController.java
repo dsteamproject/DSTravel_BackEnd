@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.dto.BoardDTO;
 import com.example.entity.Board;
 import com.example.entity.Member;
 import com.example.entity.TodayVisitCount;
 import com.example.entity.VisitorCount;
 import com.example.jwt.JwtUtil;
+import com.example.mappers.BoardMapper;
 import com.example.repository.BoardRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.TodayVisitCountRepository;
@@ -44,6 +46,9 @@ public class AdminController {
 
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
+
+	@Autowired
+	BoardMapper bMapper;
 
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +102,11 @@ public class AdminController {
 	// 모든 게시물데이터
 	// 페이지네이션 타이틀검색 카테고리별 분류
 	@GetMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> boardGET(@RequestHeader("token") String token) {
+	public Map<String, Object> boardGET(@RequestHeader("token") String token,
+			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "category", required = false, defaultValue = "review") String category,
+			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
@@ -105,7 +114,13 @@ public class AdminController {
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
 
-				List<Board> boardlist = bRepository.findAll();
+				PageRequest pageRequest = PageRequest.of(page - 1, size);
+
+				List<BoardDTO> boardlist = bMapper.selectBoardAdmin(keyword, category, pageRequest);
+
+				int cnt = bMapper.CountBoardAdmin(keyword, category);
+				map.put("cnt", (cnt - 1) / size + 1);
+
 				map.put("boardlist", boardlist);
 				map.put("status", 200);
 			} else {
