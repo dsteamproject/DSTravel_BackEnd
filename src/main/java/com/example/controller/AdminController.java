@@ -115,9 +115,8 @@ public class AdminController {
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
 
-				PageRequest pageRequest = PageRequest.of(page - 1, size);
-
-				List<BoardDTO> boardlist = bMapper.selectBoardAdmin(keyword, category, pageRequest);
+				List<BoardDTO> boardlist = bMapper.selectBoardAdmin(keyword, category, 1 + (size * (page - 1)),
+						page * size);
 
 				int cnt = bMapper.CountBoardAdmin(keyword, category);
 				map.put("cnt", (cnt - 1) / size + 1);
