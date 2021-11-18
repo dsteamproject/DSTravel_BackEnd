@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +23,13 @@ import com.example.repository.MemberRepository;
 import com.example.repository.ReplyRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +45,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(value = "/board")
 public class BoardController {
 
+	@Value("${default.image}")
+	private String DEFAULTIMAGE;
+
 	@Autowired
 	private BoardRepository bRepository;
+
+	@Autowired
+	private ResourceLoader resourceLoader;
 
 	@Autowired
 	MemberRepository mRepository;
@@ -101,7 +114,7 @@ public class BoardController {
 	// 게시판 등록
 	@PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> insertPost(@ModelAttribute Board board, @RequestHeader("TOKEN") String token,
-			@RequestParam(name = "file") MultipartFile file) {
+			@RequestParam(name = "file", required = false) MultipartFile file) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
@@ -121,6 +134,8 @@ public class BoardController {
 					boardImg.setImagetype(file.getContentType());
 					boardImg.setImagesize(file.getSize());
 					bImgRepository.save(boardImg);
+				} else {
+					bRepository.save(board1);
 				}
 
 				map.put("status", 200);
@@ -157,6 +172,42 @@ public class BoardController {
 	// }
 	// bRepository.saveAll(list);
 	// return "redirect:select_all";
+	// }
+
+	// 127.0.0.1:8080/REST/board/select_image?no=
+	// 이미지주소
+	// @GetMapping(value = "/select_image")
+	// public ResponseEntity<byte[]> selectImage(@RequestParam("no") Board board)
+	// throws IOException {
+	// try {
+	// BoardImg bImg = bImgRepository.findByBNO(board);
+	// if (bImg.getImage().length > 0) {
+	// HttpHeaders headers = new HttpHeaders();
+	// if (bImg.getImagetype().equals("image/jpeg")) {
+	// headers.setContentType(MediaType.IMAGE_JPEG);
+	// } else if (bImg.getImagetype().equals("image/png")) {
+	// headers.setContentType(MediaType.IMAGE_PNG);
+	// } else if (bImg.getImagetype().equals("image/gif")) {
+	// headers.setContentType(MediaType.IMAGE_GIF);
+	// }
+
+	// // 클래스명 response = new 클래스명( 생성자선택 )
+	// ResponseEntity<byte[]> response = new ResponseEntity<>(bImg.getImage(),
+	// headers, HttpStatus.OK);
+	// return response;
+	// }
+	// return null;
+	// }
+	// // 오라클에 이미지를 읽을 수 없을 경우
+	// catch (Exception e) {
+	// InputStream is = resourceLoader.getResource(DEFAULTIMAGE).getInputStream();
+
+	// HttpHeaders headers = new HttpHeaders();
+	// headers.setContentType(MediaType.IMAGE_JPEG);
+	// ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(),
+	// headers, HttpStatus.OK);
+	// return response;
+	// }
 	// }
 
 	// 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
@@ -224,7 +275,8 @@ public class BoardController {
 
 	// 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
 	@PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> updatePost(@RequestBody Board board, @RequestHeader(name = "TOKEN") String token) {
+	public Map<String, Object> updatePost(@RequestParam("file") MultipartFile file, @ModelAttribute Board board,
+			@RequestHeader(name = "TOKEN") String token) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
@@ -235,6 +287,14 @@ public class BoardController {
 				board1.setTitle(board.getTitle());
 				board1.setContent(board.getContent());
 				bRepository.save(board1);
+
+				// BoardImg bImg = bImgRepository.findByBNO(board);
+				// bImg.setImage(file.getBytes());
+				// bImg.setImagename(file.getOriginalFilename());
+				// bImg.setImagesize(file.getSize());
+				// bImg.setImagetype(file.getContentType());
+				// bImgRepository.save(bImg);
+
 				map.put("status", 200);
 			} else {
 				map.put("status", 578);
