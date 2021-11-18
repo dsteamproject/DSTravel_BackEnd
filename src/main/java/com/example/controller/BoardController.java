@@ -177,9 +177,10 @@ public class BoardController {
 	// 127.0.0.1:8080/REST/board/select_image?no=
 	// 이미지주소
 	// @GetMapping(value = "/select_image")
-	// public ResponseEntity<byte[]> selectImage(@RequestParam("no") Board board)
+	// public ResponseEntity<byte[]> selectImage(@RequestParam("no") String no)
 	// throws IOException {
 	// try {
+	// bRepository.findById(no).
 	// BoardImg bImg = bImgRepository.findByBNO(board);
 	// if (bImg.getImage().length > 0) {
 	// HttpHeaders headers = new HttpHeaders();
@@ -288,12 +289,12 @@ public class BoardController {
 				board1.setContent(board.getContent());
 				bRepository.save(board1);
 
-				// BoardImg bImg = bImgRepository.findByBNO(board);
-				// bImg.setImage(file.getBytes());
-				// bImg.setImagename(file.getOriginalFilename());
-				// bImg.setImagesize(file.getSize());
-				// bImg.setImagetype(file.getContentType());
-				// bImgRepository.save(bImg);
+				BoardImg bImg = bImgRepository.findByBNO(board);
+				bImg.setImage(file.getBytes());
+				bImg.setImagename(file.getOriginalFilename());
+				bImg.setImagesize(file.getSize());
+				bImg.setImagetype(file.getContentType());
+				bImgRepository.save(bImg);
 
 				map.put("status", 200);
 			} else {
