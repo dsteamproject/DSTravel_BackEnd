@@ -28,15 +28,24 @@ public class HotelController {
     public Map<String, Object> getTourApiselect(@RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "firstprice") int firstprice, @RequestParam(name = "endprice") int endprice,
-            @RequestParam(name = "city") Integer city, @RequestParam(name = "rank", defaultValue = "") int rank) {
+            @RequestParam(name = "city", required = false) Integer city,
+            @RequestParam(name = "rank", defaultValue = "") int rank) {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, city, rank, pageRequest);
-            int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice, city, rank);
-            // System.out.println(cnt);
-            map.put("cnt", (cnt - 1) / size + 1);
-            map.put("list", list);
+            System.out.println(city);
+            if (city != null) {
+                List<TD> list = tdRepository.SelectHOTELBYCITY(firstprice, endprice, city, rank, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTELBYCITY(firstprice, endprice, city, rank);
+                // System.out.println(cnt);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
+            } else {
+                List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, rank, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice, rank);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
+            }
             map.put("status", 200);
 
         } catch (Exception e) {
