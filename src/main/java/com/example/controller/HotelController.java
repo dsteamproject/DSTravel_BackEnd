@@ -29,20 +29,31 @@ public class HotelController {
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "firstprice") int firstprice, @RequestParam(name = "endprice") int endprice,
             @RequestParam(name = "city", required = false) Integer city,
-            @RequestParam(name = "rank", defaultValue = "") int rank) {
+            @RequestParam(name = "rank", required = false) Integer rank) {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
             System.out.println(city);
-            if (city != null) {
-                List<TD> list = tdRepository.SelectHOTELBYCITY(firstprice, endprice, city, rank, pageRequest);
-                int cnt = tdRepository.COUNTSelectHOTELBYCITY(firstprice, endprice, city, rank);
+            if (city == null && rank == null) {
+                List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice);
                 // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
+            } else if (city != null && rank == null) {
+                List<TD> list = tdRepository.SelectHOTELBYCITY(firstprice, endprice, city, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTELBYCITY(firstprice, endprice, city);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
+            } else if (city == null && rank != null) {
+                List<TD> list = tdRepository.SelectHOTELBYRANK(firstprice, endprice, rank, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTELBYRANK(firstprice, endprice, rank);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
             } else {
-                List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, rank, pageRequest);
-                int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice, rank);
+                List<TD> list = tdRepository.SelectHOTELBYCITYANDRANK(firstprice, endprice, city, rank, pageRequest);
+                int cnt = tdRepository.COUNTSelectHOTELBYCITYANDRANK(firstprice, endprice, city, rank);
+                // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             }

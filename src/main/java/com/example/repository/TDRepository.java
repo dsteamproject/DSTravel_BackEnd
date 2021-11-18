@@ -14,23 +14,40 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TDRepository extends JpaRepository<TD, Integer> {
 
-        // 지역별, 가격별, 등급별 숙소 조회
-        @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND RANK=:rank AND TYPE=32", nativeQuery = true)
+        // 가격별 전체 숙소 조회
+        @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND TYPE=32", nativeQuery = true)
         public List<TD> SelectHOTEL(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
-                        @Param("rank") int rank, Pageable pageable);
+                        Pageable pageable);
+
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND TYPE=32", nativeQuery = true)
+        public int COUNTSelectHOTEL(@Param("firstprice") int firstprice, @Param("endprice") int endprice);
+
+        // 가격별, 지역별 숙소 조회
+        @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND CITY=:city AND TYPE=32", nativeQuery = true)
+        public List<TD> SelectHOTELBYCITY(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city, Pageable pageable);
+
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND CITY=:city AND TYPE=32", nativeQuery = true)
+        public int COUNTSelectHOTELBYCITY(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city);
+
+        // 가격별, 등급별 숙소 조회
+        @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND RANK=:rank AND TYPE=32", nativeQuery = true)
+        public List<TD> SelectHOTELBYRANK(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("rank") Integer rank, Pageable pageable);
 
         @Query(value = "SELECT COUNT(*) FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND RANK=:rank AND TYPE=32", nativeQuery = true)
-        public int COUNTSelectHOTEL(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
-                        @Param("rank") int rank);
+        public int COUNTSelectHOTELBYRANK(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("rank") Integer rank);
 
         // 지역별, 가격별, 등급별 숙소 조회
         @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND CITY=:city AND RANK=:rank AND TYPE=32", nativeQuery = true)
-        public List<TD> SelectHOTELBYCITY(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
-                        @Param("city") Integer city, @Param("rank") int rank, Pageable pageable);
+        public List<TD> SelectHOTELBYCITYANDRANK(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city, @Param("rank") Integer rank, Pageable pageable);
 
         @Query(value = "SELECT COUNT(*) FROM TD WHERE PRICE>=:firstprice AND PRICE<=:endprice AND CITY=:city AND RANK=:rank AND TYPE=32", nativeQuery = true)
-        public int COUNTSelectHOTELBYCITY(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
-                        @Param("city") Integer city, @Param("rank") int rank);
+        public int COUNTSelectHOTELBYCITYANDRANK(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city, @Param("rank") Integer rank);
 
         @Query(value = "SELECT * FROM TD WHERE CITY=:areaCode AND TYPE=:contentTypeId", nativeQuery = true)
         public List<TD> querySelectTD(@Param("areaCode") String areaCode, @Param("contentTypeId") String contentTypeId);
