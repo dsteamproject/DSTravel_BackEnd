@@ -6,10 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -26,15 +22,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-// @SequenceGenerator(initialValue = 1, name = "SEQ_MEMBER_NO", sequenceName =
-// "SEQ_MEMBER_NO", allocationSize = 1)
+
 @Table(name = "MEMBER")
 public class Member {
-
-    // @Column(name = "NO")
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    // "SEQ_MEMBER_NO")
-    // private long no;
 
     @Id
     @Column(name = "ID")

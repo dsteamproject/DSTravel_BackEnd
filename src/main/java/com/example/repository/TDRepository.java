@@ -2,6 +2,7 @@ package com.example.repository;
 
 import java.util.List;
 
+import com.example.entity.City;
 import com.example.entity.TD;
 
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TDRepository extends JpaRepository<TD, Integer> {
+
+        // 지역별, 가격별, 등급별 숙소 조회
+        @Query(value = "SELECT * FROM TD WHERE PRICE>=:firstprice AND PRCIE<=:endprice AND CITY=:city AND RANK=:rank AND TYPE=32", nativeQuery = true)
+        public List<TD> SelectHOTEL(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city, @Param("rank") int rank, Pageable pageable);
+
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE PRICE>=:firstprice AND PRCIE<=:endprice AND CITY=:city AND RANK=:rank AND TYPE=32", nativeQuery = true)
+        public int COUNTSelectHOTEL(@Param("firstprice") int firstprice, @Param("endprice") int endprice,
+                        @Param("city") Integer city, @Param("rank") int rank);
 
         @Query(value = "SELECT * FROM TD WHERE CITY=:areaCode AND TYPE=:contentTypeId", nativeQuery = true)
         public List<TD> querySelectTD(@Param("areaCode") String areaCode, @Param("contentTypeId") String contentTypeId);

@@ -57,6 +57,9 @@ public class TD {
     @Column(name = "PRICE")
     private int price;
 
+    @Column(name = "RANK")
+    private int rank = 0;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TYPE")
     private Type type;
