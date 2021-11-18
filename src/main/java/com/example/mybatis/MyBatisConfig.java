@@ -21,9 +21,9 @@ public class MyBatisConfig {
         sqlSessionFactoryBean.setDataSource(dataSource);
 
         // mappers 위치 설정
-        Resource[] arrResource = new PathMatchingResourcePatternResolver()
-                .getResources("classpath:mappers/*Mapper.xml");
-        sqlSessionFactoryBean.setMapperLocations(arrResource);
+        // Resource[] arrResource = new PathMatchingResourcePatternResolver()
+        // .getResources("classpath:mappers/*Mapper.xml");
+        // sqlSessionFactoryBean.setMapperLocations(arrResource);
         return sqlSessionFactoryBean.getObject();
     }
 
