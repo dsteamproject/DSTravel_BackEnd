@@ -96,6 +96,7 @@ public class AdminController {
 	}
 
 	// 모든 게시물데이터
+	// 페이지네이션 타이틀검색 카테고리별 분류
 	@GetMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardGET(@RequestHeader("token") String token) {
 		Map<String, Object> map = new HashMap<>();
@@ -120,7 +121,8 @@ public class AdminController {
 
 	// 방문자수 저장(방문자수만 넘어오면 됨. 하루에 한번만 넘어와야함.)
 	@PostMapping(value = "/visitorCount", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> visitorPOST(@RequestHeader("token") String token, @RequestBody VisitorCount visitorCount) {
+	public Map<String, Object> visitorPOST(@RequestHeader("token") String token,
+			@RequestBody VisitorCount visitorCount) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
