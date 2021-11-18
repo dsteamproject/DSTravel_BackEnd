@@ -26,13 +26,14 @@ public class HotelController {
     // price city rank
     @GetMapping(value = "/select")
     public Map<String, Object> getTourApiselect(@RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size, @RequestParam(name = "price") int price,
-            @RequestParam(name = "city") Integer city, @RequestParam("rank") int rank) {
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "firstprice") int firstprice, @RequestParam(name = "endprice") int endprice,
+            @RequestParam(name = "city") Integer city, @RequestParam(name = "rank", defaultValue = "") int rank) {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<TD> list = tdRepository.SelectHOTEL(price, city, rank, pageRequest);
-            int cnt = tdRepository.COUNTSelectHOTEL(price, city, rank);
+            List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, city, rank, pageRequest);
+            int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice, city, rank);
             // System.out.println(cnt);
             map.put("cnt", (cnt - 1) / size + 1);
             map.put("list", list);
