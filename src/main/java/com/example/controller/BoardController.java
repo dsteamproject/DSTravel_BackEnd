@@ -121,6 +121,7 @@ public class BoardController {
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				System.out.println(board.getCategory());
 				Board board1 = new Board();
 				board1.setCategory(board.getCategory());
 				board1.setContent(board.getContent());
@@ -174,42 +175,42 @@ public class BoardController {
 	// return "redirect:select_all";
 	// }
 
-	// 127.0.0.1:8080/REST/board/select_image?no=
-	// 이미지주소
-	// @GetMapping(value = "/select_image")
-	// public ResponseEntity<byte[]> selectImage(@RequestParam("no") String no)
-	// throws IOException {
-	// try {
-	// bRepository.findById(no).
-	// BoardImg bImg = bImgRepository.findByBNO(board);
-	// if (bImg.getImage().length > 0) {
-	// HttpHeaders headers = new HttpHeaders();
-	// if (bImg.getImagetype().equals("image/jpeg")) {
-	// headers.setContentType(MediaType.IMAGE_JPEG);
-	// } else if (bImg.getImagetype().equals("image/png")) {
-	// headers.setContentType(MediaType.IMAGE_PNG);
-	// } else if (bImg.getImagetype().equals("image/gif")) {
-	// headers.setContentType(MediaType.IMAGE_GIF);
-	// }
+	// 127.0.0.1:8080/REST/board/select_image?no=이미지주소
+	@GetMapping(value = "/select_image")
+	public ResponseEntity<byte[]> selectImage(@RequestParam(name = "no") Board board) throws IOException {
+		try {
 
-	// // 클래스명 response = new 클래스명( 생성자선택 )
-	// ResponseEntity<byte[]> response = new ResponseEntity<>(bImg.getImage(),
-	// headers, HttpStatus.OK);
-	// return response;
-	// }
-	// return null;
-	// }
-	// // 오라클에 이미지를 읽을 수 없을 경우
-	// catch (Exception e) {
-	// InputStream is = resourceLoader.getResource(DEFAULTIMAGE).getInputStream();
+			System.out.println(board.getNo());
+			BoardImg bImg = bImgRepository.querySelectByBoardno(board);
+			System.out.println(bImg.getNo());
+			if (bImg.getImage().length > 0) {
+				HttpHeaders headers = new HttpHeaders();
+				if (bImg.getImagetype().equals("image/jpeg")) {
+					headers.setContentType(MediaType.IMAGE_JPEG);
+				} else if (bImg.getImagetype().equals("image/png")) {
+					headers.setContentType(MediaType.IMAGE_PNG);
+				} else if (bImg.getImagetype().equals("image/gif")) {
+					headers.setContentType(MediaType.IMAGE_GIF);
+				}
 
-	// HttpHeaders headers = new HttpHeaders();
-	// headers.setContentType(MediaType.IMAGE_JPEG);
-	// ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(),
-	// headers, HttpStatus.OK);
-	// return response;
-	// }
-	// }
+				// 클래스명 response = new 클래스명( 생성자선택 )
+				ResponseEntity<byte[]> response = new ResponseEntity<>(bImg.getImage(), headers, HttpStatus.OK);
+				System.out.println(bImg.getImage());
+				return response;
+			}
+			return null;
+
+		}
+		// 오라클에 이미지를 읽을 수 없을 경우
+		catch (Exception e) {
+			InputStream is = resourceLoader.getResource(DEFAULTIMAGE).getInputStream();
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.IMAGE_JPEG);
+			ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+			return response;
+		}
+	}
 
 	// 해당 번호로 게시물 조회 후 category가 일치하면 조회 불일치시 800 오류 (접속경로잘못됨) <<필요한 작업인지 다시한번 확인필요
 	// 상세페이지
@@ -289,7 +290,7 @@ public class BoardController {
 				board1.setContent(board.getContent());
 				bRepository.save(board1);
 
-				BoardImg bImg = bImgRepository.findByBNO(board);
+				BoardImg bImg = bImgRepository.querySelectByBoardno(board);
 				bImg.setImage(file.getBytes());
 				bImg.setImagename(file.getOriginalFilename());
 				bImg.setImagesize(file.getSize());

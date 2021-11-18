@@ -94,7 +94,7 @@ public class MypageController {
     // 이미지 등록(수정)
     @PutMapping(value = "/insertMemberImg", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> memberimgPut(@RequestHeader("TOKEN") String token,
-            @RequestParam(name = "file") MultipartFile file) {
+            @RequestParam(name = "file", required = false) MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
             // System.out.println(token);

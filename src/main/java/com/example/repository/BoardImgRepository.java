@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface BoardImgRepository extends JpaRepository<BoardImg, Long> {
 
-    @Query(value = "SELECT * FROM BOARDIMG WHERE BNO=:board;", nativeQuery = true)
-    public BoardImg findByBNO(@Param("board") Board board);
+    @Query(value = "SELECT * FROM BoardImg WHERE bno=:board ", nativeQuery = true)
+    public BoardImg querySelectByBoardno(@Param("board") Board board);
 
 }
