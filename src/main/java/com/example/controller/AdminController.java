@@ -45,8 +45,7 @@ public class AdminController {
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
 
-	// test1
-  
+	// hsyu
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberGET(@RequestHeader("token") String token) {
