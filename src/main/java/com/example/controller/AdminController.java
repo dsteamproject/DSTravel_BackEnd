@@ -96,6 +96,7 @@ public class AdminController {
 	}
 
 	// 모든 게시물데이터
+	// 페이지네이션 타이틀검색 카테고리별 분류
 	@GetMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardGET(@RequestHeader("token") String token) {
 		Map<String, Object> map = new HashMap<>();
