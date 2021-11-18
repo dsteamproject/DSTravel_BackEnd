@@ -46,7 +46,7 @@ public class AdminController {
 	TodayVisitCountRepository tdvcRepository;
 
 	// hsyu test1 main에 hsyu update 항목을 삽입
-	// main update test1
+
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberGET(@RequestHeader("token") String token) {
