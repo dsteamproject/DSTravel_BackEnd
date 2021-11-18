@@ -105,10 +105,11 @@ public class AdminController {
 	public Map<String, Object> boardGET(@RequestHeader("token") String token,
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
 			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
-			@RequestParam(name = "category", required = false, defaultValue = "review") String category,
+			@RequestParam(name = "category", required = false) String category,
 			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
 		Map<String, Object> map = new HashMap<>();
 		try {
+			System.out.println(category);
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
