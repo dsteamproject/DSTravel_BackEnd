@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import com.example.entity.City;
+import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Sigungu;
 import com.example.entity.TD;
@@ -16,6 +17,7 @@ import com.example.repository.Cat1Repository;
 import com.example.repository.Cat2Repository;
 import com.example.repository.Cat3Repository;
 import com.example.repository.CityRepository;
+import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
@@ -35,6 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/travel")
 public class TravelController {
+
+    @Autowired
+    GoodRepository goodRepository;
 
     @Autowired
     MemberRepository mRepository;
@@ -219,6 +224,7 @@ public class TravelController {
 
     }
 
+    // 여행지 선택시 거리별 조회
     @GetMapping(value = "/distance")
     public Map<String, Object> locationDistance(@RequestHeader(name = "TOKEN", required = false) String token,
             @RequestParam("areaCode") String areaCode, @RequestParam("xmap") Float xmap, @RequestParam("page") int page,
@@ -281,6 +287,50 @@ public class TravelController {
                 // System.out.println(td1);
                 tdRepository.save(td1);
                 map.put("status", 200);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 좋아요 기능
+    // Header : token 필요
+    // Body : 게시판 번호 필요
+    // return : 같은아이디로 1번누르면 좋아요1증가 2번누르면 좋아요1감소
+    @PostMapping(value = "/good", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> addgood(@RequestHeader("TOKEN") String token, @RequestBody TD td) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                Good good = new Good();
+                if (goodRepository.queryselectgoodTD(td, member) == null) {
+                    good.setTd(td);
+                    good.setMember(member);
+                    goodRepository.save(good);
+                    TD td1 = tdRepository.querySelectOneTD(td.getNo());
+                    td1.setGood(goodRepository.countByTd_no(td.getNo()));
+                    tdRepository.save(td1);
+
+                } else {
+                    Good good1 = goodRepository.queryselectgoodTD(td, member);
+                    good1.setTd(null);
+                    good1.setMember(null);
+                    goodRepository.delete(good1);
+                    TD td1 = tdRepository.querySelectOneTD(td.getNo());
+                    td1.setGood(goodRepository.countByTd_no(td.getNo()));
+                    tdRepository.save(td1);
+                }
+                int goodCnt = goodRepository.queryCountByTD(td);
+                map.put("status", 200);
+                map.put("good", goodCnt);
+            } else {
+                map.put("status", 578);
             }
 
         } catch (Exception e) {
