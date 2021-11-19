@@ -2,19 +2,23 @@ package com.example.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.dto.GoodDTO;
 import com.example.entity.Board;
-import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
+import com.example.entity.TD;
 import com.example.jwt.JwtUtil;
+import com.example.mappers.GoodMapper;
 import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberImgRepository;
 import com.example.repository.MemberRepository;
+import com.example.repository.TDRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +54,9 @@ public class MypageController {
     MemberRepository mRepository;
 
     @Autowired
+    TDRepository tdRepository;
+
+    @Autowired
     BoardRepository bRepository;
 
     @Autowired
@@ -57,6 +64,9 @@ public class MypageController {
 
     @Autowired
     GoodRepository goodRepository;
+
+    @Autowired
+    GoodMapper goodMapper;
 
     // 127.0.0.1:8080/REST/mypage/select_image?id=
     // 이미지주소
@@ -225,6 +235,7 @@ public class MypageController {
         return map;
     }
 
+    // 내가 좋아요한 게시물
     @GetMapping(value = "mygoodboard")
     public Map<String, Object> mygoodboardGET(@RequestHeader("TOKEN") String token) {
         Map<String, Object> map = new HashMap<>();
@@ -234,9 +245,43 @@ public class MypageController {
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
 
-                List<Good> list = goodRepository.findAllByMember(member1);
+                List<GoodDTO> list = goodMapper.selectGoodBoard(member1.getId());
+                List<Board> list1 = new ArrayList<>();
+                for (GoodDTO good : list) {
+                    Board board = bRepository.findById(good.getBoard()).get();
+                    list1.add(board);
+                }
+                map.put("board", list1);
+                map.put("status", 200);
 
-                map.put("board", list);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
+    }
+
+    // 내가 좋아요한 여행지,숙소,음식점
+    @GetMapping(value = "mygoodtd")
+    public Map<String, Object> mygoodTDGET(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.findById(id).orElseThrow();
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+
+                List<GoodDTO> list = goodMapper.selectGoodTD(member1.getId());
+                List<TD> list1 = new ArrayList<>();
+                for (GoodDTO good : list) {
+                    TD td = tdRepository.findById(good.getTd()).get();
+                    list1.add(td);
+                }
+                map.put("td", list1);
                 map.put("status", 200);
 
             } else {

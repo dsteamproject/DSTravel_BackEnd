@@ -301,7 +301,8 @@ public class TravelController {
     // Body : 게시판 번호 필요
     // return : 같은아이디로 1번누르면 좋아요1증가 2번누르면 좋아요1감소
     @PostMapping(value = "/good", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> addgood(@RequestHeader("TOKEN") String token, @RequestBody TD td) {
+    public Map<String, Object> addgood(@RequestHeader("TOKEN") String token,
+            @RequestParam("contentid") String contentid) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -309,11 +310,12 @@ public class TravelController {
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Good good = new Good();
+                TD td = tdRepository.querySelectOneTD(contentid);
                 if (goodRepository.queryselectgoodTD(td, member) == null) {
                     good.setTd(td);
                     good.setMember(member);
                     goodRepository.save(good);
-                    TD td1 = tdRepository.querySelectOneTD(td.getNo());
+                    TD td1 = tdRepository.querySelectOneTDno(td.getNo());
                     td1.setGood(goodRepository.countByTd_no(td.getNo()));
                     tdRepository.save(td1);
 
@@ -322,7 +324,7 @@ public class TravelController {
                     good1.setTd(null);
                     good1.setMember(null);
                     goodRepository.delete(good1);
-                    TD td1 = tdRepository.querySelectOneTD(td.getNo());
+                    TD td1 = tdRepository.querySelectOneTDno(td.getNo());
                     td1.setGood(goodRepository.countByTd_no(td.getNo()));
                     tdRepository.save(td1);
                 }

@@ -2,8 +2,6 @@ package com.example.dto;
 
 import java.util.Date;
 
-import com.example.entity.Member;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

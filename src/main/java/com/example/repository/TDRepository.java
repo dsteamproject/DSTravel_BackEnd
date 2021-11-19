@@ -1,8 +1,6 @@
 package com.example.repository;
 
 import java.util.List;
-
-import com.example.entity.City;
 import com.example.entity.TD;
 
 import org.springframework.data.domain.Pageable;
@@ -54,10 +52,10 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
 
         // ------------------- selectone -----------------------
         @Query(value = "SELECT * FROM TD WHERE NO=:no AND STATE=1", nativeQuery = true)
-        public TD querySelectOneTD(@Param("no") Integer no);
+        public TD querySelectOneTDno(@Param("no") Integer no);
 
         // 상세페이지
-        @Query(value = "SELECT * FROM TD WHERE CODE=:contentId", nativeQuery = true)
+        @Query(value = "SELECT * FROM TD WHERE CODE=:contentId AND STATE=1", nativeQuery = true)
         public TD querySelectOneTD(@Param("contentId") String contentId);
 
         // ----------------selectAll--------------------

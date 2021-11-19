@@ -17,7 +17,6 @@ import com.example.repository.TodayVisitCountRepository;
 import com.example.repository.VisitorCountRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,6 @@ public class AdminController {
 
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
-	/// testaaaaaaaaa
 
 	@Autowired
 	BoardMapper bMapper;

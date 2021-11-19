@@ -43,7 +43,6 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
     public int queryCountByTD(@Param("td") TD td);
 
     // -----------------------------------------------------------------
-    public List<Good> findAllByMember(Member member);
 
     public List<Good> findAllByBoard(Board board);
 
