@@ -178,15 +178,17 @@ public class TravelController {
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
             if (token != null) {
-                List<TD> list = tdRepository.querySelectTD(title, areaCode, contentTypeId, pageRequest);
-                int cnt = tdRepository.CountSelectTD(title, areaCode, contentTypeId);
-                System.out.println(cnt);
+                System.out.println(1);
+                String id = jwtUtil.extractUsername(token.substring(6));
+                List<TD> list = tdRepository.querySelectTDtem(title, areaCode, contentTypeId, id, pageRequest);
+                int cnt = tdRepository.CountSelectTDtem(title, areaCode, contentTypeId, id);
+                // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             } else {
                 List<TD> list = tdRepository.querySelectTD(title, areaCode, contentTypeId, pageRequest);
                 int cnt = tdRepository.CountSelectTD(title, areaCode, contentTypeId);
-                System.out.println(cnt);
+                // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             }
@@ -218,20 +220,29 @@ public class TravelController {
     }
 
     @GetMapping(value = "/distance")
-    public Map<String, Object> locationDistance(@RequestParam("areaCode") String areaCode,
-            @RequestParam("xmap") Float xmap, @RequestParam("page") int page, @RequestParam("size") int size,
-            @RequestParam("ymap") Float ymap, @RequestParam("contentTypeId") String contentTypeId,
+    public Map<String, Object> locationDistance(@RequestHeader(name = "TOKEN", required = false) String token,
+            @RequestParam("areaCode") String areaCode, @RequestParam("xmap") Float xmap, @RequestParam("page") int page,
+            @RequestParam("size") int size, @RequestParam("ymap") Float ymap,
+            @RequestParam("contentTypeId") String contentTypeId,
             @RequestParam(name = "kilometer", defaultValue = "15") double kilometer) {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<TD> list1 = tdRepository.querySelectdistanceTD(areaCode, contentTypeId, xmap, ymap, kilometer,
-                    pageRequest);
+            if (token != null) {
+                String id = jwtUtil.extractUsername(token.substring(6));
+                List<TD> list1 = tdRepository.querySelectdistanceTDtem(areaCode, contentTypeId, xmap, ymap, kilometer,
+                        id, pageRequest);
+                int cnt = tdRepository.CountSelectdistanceTDtem(areaCode, contentTypeId, xmap, ymap, kilometer, id);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("distanceList", list1);
+            } else {
+                List<TD> list1 = tdRepository.querySelectdistanceTD(areaCode, contentTypeId, xmap, ymap, kilometer,
+                        pageRequest);
+                int cnt = tdRepository.CountSelectdistanceTD(areaCode, contentTypeId, xmap, ymap, kilometer);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("distanceList", list1);
+            }
 
-            int cnt = tdRepository.CountSelectdistanceTD(areaCode, contentTypeId, xmap, ymap, kilometer);
-            System.out.println(cnt);
-            map.put("cnt", (cnt - 1) / size + 1);
-            map.put("distanceList", list1);
             map.put("status", 200);
 
         } catch (
