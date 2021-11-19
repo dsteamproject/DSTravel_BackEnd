@@ -102,6 +102,9 @@ public class AdminController {
 
 	// 모든 게시물데이터
 	// 페이지네이션 타이틀검색 카테고리별 분류
+	// 필수 Parmeter : 헤더(토큰)
+	// Parmeter : 페이지번호, 페이지당사이즈, 카테고리명, 게시물상태(0 or 1), 검색키워드
+	// 성공 return : 200, boardlist, cnt(게시물수/페이지당사이즈)
 	@GetMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardGET(@RequestHeader("token") String token,
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
@@ -122,7 +125,6 @@ public class AdminController {
 
 				int cnt = bMapper.CountBoardAdmin(keyword, category, state);
 				map.put("cnt", (cnt - 1) / size + 1);
-
 				map.put("boardlist", boardlist);
 				map.put("status", 200);
 			} else {
@@ -135,9 +137,11 @@ public class AdminController {
 		return map;
 	}
 
+	// 게시물 내용 삭제(STATE = 0 일때만 삭제됨)
+	// Parmeter : 삭제할 게시물 번호
+	// return : 성공 200, 실패 901
 	@PutMapping(value = "/board/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> boardDelete(@RequestHeader("token") String token,
-			@RequestParam(name = "board") Board board) {
+	public Map<String, Object> boardDelete(@RequestHeader("token") String token, @RequestParam(name = "no") String no) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 
@@ -146,7 +150,12 @@ public class AdminController {
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
 
-				map.put("status", 200);
+				int result = bMapper.Admindelete(no);
+				if (result != 1) {
+					map.put("status", 901);
+				} else {
+					map.put("status", 200);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

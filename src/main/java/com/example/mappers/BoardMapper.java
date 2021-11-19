@@ -6,6 +6,7 @@ import com.example.dto.BoardDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface BoardMapper {
@@ -22,5 +23,8 @@ public interface BoardMapper {
                         + " AND TITLE LIKE '%' || #{keyword} || '%' </where></script>" })
         public int CountBoardAdmin(@Param("keyword") String keyword, @Param("category") String category,
                         @Param("state") String state);
+
+        @Update({ "UPDATE BOARD SET HIT=0 ,CATEGORY='',CONTENT='',TITLE='' WHERE NO=#{no} AND STATE=0" })
+        public int Admindelete(@Param("no") String no);
 
 }
