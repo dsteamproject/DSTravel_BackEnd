@@ -59,11 +59,13 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
         @Query(value = "SELECT * FROM TD WHERE CODE=:contentId", nativeQuery = true)
         public TD querySelectOneTD(@Param("contentId") String contentId);
 
-        @Query(value = "SELECT * FROM TD WHERE Title LIKE '%' || :title || '%' AND TYPE=:contentTypeId AND CITY=:areaCode", nativeQuery = true)
+        // 전체 여행지,숙소,검색 조회
+        @Query(value = "SELECT * FROM TD WHERE Title LIKE '%' || :title || '%' AND TYPE=:contentTypeId AND CITY=:areaCode AND STATE=1", nativeQuery = true)
         public List<TD> querySelectTD(@Param("title") String title, @Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, Pageable pageable);
 
-        @Query(value = "SELECT COUNT(*) FROM TD WHERE Title LIKE '%' || :title || '%' AND TYPE=:contentTypeId AND CITY=:areaCode", nativeQuery = true)
+        // 전체 여행지,숙소,검색 조회 수
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE Title LIKE '%' || :title || '%' AND TYPE=:contentTypeId AND CITY=:areaCode AND STATE=1", nativeQuery = true)
         public int CountSelectTD(@Param("title") String title, @Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId);
 

@@ -11,7 +11,6 @@ import com.example.entity.City;
 import com.example.entity.Member;
 import com.example.entity.Sigungu;
 import com.example.entity.TD;
-import com.example.entity.TDtem;
 import com.example.jwt.JwtUtil;
 import com.example.repository.Cat1Repository;
 import com.example.repository.Cat2Repository;
@@ -20,7 +19,6 @@ import com.example.repository.CityRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
-import com.example.repository.TDtemRepository;
 import com.example.repository.TypeRepository;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +41,6 @@ public class TravelController {
 
     @Autowired
     TDRepository tdRepository;
-
-    @Autowired
-    TDtemRepository tdtemRepository;
 
     @Autowired
     CityRepository cityRepository;
@@ -173,7 +168,8 @@ public class TravelController {
     // 지역, contenttype별 목록
     // Param : areacode, contenttypeId, page
     @GetMapping(value = "/select")
-    public Map<String, Object> getTourApiselect(@RequestParam(name = "page", defaultValue = "1") int page,
+    public Map<String, Object> getTourApiselect(@RequestHeader(name = "TOKEN", required = false) String token,
+            @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "title", defaultValue = "") String title,
             @RequestParam(name = "contentTypeId", defaultValue = "") String contentTypeId,
@@ -181,11 +177,19 @@ public class TravelController {
         Map<String, Object> map = new HashMap<>();
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, size);
-            List<TD> list = tdRepository.querySelectTD(title, areaCode, contentTypeId, pageRequest);
-            int cnt = tdRepository.CountSelectTD(title, areaCode, contentTypeId);
-            System.out.println(cnt);
-            map.put("cnt", (cnt - 1) / size + 1);
-            map.put("list", list);
+            if (token != null) {
+                List<TD> list = tdRepository.querySelectTD(title, areaCode, contentTypeId, pageRequest);
+                int cnt = tdRepository.CountSelectTD(title, areaCode, contentTypeId);
+                System.out.println(cnt);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
+            } else {
+                List<TD> list = tdRepository.querySelectTD(title, areaCode, contentTypeId, pageRequest);
+                int cnt = tdRepository.CountSelectTD(title, areaCode, contentTypeId);
+                System.out.println(cnt);
+                map.put("cnt", (cnt - 1) / size + 1);
+                map.put("list", list);
+            }
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -245,7 +249,7 @@ public class TravelController {
     // 성공 return : status(200)
     @PostMapping(value = "/TDtem/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> TDtemInsert(@RequestParam(name = "type") Integer type,
-            @RequestHeader("token") String token, @RequestBody TDtem tdtem) {
+            @RequestHeader("token") String token, @RequestBody TD td) {
         Map<String, Object> map = new HashMap<>();
         try {
 
@@ -255,14 +259,16 @@ public class TravelController {
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 // System.out.println(tdtem);
                 // System.out.println(type);
-                TDtem tdtem1 = new TDtem();
-                tdtem1.setTitle(tdtem.getTitle());
-                tdtem1.setAddr(tdtem.getAddr());
-                tdtem1.setType(typeRepository.getById(type));
-                tdtem1.setXlocation((Float) tdtem.getXlocation());
-                tdtem1.setYlocation((Float) tdtem.getYlocation());
-                // System.out.println(tdtem1);
-                tdtemRepository.save(tdtem1);
+                TD td1 = new TD();
+                td1.setTitle(td.getTitle());
+                td1.setAddr(td.getAddr());
+                td1.setType(typeRepository.getById(type));
+                td1.setXlocation(td.getXlocation());
+                td1.setYlocation(td.getYlocation());
+                td1.setState(0);
+                td1.setUser(id);
+                // System.out.println(td1);
+                tdRepository.save(td1);
                 map.put("status", 200);
             }
 

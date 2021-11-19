@@ -164,6 +164,31 @@ public class AdminController {
 		return map;
 	}
 
+	// 게시물 state=0 => state=1 로 복원
+	// Parmeter : param(no)
+	@PutMapping(value = "/board/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> boardupdate(@RequestHeader("token") String token, @RequestParam(name = "no") long no) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				Board board = bRepository.querySelectByIdstate0(no);
+				board.setState(1);
+				bRepository.save(board);
+				map.put("board", board);
+				map.put("status", 200);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
 	// 방문자수 저장(방문자수만 넘어오면 됨. 하루에 한번만 넘어와야함.)
 	@PostMapping(value = "/visitorCount", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> visitorPOST(@RequestHeader("token") String token,

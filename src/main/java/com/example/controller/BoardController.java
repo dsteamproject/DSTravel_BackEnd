@@ -223,7 +223,7 @@ public class BoardController {
 			if (no == 0) {
 				map.put("status", 300);
 			} else {
-				Board board = bRepository.querySelectById(no);
+				Board board = bRepository.querySelectByIdstate1(no);
 				List<Reply> replylist = reRepository.querySelectReplyAllByBno(no);
 				if (token != null) {
 					map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
@@ -262,7 +262,7 @@ public class BoardController {
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-				Board board = bRepository.querySelectById(no);
+				Board board = bRepository.querySelectByIdstate1(no);
 				map.put("board", board);
 				map.put("status", 200);
 			} else {
@@ -277,25 +277,26 @@ public class BoardController {
 
 	// 게시판 수정 (제목, 내용 + 필요사항 있을시 추가할 것)
 	@PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> updatePost(@RequestParam("file") MultipartFile file, @ModelAttribute Board board,
-			@RequestHeader(name = "TOKEN") String token) {
+	public Map<String, Object> updatePost(@RequestParam(name = "file", required = false) MultipartFile file,
+			@ModelAttribute Board board, @RequestHeader(name = "TOKEN") String token) {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-				Board board1 = bRepository.querySelectById(board.getNo());
+				Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 				board1.setTitle(board.getTitle());
 				board1.setContent(board.getContent());
 				bRepository.save(board1);
-
-				BoardImg bImg = bImgRepository.querySelectByBoardno(board);
-				bImg.setImage(file.getBytes());
-				bImg.setImagename(file.getOriginalFilename());
-				bImg.setImagesize(file.getSize());
-				bImg.setImagetype(file.getContentType());
-				bImgRepository.save(bImg);
+				if (file != null) {
+					BoardImg bImg = bImgRepository.querySelectByBoardno(board);
+					bImg.setImage(file.getBytes());
+					bImg.setImagename(file.getOriginalFilename());
+					bImg.setImagesize(file.getSize());
+					bImg.setImagetype(file.getContentType());
+					bImgRepository.save(bImg);
+				}
 
 				map.put("status", 200);
 			} else {
@@ -349,7 +350,7 @@ public class BoardController {
 			}
 			if (oldCookie != null) {
 				if (!oldCookie.getValue().contains("[" + no + "]")) {
-					Board board = bRepository.querySelectById(no);
+					Board board = bRepository.querySelectByIdstate1(no);
 					board.setHit(board.getHit() + 1);
 					bRepository.save(board);
 					oldCookie.setValue(oldCookie.getValue() + "_[" + no + "]");
@@ -358,7 +359,7 @@ public class BoardController {
 					response.addCookie(oldCookie);
 				}
 			} else {
-				Board board = bRepository.querySelectById(no);
+				Board board = bRepository.querySelectByIdstate1(no);
 				board.setHit(board.getHit() + 1);
 				bRepository.save(board);
 				Cookie newCookie = new Cookie("postView", "[" + no + "]");
@@ -387,12 +388,12 @@ public class BoardController {
 				if (member != null && member.getToken().equals(token.substring(6))
 						&& !jwtUtil.isTokenExpired(token.substring(6))) {
 					Reply newReply = new Reply();
-					newReply.setBoard(bRepository.querySelectById(no));
+					newReply.setBoard(bRepository.querySelectByIdstate1(no));
 					newReply.setReplycontent(reply.getReplycontent());
 					newReply.setMember(member);
 					reRepository.save(newReply);
 
-					Board board = bRepository.querySelectById(no);
+					Board board = bRepository.querySelectByIdstate1(no);
 					board.setReply(reRepository.queryCountSelectReply(no));
 					bRepository.save(board);
 
@@ -425,7 +426,7 @@ public class BoardController {
 					reRepository.queryReplyDelete(no);
 					int countreply = reRepository.queryCountSelectReply(board.getNo());
 					System.out.println(countreply);
-					Board board1 = bRepository.querySelectById(board.getNo());
+					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 					board1.setReply(countreply);
 					bRepository.save(board1);
 					map.put("status", 200);
@@ -476,7 +477,7 @@ public class BoardController {
 					good.setBoard(board);
 					good.setMember(member);
 					goodRepository.save(good);
-					Board board1 = bRepository.querySelectById(board.getNo());
+					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 					board1.setGood(goodRepository.countByBoard_no(board.getNo()));
 					bRepository.save(board1);
 
@@ -485,7 +486,7 @@ public class BoardController {
 					good1.setBoard(null);
 					good1.setMember(null);
 					goodRepository.delete(good1);
-					Board board1 = bRepository.querySelectById(board.getNo());
+					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 					board1.setGood(goodRepository.countByBoard_no(board.getNo()));
 					bRepository.save(board1);
 				}

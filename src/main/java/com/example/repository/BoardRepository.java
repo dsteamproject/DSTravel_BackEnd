@@ -35,7 +35,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         public int queryDelete(@Param("a") long no);
 
         @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=1;", nativeQuery = true)
-        public Board querySelectById(@Param("b") long no);
+        public Board querySelectByIdstate1(@Param("b") long no);
+
+        @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=0;", nativeQuery = true)
+        public Board querySelectByIdstate0(@Param("b") long no);
 
         @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)
         public List<Board> querySelectAllByTitleOrderByDesc(@Param("Keyword") String keyword,

@@ -40,7 +40,7 @@ public class TD {
     private String addr;
 
     @Column(name = "XLOCATION")
-    private Float xlocaion;
+    private Float xlocation;
 
     @Column(name = "YLOCATION")
     private Float ylocation;
@@ -59,6 +59,12 @@ public class TD {
 
     @Column(name = "RANK")
     private int rank = 0;
+
+    @Column(name = "STATE")
+    private int state = 1;
+
+    @Column(name = "USER")
+    private String user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TYPE")

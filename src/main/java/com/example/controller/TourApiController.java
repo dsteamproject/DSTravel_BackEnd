@@ -282,7 +282,7 @@ public class TourApiController {
                                                     typeRepository.findById(j1.getJSONObject(i).getInt("contenttypeid"))
                                                             .orElseThrow());
                                     // a.put("firstimage", j1.getJSONObject(i).getString("firstimage"));
-                                    td.setXlocaion(j1.getJSONObject(i).getFloat("mapx"));
+                                    td.setXlocation(j1.getJSONObject(i).getFloat("mapx"));
                                     td.setYlocation(j1.getJSONObject(i).getFloat("mapy"));
                                     // a.put("mapx", j1.getJSONObject(i).getFloat("mapx"));
                                     // a.put("mapy", j1.getJSONObject(i).getFloat("mapy"));
