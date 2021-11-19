@@ -107,6 +107,7 @@ public class AdminController {
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
 			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
 			@RequestParam(name = "category", required = false) String category,
+			@RequestParam(name = "state", required = false) String state,
 			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
 		Map<String, Object> map = new HashMap<>();
 		try {
@@ -117,15 +118,35 @@ public class AdminController {
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
 
 				List<BoardDTO> boardlist = bMapper.selectBoardAdmin(keyword, category, 1 + (size * (page - 1)),
-						page * size);
+						page * size, state);
 
-				int cnt = bMapper.CountBoardAdmin(keyword, category);
+				int cnt = bMapper.CountBoardAdmin(keyword, category, state);
 				map.put("cnt", (cnt - 1) / size + 1);
 
 				map.put("boardlist", boardlist);
 				map.put("status", 200);
 			} else {
 				map.put("status", 578);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
+	@PutMapping(value = "/board/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> boardDelete(@RequestHeader("token") String token,
+			@RequestParam(name = "board") Board board) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+
+				map.put("status", 200);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

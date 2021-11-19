@@ -12920,3 +12920,6 @@ UPDATE BOARD SET BOARD.CONTENT="dnkfnakjfksa" [42122-200]
 2021-11-18 17:05:39 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "UPDATE BOARD SET CONTENT=[*]'TEST;"; SQL statement:
 UPDATE BOARD SET CONTENT='TEST; [42000-200]
+2021-11-19 09:41:40 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting ; SQL statement:
+SELECT * FROM(SELECT NO,CATEGORY, CONTENT, GOOD, HIT, REGDATE, REPLY, STATE, TITLE, MEMBER, ROW_NUMBER() OVER (ORDER BY NO DESC) ROWN FROM BOARD  WHERE  CATEGORY=?  AND STATE=? AND TITLE LIKE '%' || ? || '%' ORDER BY NO DESC ) BOARD WHERE ROWN BETWEEN ? AND ? [22018-200]
