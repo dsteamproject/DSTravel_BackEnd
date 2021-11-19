@@ -12,6 +12,7 @@ import com.example.entity.Board;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
 import com.example.entity.TD;
+import com.example.entity.Type;
 import com.example.jwt.JwtUtil;
 import com.example.mappers.GoodMapper;
 import com.example.repository.BoardRepository;
@@ -19,6 +20,7 @@ import com.example.repository.GoodRepository;
 import com.example.repository.MemberImgRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.TDRepository;
+import com.example.repository.TypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(value = "/mypage")
 public class MypageController {
+
+    @Autowired
+    TypeRepository typeRepository;
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -267,19 +272,21 @@ public class MypageController {
 
     // 내가 좋아요한 여행지,숙소,음식점
     @GetMapping(value = "mygoodtd")
-    public Map<String, Object> mygoodTDGET(@RequestHeader("TOKEN") String token) {
+    public Map<String, Object> mygoodTDGET(@RequestHeader("TOKEN") String token, @RequestParam("type") Integer type) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-
+                Type type1 = typeRepository.findById(type).get();
                 List<GoodDTO> list = goodMapper.selectGoodTD(member1.getId());
                 List<TD> list1 = new ArrayList<>();
                 for (GoodDTO good : list) {
-                    TD td = tdRepository.findById(good.getTd()).get();
-                    list1.add(td);
+                    TD td = tdRepository.selectGoodType(good.getTd(), type1);
+                    if (td != null) {
+                        list1.add(td);
+                    }
                 }
                 map.put("td", list1);
                 map.put("status", 200);

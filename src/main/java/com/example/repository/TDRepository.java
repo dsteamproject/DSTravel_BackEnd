@@ -2,6 +2,7 @@ package com.example.repository;
 
 import java.util.List;
 import com.example.entity.TD;
+import com.example.entity.Type;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -104,5 +105,9 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
         public int CountSelectdistanceTD(@Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, @Param("xmap") Float xmap,
                         @Param("ymap") Float ymap, @Param("distance") double distance);
+
+        // ---------------------좋아요한 여행지, 숙소, 음식점--------------------------
+        @Query(value = "SELECT * FROM TD WHERE NO=:td AND TYPE=:Type AND STATE=1", nativeQuery = true)
+        public TD selectGoodType(@Param("td") Integer td, @Param("Type") Type Type);
 
 }
