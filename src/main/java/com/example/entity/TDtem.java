@@ -35,7 +35,7 @@ public class TDtem {
     private String addr;
 
     @Column(name = "XLOCATION")
-    private Float xlocaion;
+    private Float xlocation;
 
     @Column(name = "YLOCATION")
     private Float ylocation;

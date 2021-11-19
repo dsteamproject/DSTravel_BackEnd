@@ -8,20 +8,27 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import com.example.entity.City;
+import com.example.entity.Member;
 import com.example.entity.Sigungu;
 import com.example.entity.TD;
+import com.example.entity.TDtem;
+import com.example.jwt.JwtUtil;
 import com.example.repository.Cat1Repository;
 import com.example.repository.Cat2Repository;
 import com.example.repository.Cat3Repository;
 import com.example.repository.CityRepository;
+import com.example.repository.MemberRepository;
 import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
+import com.example.repository.TDtemRepository;
 import com.example.repository.TypeRepository;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +39,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TravelController {
 
     @Autowired
+    MemberRepository mRepository;
+
+    @Autowired
     TDRepository tdRepository;
+
+    @Autowired
+    TDtemRepository tdtemRepository;
 
     @Autowired
     CityRepository cityRepository;
@@ -51,6 +64,9 @@ public class TravelController {
 
     @Autowired
     TypeRepository typeRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // 127.0.0.1:8080/REST/travel/image1
     @GetMapping(value = "/image1", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -222,6 +238,39 @@ public class TravelController {
         }
         return map;
 
+    }
+
+    // 임시장소 저장
+    // Parameter : header(토큰), param(type), body(title, addr, xlocation, ylocation)
+    // 성공 return : status(200)
+    @PostMapping(value = "/TDtem/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> TDtemInsert(@RequestParam(name = "type") Integer type,
+            @RequestHeader("token") String token, @RequestBody TDtem tdtem) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                // System.out.println(tdtem);
+                // System.out.println(type);
+                TDtem tdtem1 = new TDtem();
+                tdtem1.setTitle(tdtem.getTitle());
+                tdtem1.setAddr(tdtem.getAddr());
+                tdtem1.setType(typeRepository.getById(type));
+                tdtem1.setXlocation((Float) tdtem.getXlocation());
+                tdtem1.setYlocation((Float) tdtem.getYlocation());
+                // System.out.println(tdtem1);
+                tdtemRepository.save(tdtem1);
+                map.put("status", 200);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
     }
 
 }
