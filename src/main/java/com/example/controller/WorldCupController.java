@@ -16,6 +16,7 @@ import com.example.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,128 +41,44 @@ public class WorldCupController {
             City city2 = cityRepository.findById(city).get();
             Type type2 = typeRepository.findById(type).get();
             List<TD> list = tdRepository.selectTDWorldCup(city2, type2);
-            if (list.size() >= 2 && list.size() < 4) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
+            map.put("listCnt", list.size());
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/home", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> homePost(@RequestParam("city") Integer city, @RequestParam("type") Integer type,
+            @RequestParam("size") Integer size) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            City city2 = cityRepository.findById(city).get();
+            Type type2 = typeRepository.findById(type).get();
+            List<TD> list = tdRepository.selectTDWorldCup(city2, type2);
+            List<TD> list1 = new ArrayList<>();
+            List<TD> list2 = new ArrayList<>();
+            int a[] = new int[size];
+            Random r = new Random();
+            for (int i = 0; i < size; i++) {
+                a[i] = r.nextInt(size) + 1;
+                for (int j = 0; j < i; j++) {
+                    if (a[i] == a[j]) {
+                        i--;
                     }
                 }
-                for (int b = 0; b < 2; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 4 && list.size() < 8) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 4; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 8 && list.size() < 16) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 8; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 16 && list.size() < 32) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 16; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 32 && list.size() < 64) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 32; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 64 && list.size() < 128) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 64; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else if (list.size() >= 128) {
-                List<TD> list1 = new ArrayList<>();
-                int a[] = new int[list.size()];
-                Random r = new Random();
-                for (int i = 0; i < list.size(); i++) {
-                    a[i] = r.nextInt(list.size()) + 1;
-                    for (int j = 0; j < i; j++) {
-                        if (a[i] == a[j]) {
-                            i--;
-                        }
-                    }
-                }
-                for (int b = 0; b < 128; b++) {
-                    list1.add(list.get(a[b] - 1));
-                }
-                map.put("randomlist", list1);
-                map.put("status", 200);
-            } else {
-                map.put("result", "자료가 2개 이상 필요합니다.");
             }
+            for (int b = 0; b < (size / 2); b++) {
+                list1.add(list.get(a[b] - 1));
+            }
+            for (int c = (size / 2); c < size; c++) {
+                list2.add(list.get(a[c] - 1));
+            }
+            map.put("randomlist1", list1);
+            map.put("randomlist2", list2);
+            map.put("status", 200);
 
         } catch (Exception e) {
             map.put("status", e.hashCode());
