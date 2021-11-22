@@ -1,6 +1,7 @@
 package com.example.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +23,9 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
     @Query(value = "SELECT * FROM good WHERE Board=:board AND Member=:member", nativeQuery = true)
     public Good queryselectgood(@Param("board") Board board, @Param("member") Member member);
 
+    @Query(value = "SELECT * FROM good WHERE Board=:board AND Member=:member", nativeQuery = true)
+    public Optional<Good> queryselectgoodstate(@Param("board") Board board, @Param("member") Member member);
+
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(value = "INSERT INTO good VALUES (SEQ_GOOD_NO.NEXTVAL, :board , :member)", nativeQuery = true)
@@ -33,6 +37,9 @@ public interface GoodRepository extends JpaRepository<Good, Long> {
     // --------------------------- TD-------------------------------
     @Query(value = "SELECT * FROM good WHERE TD=:td AND Member=:member", nativeQuery = true)
     public Good queryselectgoodTD(@Param("td") TD td, @Param("member") Member member);
+
+    @Query(value = "SELECT * FROM good WHERE TD=:td AND Member=:member", nativeQuery = true)
+    public Optional<Good> queryselectgoodstateTD(@Param("td") TD td, @Param("member") Member member);
 
     @Transactional
     @Modifying(clearAutomatically = true)

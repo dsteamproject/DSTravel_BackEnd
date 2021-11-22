@@ -480,6 +480,7 @@ public class BoardController {
 					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 					board1.setGood(goodRepository.countByBoard_no(board.getNo()));
 					bRepository.save(board1);
+					map.put("goodresult", goodRepository.queryselectgoodstate(board, member).isPresent());
 
 				} else {
 					Good good1 = goodRepository.queryselectgood(board, member);
@@ -489,6 +490,7 @@ public class BoardController {
 					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
 					board1.setGood(goodRepository.countByBoard_no(board.getNo()));
 					bRepository.save(board1);
+					map.put("goodresult", goodRepository.queryselectgoodstate(board, member).isPresent());
 				}
 				int goodCnt = goodRepository.queryCountByBoard(board);
 				map.put("status", 200);
@@ -504,4 +506,26 @@ public class BoardController {
 		return map;
 	}
 
+	// 좋아요 버튼 적용확인(꽉찬하트 true, 빈하트 false)
+	@PostMapping(value = "/good/state", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> addgoodstate(@RequestHeader("TOKEN") String token, @RequestBody Board board) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				Board board1 = bRepository.querySelectByIdstate1(board.getNo());
+				map.put("goodresult", goodRepository.queryselectgoodstate(board1, member).isPresent());
+				map.put("status", 200);
+			} else {
+				map.put("status", 578);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
 }

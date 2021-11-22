@@ -319,6 +319,7 @@ public class TravelController {
                     TD td1 = tdRepository.querySelectOneTDno(td.getNo());
                     td1.setGood(goodRepository.countByTd_no(td.getNo()));
                     tdRepository.save(td1);
+                    map.put("goodresult", goodRepository.queryselectgoodstateTD(td, member).isPresent());
 
                 } else {
                     Good good1 = goodRepository.queryselectgoodTD(td, member);
@@ -328,10 +329,35 @@ public class TravelController {
                     TD td1 = tdRepository.querySelectOneTDno(td.getNo());
                     td1.setGood(goodRepository.countByTd_no(td.getNo()));
                     tdRepository.save(td1);
+                    map.put("goodresult", goodRepository.queryselectgoodstateTD(td, member).isPresent());
                 }
                 int goodCnt = goodRepository.queryCountByTD(td);
                 map.put("status", 200);
                 map.put("good", goodCnt);
+            } else {
+                map.put("status", 578);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 좋아요 버튼 적용확인(꽉찬하트 true, 빈하트 false)
+    @PostMapping(value = "/good/state", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> addgoodstate(@RequestHeader("TOKEN") String token,
+            @RequestParam("contentid") String contentid) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                TD td = tdRepository.querySelectOneTD(contentid);
+                map.put("goodresult", goodRepository.queryselectgoodstateTD(td, member).isPresent());
+                map.put("status", 200);
             } else {
                 map.put("status", 578);
             }
