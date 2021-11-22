@@ -100,7 +100,7 @@ public class MemberController {
         Map<String, Object> map = new HashMap<>();
         try {
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
-            if (mRepository.findById(member.getId()).isPresent()) {
+            if (mRepository.querySelectByid(member.getId()).isPresent()) {
                 if (bcpe.matches(member.getPassword(), mRepository.getById(member.getId()).getPassword())) {
                     String token = jwtUtil.generateToken(member.getId());
                     Member member1 = mRepository.getById(member.getId());
@@ -112,6 +112,9 @@ public class MemberController {
                 } else {
                     map.put("result", "암호가 틀립니다.");
                 }
+            } else if (mRepository.querySelectmember(member.getId()).isPresent()) {
+                map.put("result", "탈퇴한 아이디 입니다.");
+
             } else {
                 map.put("result", "아이디가 틀립니다.");
             }

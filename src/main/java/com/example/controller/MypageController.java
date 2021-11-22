@@ -152,7 +152,7 @@ public class MypageController {
             Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                map.put("member", mRepository.querySelectmemberprojection(id));
+                map.put("member", mRepository.querySelectByid(id).get());
                 map.put("status", 200);
             } else {
                 map.put("status", 578);
