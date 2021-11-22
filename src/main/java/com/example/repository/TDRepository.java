@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.example.entity.City;
 import com.example.entity.TD;
 import com.example.entity.Type;
 
@@ -134,5 +135,12 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
         // ---------------------여행지 임시저장 ADMIN List----------------------------
         @Query(value = "SELECT * FROM TD WHERE USER IS NOT NULL AND USER !='ADMIN'", nativeQuery = true)
         public List<TD> selectAdminTDtem();
+
+        // -----------------------WORLD CUP 조회 ----------------------
+        @Query(value = "SELECT * FROM TD WHERE CITY=:city AND TYPE=:type AND STATE=1 ", nativeQuery = true)
+        public List<TD> selectTDWorldCup(@Param("city") City city, @Param("type") Type tpye);
+
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE CITY=:city AND TYPE=:type AND STATE=1 ", nativeQuery = true)
+        public int COUNTTDWorldCup(@Param("city") City city, @Param("type") Type type);
 
 }

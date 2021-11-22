@@ -78,8 +78,8 @@ public class AdminController {
 
 	}
 
-	// 아직 구현중 ( 어떤 데이터를 수정할지 정해야 함. )
 	// 회원정보 수정
+	// id(아이디를 주면 해당 아이디의 정보 수정), email, gender, name, nicname, role, state
 	@PutMapping(value = "/memberupdate", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberPUT(@RequestHeader("token") String token, @RequestBody Member member1) {
 		Map<String, Object> map = new HashMap<>();
@@ -88,8 +88,14 @@ public class AdminController {
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-				// Member member2 = mRepository.findById(member1.getId());
-				// member2.set
+				Member member2 = mRepository.findById(member1.getId()).get();
+				member2.setEmail(member1.getEmail());
+				member2.setGender(member1.getGender());
+				member2.setName(member1.getName());
+				member2.setNicname(member1.getNicname());
+				member2.setRole(member1.getRole());
+				member2.setState(member1.getState());
+				mRepository.save(member2);
 				map.put("status", 200);
 
 			} else {
