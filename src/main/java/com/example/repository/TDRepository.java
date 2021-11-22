@@ -1,11 +1,15 @@
 package com.example.repository;
 
 import java.util.List;
+
+import javax.transaction.Transactional;
+
 import com.example.entity.TD;
 import com.example.entity.Type;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -109,5 +113,26 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
         // ---------------------좋아요한 여행지, 숙소, 음식점--------------------------
         @Query(value = "SELECT * FROM TD WHERE NO=:td AND TYPE=:Type AND STATE=1", nativeQuery = true)
         public TD selectGoodType(@Param("td") Integer td, @Param("Type") Type Type);
+
+        // ---------------------내가 요청한 지도(여행지)-------------------------------
+        @Query(value = "SELECT * FROM TD WHERE USER=:id", nativeQuery = true)
+        public List<TD> selectMyTDtem(@Param("id") String id);
+
+        // ---------------------여행지 임시저장 요청처리(state)----------------------------
+        // (승인)
+        @Transactional
+        @Query(value = "UPDATE TD SET STATE=1 WHERE NO=:no", nativeQuery = true)
+        @Modifying(clearAutomatically = true)
+        public int queryTDtemApproval(@Param("no") Integer no);
+
+        // (반려)
+        @Transactional
+        @Query(value = "UPDATE TD SET STATE=2 WHERE NO=:no", nativeQuery = true)
+        @Modifying(clearAutomatically = true)
+        public int queryTDtemCompanion(@Param("no") Integer no);
+
+        // ---------------------여행지 임시저장 ADMIN List----------------------------
+        @Query(value = "SELECT * FROM TD WHERE USER IS NOT NULL AND USER !='ADMIN'", nativeQuery = true)
+        public List<TD> selectAdminTDtem();
 
 }

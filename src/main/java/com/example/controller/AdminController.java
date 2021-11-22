@@ -7,12 +7,14 @@ import java.util.Map;
 import com.example.dto.BoardDTO;
 import com.example.entity.Board;
 import com.example.entity.Member;
+import com.example.entity.TD;
 import com.example.entity.TodayVisitCount;
 import com.example.entity.VisitorCount;
 import com.example.jwt.JwtUtil;
 import com.example.mappers.BoardMapper;
 import com.example.repository.BoardRepository;
 import com.example.repository.MemberRepository;
+import com.example.repository.TDRepository;
 import com.example.repository.TodayVisitCountRepository;
 import com.example.repository.VisitorCountRepository;
 
@@ -42,6 +44,9 @@ public class AdminController {
 
 	@Autowired
 	VisitorCountRepository vcRepository;
+
+	@Autowired
+	TDRepository tdRepository;
 
 	@Autowired
 	TodayVisitCountRepository tdvcRepository;
@@ -267,6 +272,58 @@ public class AdminController {
 				map.put("status", 200);
 			} else {
 				map.put("status", 578);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
+	// 여행지 임시저장 List
+	@GetMapping(value = "/TDtem", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> TDtemGET(@RequestHeader("token") String token) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				List<TD> list = tdRepository.selectAdminTDtem();
+				map.put("AdminTDtemList", list);
+				map.put("status", 200);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
+	// 여행지 임시저장 요청처리 (state=0 => 반려 state=2, 승인 state=1)
+	@PutMapping(value = "/TDtem", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> TDtemPUT(@RequestHeader("token") String token, @RequestParam(name = "no") Integer no,
+			@RequestParam(name = "review") String review) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				if (review.equals("Approval")) {
+					tdRepository.queryTDtemApproval(no);
+					map.put("result", "승인 완료");
+					map.put("status", 200);
+				} else if (review.equals("Companion")) {
+					tdRepository.queryTDtemCompanion(no);
+					map.put("result", "반려 처리");
+					map.put("status", 200);
+				} else {
+					map.put("result", "review 값이 잘못되었습니다. (Approval or Companion 으로 전송필요)");
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

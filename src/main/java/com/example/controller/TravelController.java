@@ -266,7 +266,7 @@ public class TravelController {
     // 성공 return : status(200)
     @PostMapping(value = "/TDtem/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> TDtemInsert(@RequestParam(name = "type") Integer type,
-            @RequestHeader("token") String token, @RequestBody TD td) {
+            @RequestParam(name = "city") Integer city, @RequestHeader("token") String token, @RequestBody TD td) {
         Map<String, Object> map = new HashMap<>();
         try {
 
@@ -282,6 +282,7 @@ public class TravelController {
                 td1.setType(typeRepository.getById(type));
                 td1.setXlocation(td.getXlocation());
                 td1.setYlocation(td.getYlocation());
+                td1.setCity(cityRepository.getById(city));
                 td1.setState(0);
                 td1.setUser(id);
                 // System.out.println(td1);

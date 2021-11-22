@@ -302,6 +302,31 @@ public class MypageController {
 
     }
 
+    // 내가 요청한 여행지
+    @GetMapping(value = "mytdtem")
+    public Map<String, Object> myTDtemGET(@RequestHeader("TOKEN") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member1 = mRepository.findById(id).orElseThrow();
+            if (member1 != null && member1.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+
+                List<TD> list = tdRepository.selectMyTDtem(id);
+                map.put("mytdtem", list);
+                map.put("status", 200);
+
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+
+    }
+
     // 회원탈퇴
     @PutMapping(value = "/memberdelete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> memberdelete(@RequestHeader("TOKEN") String token) {
