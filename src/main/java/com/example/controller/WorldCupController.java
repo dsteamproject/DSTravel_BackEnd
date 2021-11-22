@@ -60,20 +60,20 @@ public class WorldCupController {
             List<TD> list = tdRepository.selectTDWorldCup(city2, type2);
             List<TD> list1 = new ArrayList<>();
             List<TD> list2 = new ArrayList<>();
-            int a[] = new int[size];
+            int a[] = new int[size * 2];
             Random r = new Random();
-            for (int i = 0; i < size; i++) {
-                a[i] = r.nextInt(size) + 1;
+            for (int i = 0; i < (size * 2); i++) {
+                a[i] = r.nextInt(size * 2) + 1;
                 for (int j = 0; j < i; j++) {
                     if (a[i] == a[j]) {
                         i--;
                     }
                 }
             }
-            for (int b = 0; b < (size / 2); b++) {
+            for (int b = 0; b < size; b++) {
                 list1.add(list.get(a[b] - 1));
             }
-            for (int c = (size / 2); c < size; c++) {
+            for (int c = size; c < (size * 2); c++) {
                 list2.add(list.get(a[c] - 1));
             }
             map.put("randomlist1", list1);
