@@ -208,6 +208,27 @@ public class AdminController {
 		return map;
 	}
 
+	@GetMapping(value = "/board/selectOne", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> boardselectOne(@RequestHeader("token") String token, @RequestParam("no") Long no) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				BoardDTO board = bMapper.BoardSelectOneAdmin(no);
+				map.put("board", board);
+				map.put("status", 200);
+			} else {
+				map.put("status", 578);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
 	// 게시물 내용 수정
 	@PutMapping(value = "/boardupdate", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardPUT(@RequestHeader("token") String token, @RequestBody Board board) {
