@@ -55,25 +55,15 @@ public class Board {
     @Column(name = "reply")
     private int reply = 0; // 리플수
 
+    @Column(name = "warning")
+    private int warning = 0; // 신고수
+
     @CreationTimestamp // 날짜는 자동으로 추가
     @Column(updatable = false, name = "REGDATE")
     private Date regdate = null; // 날짜
 
     @Column(name = "STATE")
     private int state = 1;
-
-    // @Lob
-    // @Column(name = "IMAGE")
-    // private byte[] image;
-
-    // @Column(name = "IMAGENAME")
-    // private String imagename;
-
-    // @Column(name = "IMAGESIZE")
-    // private long imagesize;
-
-    // @Column(name = "IMAGETYPE")
-    // private String imagetype;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER")

@@ -15,12 +15,14 @@ import com.example.entity.BoardImg;
 import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Reply;
+import com.example.entity.Warning;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardImgRepository;
 import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.ReplyRepository;
+import com.example.repository.WarningRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,6 +70,9 @@ public class BoardController {
 
 	@Autowired
 	BoardImgRepository bImgRepository;
+
+	@Autowired
+	WarningRepository warningRepository;
 
 	// 게시판 목록 {no, title, category, content, hit, good(int), reply(int), regdate,
 	// state, member}
@@ -528,4 +533,74 @@ public class BoardController {
 		}
 		return map;
 	}
+
+	// 신고 기능
+	// Header : token 필요
+	// Body : 게시판 번호 필요
+	// return : 같은아이디로 1번누르면 신고1증가, 2번누르면 신고1감소
+	@PostMapping(value = "/warning", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> addwarning(@RequestHeader("TOKEN") String token, @RequestBody Board board) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				Warning warning = new Warning();
+				if (warningRepository.queryselectwarning(board, member) == null) {
+					warning.setBoard(board);
+					warning.setMember(member);
+					warningRepository.save(warning);
+					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
+					board1.setWarning(warningRepository.countByBoard_no(board.getNo()));
+					bRepository.save(board1);
+					map.put("warningresult", warningRepository.queryselectwarningstate(board, member).isPresent());
+
+				} else {
+					Warning warning1 = warningRepository.queryselectwarning(board, member);
+					warning1.setBoard(null);
+					warning1.setMember(null);
+					warningRepository.delete(warning1);
+					Board board1 = bRepository.querySelectByIdstate1(board.getNo());
+					board1.setWarning(warningRepository.countByBoard_no(board.getNo()));
+					bRepository.save(board1);
+					map.put("warningresult", warningRepository.queryselectwarningstate(board, member).isPresent());
+				}
+				int WarningCnt = warningRepository.queryCountWarningByBoard(board);
+				map.put("status", 200);
+				map.put("warning", WarningCnt);
+			} else {
+				map.put("status", 578);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
+	// 신고 버튼 적용확인(꽉찬신고 true, 빈신고 false)
+	@PostMapping(value = "/warning/state", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> addwarningstate(@RequestHeader("TOKEN") String token, @RequestBody Board board) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				Board board1 = bRepository.querySelectByIdstate1(board.getNo());
+				map.put("warningresult", warningRepository.queryselectwarningstate(board1, member).isPresent());
+				map.put("status", 200);
+			} else {
+				map.put("status", 578);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+	}
+
 }

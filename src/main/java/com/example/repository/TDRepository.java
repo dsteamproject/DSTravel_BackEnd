@@ -133,8 +133,8 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
         public int queryTDtemCompanion(@Param("no") Integer no);
 
         // ---------------------여행지 임시저장 ADMIN List----------------------------
-        @Query(value = "SELECT * FROM TD WHERE USER IS NOT NULL AND USER !='ADMIN'", nativeQuery = true)
-        public List<TD> selectAdminTDtem();
+        @Query(value = "SELECT * FROM TD WHERE USER IS NOT NULL AND USER !='ADMIN' AND STATE=:state", nativeQuery = true)
+        public List<TD> selectAdminTDtem(@Param("state") int state);
 
         // -----------------------WORLD CUP 조회 ----------------------
         @Query(value = "SELECT * FROM TD WHERE CITY=:city AND TYPE=:type AND STATE=1 ", nativeQuery = true)
