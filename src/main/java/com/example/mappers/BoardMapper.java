@@ -29,7 +29,7 @@ public interface BoardMapper {
         @Update({ "UPDATE BOARD SET HIT=0 ,CATEGORY='',CONTENT='',TITLE='' WHERE NO=#{no} AND STATE=0" })
         public int Admindelete(@Param("no") String no);
 
-        @Select({ "SELECT * FROM BOARD WHERE NO=:no" })
-        public BoardDTO BoardSelectOneAdmin(@Param("no") Long no);
+        @Select({ "SELECT * FROM BOARD WHERE no=#{a}" })
+        public BoardDTO BoardSelectOneAdmin(@Param("a") Long no);
 
 }

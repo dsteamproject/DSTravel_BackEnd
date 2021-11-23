@@ -15303,3 +15303,15 @@ SELECT * FROM(SELECT ID,EMAIL,GENDER,LOGIN,NAME,REGDATE,ROLE,STATE,ROW_NUMBER() 
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+2021-11-23 15:43:47 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE NO[*]=:NO"; SQL statement:
+SELECT * FROM BOARD WHERE NO=:no [42000-200]
+2021-11-23 15:44:16 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE NO[*]=:NO"; SQL statement:
+SELECT * FROM BOARD WHERE NO=:no [42000-200]
+2021-11-23 15:44:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE NO[*]=:A"; SQL statement:
+SELECT * FROM BOARD WHERE no=:a [42000-200]
+2021-11-23 15:46:27 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE NO[*]=:A"; SQL statement:
+SELECT * FROM BOARD WHERE no=:a [42000-200]

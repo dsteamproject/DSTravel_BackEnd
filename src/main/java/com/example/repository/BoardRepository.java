@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.example.dto.GoodDTO;
 import com.example.entity.Board;
 import com.example.entity.Member;
 
@@ -56,6 +57,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         public List<Board> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
                         @Param("a") String category1, Pageable pageable);
 
-        public List<Board> findAllByMember(Member member);
+        public List<Board> findAllByMember(Member member, Pageable pageable);
+
+        @Query(value = "SELECT * FORM BOARD WHERE NO=:list")
+        public List<Board> queryselectall(@Param("a") GoodDTO[] list);
+
+        public int countByMember(Member member);
 
 }

@@ -25,6 +25,7 @@ import com.example.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -219,7 +220,9 @@ public class MypageController {
 
     // 내가 등록한 게시물
     @GetMapping(value = "/myboard")
-    public Map<String, Object> myboardGET(@RequestHeader("TOKEN") String token) {
+    public Map<String, Object> myboardGET(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -227,7 +230,10 @@ public class MypageController {
             System.out.println(member);
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                List<Board> list = bRepository.findAllByMember(member);
+                PageRequest pageRequest = PageRequest.of(page - 1, size);
+                List<Board> list = bRepository.findAllByMember(member, pageRequest);
+                int cnt = bRepository.countByMember(member);
+                map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
                 map.put("status", 200);
             } else {
