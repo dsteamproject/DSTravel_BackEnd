@@ -205,9 +205,6 @@ public class TravelController {
                 System.out.println(1);
                 String id = jwtUtil.extractUsername(token.substring(6));
                 List<TD> list = tdRepository.querySelectTDtem(title, areaCode, contentTypeId, id, pageRequest);
-                // for (int i = 0; i < list.size(); i++) {
-                // list.get(i).setFirstimage("127.0.0.1:8080/REST/travel/select_image?no="+);
-                // }
                 int cnt = tdRepository.CountSelectTDtem(title, areaCode, contentTypeId, id);
                 // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
@@ -314,7 +311,10 @@ public class TravelController {
                     tdImg.setImagesize(file.getSize());
                     tdImg.setImagetype(file.getContentType());
                     tdimgRepository.save(tdImg);
+                    td1.setFirstimage("127.0.0.1:8080/REST/travel/select_image?no=" + tdImg.getTd().getNo());
+                    tdRepository.save(td1);
                 } else {
+                    td1.setFirstimage("127.0.0.1:8080/REST/travel/select_image?no=" + tdRepository.save(td1).getNo());
                     tdRepository.save(td1);
                 }
                 map.put("status", 200);
