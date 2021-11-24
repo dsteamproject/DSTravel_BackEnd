@@ -15315,3 +15315,9 @@ SELECT * FROM BOARD WHERE no=:a [42000-200]
 2021-11-23 15:46:27 jdbc[4]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM BOARD WHERE NO[*]=:A"; SQL statement:
 SELECT * FROM BOARD WHERE no=:a [42000-200]
+2021-11-24 09:43:47 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO BOARD(WARNING) VALUES[*]"; expected "ROW, (, DEFAULT, NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+INSERT INTO BOARD(WARNING) VALUES [42001-200]
+2021-11-24 09:43:51 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO BOARD(WARNING)[*]"; expected "DIRECT, SORTED, DEFAULT, VALUES, SET, (, WITH, SELECT, TABLE, VALUES"; SQL statement:
+INSERT INTO BOARD(WARNING) [42001-200]

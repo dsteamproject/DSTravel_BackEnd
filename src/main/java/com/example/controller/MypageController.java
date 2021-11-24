@@ -248,7 +248,9 @@ public class MypageController {
 
     // 내가 좋아요한 게시물
     @GetMapping(value = "mygoodboard")
-    public Map<String, Object> mygoodboardGET(@RequestHeader("TOKEN") String token) {
+    public Map<String, Object> mygoodboardGET(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -258,10 +260,18 @@ public class MypageController {
 
                 List<GoodDTO> list = goodMapper.selectGoodBoard(member1.getId());
                 List<Board> list1 = new ArrayList<>();
-                for (GoodDTO good : list) {
-                    Board board = bRepository.findById(good.getBoard()).get();
-                    list1.add(board);
+                if (list.size() >= size) {
+                    for (int i = ((page - 1) * size); i < (page * size); i++) {
+                        Board board = bRepository.findById(list.get(i).getBoard()).get();
+                        list1.add(board);
+                    }
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        Board board = bRepository.findById(list.get(i).getBoard()).get();
+                        list1.add(board);
+                    }
                 }
+                map.put("cnt", (list.size() - 1) / size + 1);
                 map.put("board", list1);
                 map.put("status", 200);
 
@@ -278,7 +288,9 @@ public class MypageController {
 
     // 내가 좋아요한 여행지,숙소,음식점
     @GetMapping(value = "mygoodtd")
-    public Map<String, Object> mygoodTDGET(@RequestHeader("TOKEN") String token, @RequestParam("type") Integer type) {
+    public Map<String, Object> mygoodTDGET(@RequestHeader("TOKEN") String token, @RequestParam("type") Integer type,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -294,6 +306,20 @@ public class MypageController {
                         list1.add(td);
                     }
                 }
+
+                if (list.size() >= size) {
+                    for (int i = ((page - 1) * size); i < (page * size); i++) {
+                        TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                        list1.add(td);
+                    }
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                        list1.add(td);
+                    }
+                }
+                map.put("cnt", (list.size() - 1) / size + 1);
+
                 map.put("td", list1);
                 map.put("status", 200);
 
