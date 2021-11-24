@@ -12,6 +12,7 @@ import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Sigungu;
 import com.example.entity.TD;
+import com.example.entity.TDImg;
 import com.example.jwt.JwtUtil;
 import com.example.repository.Cat1Repository;
 import com.example.repository.Cat2Repository;
@@ -21,11 +22,13 @@ import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
+import com.example.repository.TDimgRepository;
 import com.example.repository.TypeRepository;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/travel")
@@ -49,6 +53,9 @@ public class TravelController {
 
     @Autowired
     CityRepository cityRepository;
+
+    @Autowired
+    TDimgRepository tdimgRepository;
 
     @Autowired
     SigunguRepository sigunguRepository;
@@ -266,7 +273,8 @@ public class TravelController {
     // 성공 return : status(200)
     @PostMapping(value = "/TDtem/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> TDtemInsert(@RequestParam(name = "type") Integer type,
-            @RequestParam(name = "city") Integer city, @RequestHeader("token") String token, @RequestBody TD td) {
+            @RequestParam(name = "city") Integer city, @RequestHeader("token") String token, @ModelAttribute TD td,
+            @RequestParam(name = "file", required = false) MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
 
@@ -274,8 +282,6 @@ public class TravelController {
             Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                // System.out.println(tdtem);
-                // System.out.println(type);
                 TD td1 = new TD();
                 td1.setTitle(td.getTitle());
                 td1.setAddr(td.getAddr());
@@ -285,9 +291,21 @@ public class TravelController {
                 td1.setCity(cityRepository.getById(city));
                 td1.setState(0);
                 td1.setUser(id);
-                // System.out.println(td1);
-                tdRepository.save(td1);
+                System.out.println(td1);
+                if (file != null) {
+                    TDImg tdImg = new TDImg();
+                    tdImg.setTd(tdRepository.save(td1));
+                    tdImg.setImage(file.getBytes());
+                    tdImg.setImagename(file.getOriginalFilename());
+                    tdImg.setImagesize(file.getSize());
+                    tdImg.setImagetype(file.getContentType());
+                    tdimgRepository.save(tdImg);
+                } else {
+                    tdRepository.save(td1);
+                }
                 map.put("status", 200);
+            } else {
+                map.put("status", 578);
             }
 
         } catch (Exception e) {
