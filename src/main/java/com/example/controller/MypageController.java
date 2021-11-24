@@ -301,26 +301,25 @@ public class MypageController {
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Type type1 = typeRepository.findById(type).get();
                 List<GoodDTO> list = goodMapper.selectGoodTD(member1.getId());
+                System.out.println(list);
                 List<TD> list1 = new ArrayList<>();
-                for (GoodDTO good : list) {
-                    TD td = tdRepository.selectGoodType(good.getTd(), type1);
-                    if (td != null) {
-                        list1.add(td);
-                    }
-                }
                 if (list.size() >= size) {
                     for (int i = ((page - 1) * size); i < (page * size); i++) {
                         TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
-                        list1.add(td);
+                        if (td != null) {
+                            list1.add(td);
+                        }
                     }
                 } else {
                     for (int i = 0; i < list.size(); i++) {
                         TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
-                        list1.add(td);
+                        if (td != null) {
+                            list1.add(td);
+                        }
                     }
                 }
-                map.put("total", list.size());
-                map.put("cnt", (list.size() - 1) / size + 1);
+                map.put("total", list1.size());
+                map.put("cnt", (list1.size() - 1) / size + 1);
                 map.put("td", list1);
                 map.put("status", 200);
 

@@ -24,8 +24,14 @@ import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TDimgRepository;
 import com.example.repository.TypeRepository;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,6 +47,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(value = "/travel")
 public class TravelController {
+
+    @Value("${default.image}")
+    private String DEFAULTIMAGE;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Autowired
     GoodRepository goodRepository;
@@ -193,6 +205,9 @@ public class TravelController {
                 System.out.println(1);
                 String id = jwtUtil.extractUsername(token.substring(6));
                 List<TD> list = tdRepository.querySelectTDtem(title, areaCode, contentTypeId, id, pageRequest);
+                // for (int i = 0; i < list.size(); i++) {
+                // list.get(i).setFirstimage("127.0.0.1:8080/REST/travel/select_image?no="+);
+                // }
                 int cnt = tdRepository.CountSelectTDtem(title, areaCode, contentTypeId, id);
                 // System.out.println(cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
@@ -277,7 +292,6 @@ public class TravelController {
             @RequestParam(name = "file", required = false) MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
-
             String id = jwtUtil.extractUsername(token.substring(6));
             Member member = mRepository.findById(id).orElseThrow();
             if (member != null && member.getToken().equals(token.substring(6))
@@ -291,7 +305,7 @@ public class TravelController {
                 td1.setCity(cityRepository.getById(city));
                 td1.setState(0);
                 td1.setUser(id);
-                System.out.println(td1);
+                // System.out.println(td1);
                 if (file != null) {
                     TDImg tdImg = new TDImg();
                     tdImg.setTd(tdRepository.save(td1));
@@ -313,6 +327,43 @@ public class TravelController {
             map.put("status", e.hashCode());
         }
         return map;
+    }
+
+    // 127.0.0.1:8080/REST/travel/select_image?no=이미지주소
+    @GetMapping(value = "/select_image")
+    public ResponseEntity<byte[]> selectImage(@RequestParam(name = "no") TD td) throws IOException {
+        try {
+
+            // System.out.println(td.getNo());
+            TDImg tdImg = tdimgRepository.querySelectByTD(td);
+            // System.out.println(tdImg.getNo());
+            if (tdImg.getImage().length > 0) {
+                HttpHeaders headers = new HttpHeaders();
+                if (tdImg.getImagetype().equals("image/jpeg")) {
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                } else if (tdImg.getImagetype().equals("image/png")) {
+                    headers.setContentType(MediaType.IMAGE_PNG);
+                } else if (tdImg.getImagetype().equals("image/gif")) {
+                    headers.setContentType(MediaType.IMAGE_GIF);
+                }
+
+                // 클래스명 response = new 클래스명( 생성자선택 )
+                ResponseEntity<byte[]> response = new ResponseEntity<>(tdImg.getImage(), headers, HttpStatus.OK);
+                // System.out.println(tdImg.getImage());
+                return response;
+            }
+            return null;
+
+        }
+        // 오라클에 이미지를 읽을 수 없을 경우
+        catch (Exception e) {
+            InputStream is = resourceLoader.getResource(DEFAULTIMAGE).getInputStream();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+            return response;
+        }
     }
 
     // 좋아요 기능
