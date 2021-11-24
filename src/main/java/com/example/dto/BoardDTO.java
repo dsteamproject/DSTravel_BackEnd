@@ -23,6 +23,7 @@ public class BoardDTO {
     private int good = 0; // 좋아요수
     private int reply = 0; // 리플수
     private Date regdate = null; // 날짜
+    private int warning = 0;
     private int state = 1;
     private String member;
 
