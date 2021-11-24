@@ -117,7 +117,10 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
 
         // ---------------------내가 요청한 지도(여행지)-------------------------------
         @Query(value = "SELECT * FROM TD WHERE USER=:id", nativeQuery = true)
-        public List<TD> selectMyTDtem(@Param("id") String id);
+        public List<TD> selectMyTDtem(@Param("id") String id, Pageable pageable);
+
+        @Query(value = "SELECT COUNT(*) FROM TD WHERE USER=:id", nativeQuery = true)
+        public int selectCountMyTDtem(@Param("id") String id);
 
         // ---------------------여행지 임시저장 요청처리(state)----------------------------
         // (승인)

@@ -13,6 +13,7 @@ import com.example.entity.Member;
 import com.example.entity.Sigungu;
 import com.example.entity.TD;
 import com.example.entity.TDImg;
+import com.example.entity.TDSave;
 import com.example.jwt.JwtUtil;
 import com.example.repository.Cat1Repository;
 import com.example.repository.Cat2Repository;
@@ -22,8 +23,10 @@ import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
+import com.example.repository.TDSaveRepository;
 import com.example.repository.TDimgRepository;
 import com.example.repository.TypeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,6 +59,9 @@ public class TravelController {
 
     @Autowired
     GoodRepository goodRepository;
+
+    @Autowired
+    TDSaveRepository tdsaveRepository;
 
     @Autowired
     MemberRepository mRepository;
@@ -426,6 +432,38 @@ public class TravelController {
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 TD td = tdRepository.querySelectOneTD(contentid);
                 map.put("goodresult", goodRepository.queryselectgoodstateTD(td, member).isPresent());
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 일정저장
+    // total:[{save1:[{TD},{TD}],
+    // save2:[{TD},{TD}]}
+    // ]
+
+    @PostMapping(value = "/TDsave", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> TDsave(@RequestHeader("TOKEN") String token, @RequestParam("title") String title,
+            @RequestBody Map<String, Object> TDmap) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                TDSave tdsave = new TDSave();
+                tdsave.setMember(member);
+                tdsave.setTitle(title);
+                ObjectMapper mapper = new ObjectMapper();
+                tdsave.setTd(mapper.writeValueAsString(TDmap));
+                tdsaveRepository.save(tdsave);
                 map.put("status", 200);
             } else {
                 map.put("status", 578);

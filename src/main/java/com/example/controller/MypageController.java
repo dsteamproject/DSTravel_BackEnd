@@ -12,6 +12,7 @@ import com.example.entity.Board;
 import com.example.entity.Member;
 import com.example.entity.MemberImg;
 import com.example.entity.TD;
+import com.example.entity.TDSave;
 import com.example.entity.Type;
 import com.example.jwt.JwtUtil;
 import com.example.mappers.GoodMapper;
@@ -20,7 +21,10 @@ import com.example.repository.GoodRepository;
 import com.example.repository.MemberImgRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.TDRepository;
+import com.example.repository.TDSaveRepository;
 import com.example.repository.TypeRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +47,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(value = "/mypage")
 public class MypageController {
+
+    @Autowired
+    TDSaveRepository tdsaveRepository;
 
     @Autowired
     TypeRepository typeRepository;
@@ -262,9 +269,16 @@ public class MypageController {
                 List<GoodDTO> list = goodMapper.selectGoodBoard(member1.getId());
                 List<Board> list1 = new ArrayList<>();
                 if (list.size() >= size) {
-                    for (int i = ((page - 1) * size); i < (page * size); i++) {
-                        Board board = bRepository.findById(list.get(i).getBoard()).get();
-                        list1.add(board);
+                    if (list.size() >= (page * size)) {
+                        for (int i = ((page - 1) * size); i < (page * size); i++) {
+                            Board board = bRepository.findById(list.get(i).getBoard()).get();
+                            list1.add(board);
+                        }
+                    } else {
+                        for (int i = ((page - 1) * size); i < list.size(); i++) {
+                            Board board = bRepository.findById(list.get(i).getBoard()).get();
+                            list1.add(board);
+                        }
                     }
                 } else {
                     for (int i = 0; i < list.size(); i++) {
@@ -304,10 +318,19 @@ public class MypageController {
                 System.out.println(list);
                 List<TD> list1 = new ArrayList<>();
                 if (list.size() >= size) {
-                    for (int i = ((page - 1) * size); i < (page * size); i++) {
-                        TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
-                        if (td != null) {
-                            list1.add(td);
+                    if (list.size() >= (page * size)) {
+                        for (int i = ((page - 1) * size); i < (page * size); i++) {
+                            TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                            if (td != null) {
+                                list1.add(td);
+                            }
+                        }
+                    } else {
+                        for (int i = ((page - 1) * size); i < list.size(); i++) {
+                            TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                            if (td != null) {
+                                list1.add(td);
+                            }
                         }
                     }
                 } else {
@@ -336,15 +359,20 @@ public class MypageController {
 
     // 내가 요청한 여행지
     @GetMapping(value = "mytdtem")
-    public Map<String, Object> myTDtemGET(@RequestHeader("TOKEN") String token) {
+    public Map<String, Object> myTDtemGET(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
             Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-
-                List<TD> list = tdRepository.selectMyTDtem(id);
+                PageRequest pageRequest = PageRequest.of(page - 1, size);
+                List<TD> list = tdRepository.selectMyTDtem(id, pageRequest);
+                int cnt = tdRepository.selectCountMyTDtem(id);
+                map.put("total", cnt);
+                map.put("cnt", (cnt - 1) / size + 1);
                 map.put("mytdtem", list);
                 map.put("status", 200);
 
@@ -371,6 +399,40 @@ public class MypageController {
                 member.setState(0);
                 mRepository.save(member);
                 map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 내가 저장한 여행지
+    @GetMapping(value = "/tdsave", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> tdsave(@RequestHeader("TOKEN") String token,
+            @RequestParam(name = "title", required = false) String title) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                List<TDSave> list = tdsaveRepository.selectMyTDsave(member);
+                ObjectMapper mapper = new ObjectMapper();
+                List<Map<String, Object>> list1 = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    Map<String, Object> map1 = mapper.readValue(list.get(i).getTd(),
+                            new TypeReference<Map<String, Object>>() {
+                            });
+                    map1.put("title", list.get(i).getTitle());
+                    map1.put("member", list.get(i).getMember());
+                    map1.put("state", list.get(i).getState());
+                    list1.add(map1);
+                }
+
+                map.put("tdsave", list1);
             } else {
                 map.put("status", 578);
             }

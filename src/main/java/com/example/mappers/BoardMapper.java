@@ -11,11 +11,10 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface BoardMapper {
 
-        @Select({ "<script>SELECT * FROM(SELECT NO,CATEGORY, CONTENT, GOOD, HIT, REGDATE, REPLY, STATE, TITLE, MEMBER, ROW_NUMBER() OVER (ORDER BY NO DESC) ROWN FROM BOARD"
+        @Select({ "<script>SELECT * FROM(SELECT NO,CATEGORY, CONTENT, GOOD, HIT, REGDATE, REPLY, STATE, TITLE, MEMBER, ROW_NUMBER() OVER (ORDER BY ${orderbytype} ${orderby}) ROWN FROM BOARD"
                         + " <where> <if test='category !=null'> AND CATEGORY=#{category}</if>"
                         + " <if test='state !=null'> AND STATE=#{state}</if>"
-                        + " AND ${keywordtype} LIKE '%' || #{keyword} || '%' ORDER BY NO DESC</where>) BOARD WHERE ROWN BETWEEN #{start} AND #{end} ORDER BY ${orderbytype} "
-                        + " ${orderby} </script>" })
+                        + " AND ${keywordtype} LIKE '%' || #{keyword} || '%' ORDER BY NO DESC</where>) BOARD WHERE ROWN BETWEEN #{start} AND #{end} </script>" })
         public List<BoardDTO> selectBoardAdmin(@Param("keywordtype") String keywordtype,
                         @Param("keyword") String keyword, @Param("category") String category, @Param("start") int start,
                         @Param("end") int end, @Param("orderbytype") String orderbytype,
