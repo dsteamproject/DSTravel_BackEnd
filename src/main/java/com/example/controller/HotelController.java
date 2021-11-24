@@ -36,23 +36,25 @@ public class HotelController {
             if (city == null && rank == null) {
                 List<TD> list = tdRepository.SelectHOTEL(firstprice, endprice, pageRequest);
                 int cnt = tdRepository.COUNTSelectHOTEL(firstprice, endprice);
-                // System.out.println(cnt);
+                map.put("total", cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             } else if (city != null && rank == null) {
                 List<TD> list = tdRepository.SelectHOTELBYCITY(firstprice, endprice, city, pageRequest);
                 int cnt = tdRepository.COUNTSelectHOTELBYCITY(firstprice, endprice, city);
+                map.put("total", cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             } else if (city == null && rank != null) {
                 List<TD> list = tdRepository.SelectHOTELBYRANK(firstprice, endprice, rank, pageRequest);
                 int cnt = tdRepository.COUNTSelectHOTELBYRANK(firstprice, endprice, rank);
+                map.put("total", cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             } else {
                 List<TD> list = tdRepository.SelectHOTELBYCITYANDRANK(firstprice, endprice, city, rank, pageRequest);
                 int cnt = tdRepository.COUNTSelectHOTELBYCITYANDRANK(firstprice, endprice, city, rank);
-                // System.out.println(cnt);
+                map.put("total", cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
             }

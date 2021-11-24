@@ -233,6 +233,7 @@ public class MypageController {
                 PageRequest pageRequest = PageRequest.of(page - 1, size);
                 List<Board> list = bRepository.findAllByMember(member, pageRequest);
                 int cnt = bRepository.countByMember(member);
+                map.put("total", cnt);
                 map.put("cnt", (cnt - 1) / size + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -271,6 +272,7 @@ public class MypageController {
                         list1.add(board);
                     }
                 }
+                map.put("total", list.size());
                 map.put("cnt", (list.size() - 1) / size + 1);
                 map.put("board", list1);
                 map.put("status", 200);
@@ -306,7 +308,6 @@ public class MypageController {
                         list1.add(td);
                     }
                 }
-
                 if (list.size() >= size) {
                     for (int i = ((page - 1) * size); i < (page * size); i++) {
                         TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
@@ -318,8 +319,8 @@ public class MypageController {
                         list1.add(td);
                     }
                 }
+                map.put("total", list.size());
                 map.put("cnt", (list.size() - 1) / size + 1);
-
                 map.put("td", list1);
                 map.put("status", 200);
 
