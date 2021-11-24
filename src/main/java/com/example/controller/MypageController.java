@@ -412,7 +412,9 @@ public class MypageController {
     // 내가 저장한 여행지
     @GetMapping(value = "/tdsave", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> tdsave(@RequestHeader("TOKEN") String token,
-            @RequestParam(name = "title", required = false) String title) {
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Map<String, Object> map = new HashMap<>();
         try {
             String id = jwtUtil.extractUsername(token.substring(6));
@@ -430,6 +432,22 @@ public class MypageController {
                     map1.put("member", list.get(i).getMember());
                     map1.put("state", list.get(i).getState());
                     list1.add(map1);
+                }
+                List<Map<String, Object>> list2 = new ArrayList<>();
+                if (list1.size() >= size) {
+                    if (list1.size() >= (page * size)) {
+                        for (int i = ((page - 1) * size); i < (page * size); i++) {
+                            list2.add(list1.get(i));
+                        }
+                    } else {
+                        for (int i = ((page - 1) * size); i < list.size(); i++) {
+                            list2.add(list1.get(i));
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        list2.add(list1.get(i));
+                    }
                 }
 
                 map.put("tdsave", list1);
