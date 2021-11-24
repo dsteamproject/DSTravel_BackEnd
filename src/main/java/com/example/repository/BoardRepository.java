@@ -59,9 +59,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
         public List<Board> findAllByMember(Member member, Pageable pageable);
 
-        @Query(value = "SELECT * FORM BOARD WHERE NO=:list")
-        public List<Board> queryselectall(@Param("a") GoodDTO[] list);
-
         public int countByMember(Member member);
 
 }
