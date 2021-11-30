@@ -448,8 +448,10 @@ public class MypageController {
                         list2.add(list1.get(i));
                     }
                 }
-
-                map.put("tdsave", list1);
+                map.put("total", list1.size());
+                map.put("cnt", (list1.size() - 1) / size + 1);
+                map.put("tdsave", list2);
+                map.put("status", 200);
             } else {
                 map.put("status", 578);
             }
