@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TDSaveRepository extends JpaRepository<TDSave, Long> {
 
-    @Query(value = "SELECT * FROM TDSAVE WHERE MEMBER=:member AND STATE IS NOT 0", nativeQuery = true)
+    @Query(value = "SELECT * FROM TDSAVE WHERE MEMBER=:member AND STATE != 0", nativeQuery = true)
     public List<TDSave> selectMyTDsave(@Param("member") Member member);
 
     @Query(value = "SELECT * FROM TDSAVE WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=2 ORDER BY NO DESC", nativeQuery = true)
