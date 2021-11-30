@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import com.example.repository.MemberRepository;
 import com.example.repository.ReplyRepository;
 import com.example.repository.TDSaveRepository;
 import com.example.repository.WarningRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +98,19 @@ public class BoardController {
 			if (orderby.equals("latest") && type.equals("title")) {
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, pageRequest);
-					map.put("list", list);
+					List<Map<String, Object>> list1 = new ArrayList<>();
+					ObjectMapper mapper = new ObjectMapper();
+					for (int i = 0; i < list.size(); i++) {
+						Map<String, Object> map1 = mapper.readValue(list.get(i).getTd(),
+								new TypeReference<Map<String, Object>>() {
+								});
+						map1.put("No", list.get(i).getNo());
+						map1.put("title", list.get(i).getTitle());
+						map1.put("member", list.get(i).getMember());
+						map1.put("state", list.get(i).getState());
+						list1.add(map1);
+					}
+					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
@@ -107,7 +122,19 @@ public class BoardController {
 			} else if (orderby.equals("latest") && type.equals("writer")) {
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,  pageRequest);
-					map.put("list", list);
+					List<Map<String, Object>> list1 = new ArrayList<>();
+					ObjectMapper mapper = new ObjectMapper();
+					for (int i = 0; i < list.size(); i++) {
+						Map<String, Object> map1 = mapper.readValue(list.get(i).getTd(),
+								new TypeReference<Map<String, Object>>() {
+								});
+						map1.put("No", list.get(i).getNo());
+						map1.put("title", list.get(i).getTitle());
+						map1.put("member", list.get(i).getMember());
+						map1.put("state", list.get(i).getState());
+						list1.add(map1);
+					}
+					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
@@ -119,7 +146,19 @@ public class BoardController {
 			} else if (orderby.equals("old") && type.equals("title")) {
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword,  pageRequest);
-					map.put("list", list);
+					List<Map<String, Object>> list1 = new ArrayList<>();
+					ObjectMapper mapper = new ObjectMapper();
+					for (int i = 0; i < list.size(); i++) {
+						Map<String, Object> map1 = mapper.readValue(list.get(i).getTd(),
+								new TypeReference<Map<String, Object>>() {
+								});
+						map1.put("No", list.get(i).getNo());
+						map1.put("title", list.get(i).getTitle());
+						map1.put("member", list.get(i).getMember());
+						map1.put("state", list.get(i).getState());
+						list1.add(map1);
+					}
+					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
@@ -131,7 +170,19 @@ public class BoardController {
 			} else if (orderby.equals("old") && type.equals("writer")) {
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,pageRequest);
-					map.put("list", list);
+					List<Map<String, Object>> list1 = new ArrayList<>();
+					ObjectMapper mapper = new ObjectMapper();
+					for (int i = 0; i < list.size(); i++) {
+						Map<String, Object> map1 = mapper.readValue(list.get(i).getTd(),
+								new TypeReference<Map<String, Object>>() {
+								});
+						map1.put("No", list.get(i).getNo());
+						map1.put("title", list.get(i).getTitle());
+						map1.put("member", list.get(i).getMember());
+						map1.put("state", list.get(i).getState());
+						list1.add(map1);
+					}
+					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
