@@ -94,9 +94,9 @@ public class BoardController {
 			PageRequest pageRequest = PageRequest.of(page - 1, size);
 			if (orderby.equals("latest") && type.equals("title")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, pageRequest);
 					map.put("list", list);
-					int cnt = tdSaveRepository.queryCountByTitle(keyword, category);
+					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
 				List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
@@ -106,9 +106,9 @@ public class BoardController {
 				}
 			} else if (orderby.equals("latest") && type.equals("writer")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,  pageRequest);
 					map.put("list", list);
-					int cnt = tdSaveRepository.queryCountByWriter(keyword, category);
+					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
 					List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
@@ -118,9 +118,9 @@ public class BoardController {
 				}
 			} else if (orderby.equals("old") && type.equals("title")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword,  pageRequest);
 					map.put("list", list);
-					int cnt = tdSaveRepository.queryCountByTitle(keyword, category);
+					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
 					List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
@@ -130,9 +130,9 @@ public class BoardController {
 				}
 			} else if (orderby.equals("old") && type.equals("writer")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,pageRequest);
 					map.put("list", list);
-					int cnt = tdSaveRepository.queryCountByWriter(keyword, category);
+					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
 				}else{
 					List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
