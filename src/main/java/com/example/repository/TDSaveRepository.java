@@ -39,4 +39,13 @@ public interface TDSaveRepository extends JpaRepository<TDSave, Long> {
     @Query(value = "SELECT COUNT(*) FROM TDsave WHERE TDSAVE.member LIKE '%' || :Keyword || '%' AND STATE=2", nativeQuery = true)
     public int queryCountByWriter(@Param("Keyword") String keyword);
 
+    @Query(value = "SELECT * FROM TDsave WHERE NO<:b AND STATE=2 ORDER BY NO DESC LIMIT 1;", nativeQuery = true)
+    public TDSave queryByCategoryTop1OrderByNoDesc(@Param("b") long no);
+
+    @Query(value = "SELECT * FROM TDsave WHERE NO>:b AND STATE=2 ORDER BY NO ASC LIMIT 1;", nativeQuery = true)
+    public TDSave queryByCategoryTop1OrderByNoAsc(@Param("b") long no);
+
+    @Query(value = "SELECT * FROM TDsave WHERE NO=:b AND STATE != 0;", nativeQuery = true)
+    public TDSave querySelectByIdstate12(@Param("b") long no);
+
 }

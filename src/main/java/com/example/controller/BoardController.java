@@ -312,26 +312,50 @@ public class BoardController {
 			if (no == 0) {
 				map.put("status", 300);
 			} else {
-				Board board = bRepository.querySelectByIdstate1(no);
-				List<Reply> replylist = reRepository.querySelectReplyAllByBno(no);
+				if(category.equals("TDsave")){
+					TDSave tdsave = tdSaveRepository.querySelectByIdstate12(no);
+					map.put("tdsave", tdsave);
+				}
+				else{
+					Board board = bRepository.querySelectByIdstate1(no);
+					map.put("board", board);
+					List<Reply> replylist = reRepository.querySelectReplyAllByBno(no);
+					map.put("reply", replylist);
+					int CntGood = goodRepository.queryCountByBoard(board);
+					map.put("CntGood", CntGood);
+				}
 				if (token != null) {
 					map.put("LoginId", jwtUtil.extractUsername(token.substring(6)));
 				}
-				int CntGood = goodRepository.queryCountByBoard(board);
-				map.put("CntGood", CntGood);
-				map.put("reply", replylist);
-				map.put("board", board);
-				Board prev = bRepository.queryByCategoryTop1OrderByNoDesc(category, no);
-				if (prev != null) {
-					map.put("prev", prev.getNo());
-				} else {
-					map.put("prev", 0);
+				if(category.equals("TDsave")){
+					TDSave prev = tdSaveRepository.queryByCategoryTop1OrderByNoDesc(no);
+					if (prev != null) {
+						map.put("prev", prev.getNo());
+					} else {
+						map.put("prev", 0);
+					}
+				}else{
+					Board prev = bRepository.queryByCategoryTop1OrderByNoDesc(category, no);
+					if (prev != null) {
+						map.put("prev", prev.getNo());
+					} else {
+						map.put("prev", 0);
+					}
 				}
-				Board next = bRepository.queryByCategoryTop1OrderByNoAsc(category, no);
-				if (next != null) {
-					map.put("next", next.getNo());
-				} else {
-					map.put("next", 0);
+				if(category.equals("TDsave")){
+					TDSave next = tdSaveRepository.queryByCategoryTop1OrderByNoAsc(no);
+					if (next != null) {
+						map.put("next", next.getNo());
+					} else {
+						map.put("next", 0);
+					}
+				}else{
+					Board next = bRepository.queryByCategoryTop1OrderByNoAsc(category, no);
+					if (next != null) {
+						map.put("next", next.getNo());
+					} else {
+						map.put("next", 0);
+					}
 				}
 				map.put("status", 200);
 			}
