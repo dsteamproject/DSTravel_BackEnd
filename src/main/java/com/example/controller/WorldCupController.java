@@ -98,7 +98,8 @@ public class WorldCupController {
         Map<String, Object> map = new HashMap<>();
         try {
             Worldcup worldcup = new Worldcup();
-            worldcup.setTd(td);
+            TD td1 = tdRepository.getById(td.getNo());
+            worldcup.setTd(td1);
             worldcupRepository.save(worldcup);
             map.put("status", 200);
         } catch (Exception e) {
@@ -106,4 +107,6 @@ public class WorldCupController {
         }
         return map;
     }
+
+ 
 }

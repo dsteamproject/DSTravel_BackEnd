@@ -7,19 +7,25 @@ import java.util.Map;
 import com.example.dto.BoardDTO;
 import com.example.dto.MemberDTO;
 import com.example.entity.Board;
+import com.example.entity.City;
 import com.example.entity.Member;
 import com.example.entity.Notice;
 import com.example.entity.TD;
 import com.example.entity.TodayVisitCount;
+import com.example.entity.Type;
 import com.example.entity.VisitorCount;
+import com.example.entity.Worldcup;
 import com.example.jwt.JwtUtil;
 import com.example.mappers.BoardMapper;
 import com.example.mappers.MemberMapper;
 import com.example.repository.BoardRepository;
+import com.example.repository.CityRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TodayVisitCountRepository;
+import com.example.repository.TypeRepository;
 import com.example.repository.VisitorCountRepository;
+import com.example.repository.WorldcupRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -59,6 +65,12 @@ public class AdminController {
 
 	@Autowired
 	MemberMapper mMapper;
+
+	@Autowired
+	WorldcupRepository worldcupRepository;
+
+	@Autowired
+	CityRepository cityRepository;
 
 	// 모든 회원정보
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -470,5 +482,34 @@ public class AdminController {
 		return map;
 
 	}
+
+	@GetMapping(value = "/worldcup", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Object> worldcup(@RequestHeader("token") String token, @RequestParam("city") Integer city) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String id = jwtUtil.extractUsername(token.substring(6));
+			Member member = mRepository.findById(id).orElseThrow();
+			if (member != null && member.getToken().equals(token.substring(6))
+					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				City city1 = cityRepository.getById(city);
+				List<Worldcup> list = worldcupRepository.findByTd_city(city1);
+				for(Worldcup worldcup : list){
+					map.put(worldcup.getTd().getTitle(), worldcupRepository.countByTd_no(worldcup.getTd().getNo()));
+				}
+				map.put("total", list.size());
+						
+				map.put("status", 200);
+			} else {
+				map.put("status", 578);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", e.hashCode());
+		}
+		return map;
+
+	}
+	
 
 }
