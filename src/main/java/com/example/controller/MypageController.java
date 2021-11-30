@@ -315,27 +315,30 @@ public class MypageController {
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
                 Type type1 = typeRepository.findById(type).get();
                 List<GoodDTO> list = goodMapper.selectGoodTD(member1.getId());
+                System.out.println(list);
                 List<TD> list1 = new ArrayList<>();
-                for(int i=0; i<list.size();i++){
-                    TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
-                    if(td!=null){
-                        list1.add(td);
-                    }
-                }
-                List<TD> list2 = new ArrayList<>();
-                if (list1.size() >= size) {
-                    if (list1.size() >= (page * size)) {
+                if (list.size() >= size) {
+                    if (list.size() >= (page * size)) {
                         for (int i = ((page - 1) * size); i < (page * size); i++) {
-                            list2.add(list1.get(i));
+                            TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                            if (td != null) {
+                                list1.add(td);
+                            }
                         }
                     } else {
                         for (int i = ((page - 1) * size); i < list.size(); i++) {
-                            list2.add(list1.get(i));
+                            TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                            if (td != null) {
+                                list1.add(td);
                             }
                         }
+                    }
                 } else {
-                    for (int i = 0; i < list1.size(); i++) {
-                        list2.add(list1.get(i));
+                    for (int i = 0; i < list.size(); i++) {
+                        TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
+                        if (td != null) {
+                            list1.add(td);
+                        }
                     }
                 }
                 map.put("total", list1.size());
