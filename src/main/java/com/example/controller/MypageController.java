@@ -335,11 +335,8 @@ public class MypageController {
                         }
                     }
                 } else {
-                    for (int i = 0; i < list.size(); i++) {
-                        TD td = tdRepository.selectGoodType(list.get(i).getTd(), type1);
-                        if (td != null) {
-                            list1.add(td);
-                        }
+                    for (int i = 0; i < list1.size(); i++) {
+                        list2.add(list1.get(i));
                     }
                 }
                 
