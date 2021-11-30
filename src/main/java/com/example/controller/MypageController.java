@@ -342,6 +342,7 @@ public class MypageController {
                         }
                     }
                 }
+                
                 map.put("total", list1.size());
                 map.put("cnt", (list1.size() - 1) / size + 1);
                 map.put("td", list1);
