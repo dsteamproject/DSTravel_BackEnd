@@ -21,7 +21,7 @@ public interface TDSaveRepository extends JpaRepository<TDSave, Long> {
     public List<TDSave> querySelectAllByTitleOrderByDesc(@Param("Keyword") String keyword,
                      Pageable pageable);
 
-    @Query(value = "SELECT * FROM TDSAVE WHERE MEMBER LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM TDSAVE WHERE TDSAVE.member LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO DESC", nativeQuery = true)
     public List<TDSave> querySelectAllByWriterOrderByDesc(@Param("Keyword") String keyword,
                      Pageable pageable);
 
@@ -29,14 +29,14 @@ public interface TDSaveRepository extends JpaRepository<TDSave, Long> {
     public List<TDSave> querySelectAllByTitleOrderByAsc(@Param("Keyword") String keyword,
                     Pageable pageable);
 
-    @Query(value = "SELECT * FROM TDSAVE WHERE MEMBER LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM TDSAVE WHERE TDSAVE.member LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO ASC", nativeQuery = true)
     public List<TDSave> querySelectAllByWriterOrderByAsc(@Param("Keyword") String keyword,
                     Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) FROM TDsave WHERE TITLE LIKE '%' || :Keyword || '%' AND STATE=2", nativeQuery = true)
     public int queryCountByTitle(@Param("Keyword") String keyword);
 
-    @Query(value = "SELECT COUNT(*) FROM TDsave WHERE MEMBER LIKE '%' || :Keyword || '%' AND STATE=2", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM TDsave WHERE TDSAVE.member LIKE '%' || :Keyword || '%' AND STATE=2", nativeQuery = true)
     public int queryCountByWriter(@Param("Keyword") String keyword);
 
 }

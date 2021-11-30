@@ -145,7 +145,7 @@ public class BoardController {
 				}
 			} else if (orderby.equals("old") && type.equals("title")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword,  pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByAsc(keyword,  pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
 					ObjectMapper mapper = new ObjectMapper();
 					for (int i = 0; i < list.size(); i++) {
@@ -169,7 +169,7 @@ public class BoardController {
 				}
 			} else if (orderby.equals("old") && type.equals("writer")) {
 				if(category.equals("TDsave")){
-					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,pageRequest);
+					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByAsc(keyword,pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
 					ObjectMapper mapper = new ObjectMapper();
 					for (int i = 0; i < list.size(); i++) {
