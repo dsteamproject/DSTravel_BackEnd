@@ -476,4 +476,32 @@ public class TravelController {
         return map;
     }
 
+    // 일정 공유
+    @PostMapping(value = "/TDsave_board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> TDsaveboard(@RequestHeader("TOKEN") String token, @RequestParam("title") String title,
+            @RequestBody Map<String, Object> TDmap) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String id = jwtUtil.extractUsername(token.substring(6));
+            Member member = mRepository.findById(id).orElseThrow();
+            if (member != null && member.getToken().equals(token.substring(6))
+                    && !jwtUtil.isTokenExpired(token.substring(6))) {
+                TDSave tdsave = new TDSave();
+                tdsave.setMember(member);
+                tdsave.setTitle(title);
+                tdsave.setState(2);
+                ObjectMapper mapper = new ObjectMapper();
+                tdsave.setTd(mapper.writeValueAsString(TDmap));
+                tdsaveRepository.save(tdsave);
+                map.put("status", 200);
+            } else {
+                map.put("status", 578);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
 }

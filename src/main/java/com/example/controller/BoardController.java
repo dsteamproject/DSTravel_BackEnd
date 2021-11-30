@@ -15,6 +15,7 @@ import com.example.entity.BoardImg;
 import com.example.entity.Good;
 import com.example.entity.Member;
 import com.example.entity.Reply;
+import com.example.entity.TDSave;
 import com.example.entity.Warning;
 import com.example.jwt.JwtUtil;
 import com.example.repository.BoardImgRepository;
@@ -22,6 +23,7 @@ import com.example.repository.BoardRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.ReplyRepository;
+import com.example.repository.TDSaveRepository;
 import com.example.repository.WarningRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +76,9 @@ public class BoardController {
 	@Autowired
 	WarningRepository warningRepository;
 
+	@Autowired
+	TDSaveRepository tdSaveRepository;
+
 	// 게시판 목록 {no, title, category, content, hit, good(int), reply(int), regdate,
 	// state, member}
 	@GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,25 +93,53 @@ public class BoardController {
 		try {
 			PageRequest pageRequest = PageRequest.of(page - 1, size);
 			if (orderby.equals("latest") && type.equals("title")) {
+				if(category.equals("TDsave")){
+					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = tdSaveRepository.queryCountByTitle(keyword, category);
+					map.put("cnt", (cnt -1) / size + 1);
+				}else{
 				List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
 				map.put("list", list);
 				int cnt = bRepository.queryCountByTitle(keyword, category);
 				map.put("cnt", (cnt - 1) / size + 1);
+				}
 			} else if (orderby.equals("latest") && type.equals("writer")) {
-				List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
-				map.put("list", list);
-				int cnt = bRepository.queryCountByWriter(keyword, category);
-				map.put("cnt", (cnt - 1) / size + 1);
+				if(category.equals("TDsave")){
+					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = tdSaveRepository.queryCountByWriter(keyword, category);
+					map.put("cnt", (cnt -1) / size + 1);
+				}else{
+					List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = bRepository.queryCountByWriter(keyword, category);
+					map.put("cnt", (cnt - 1) / size + 1);
+				}
 			} else if (orderby.equals("old") && type.equals("title")) {
-				List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
-				map.put("list", list);
-				int cnt = bRepository.queryCountByTitle(keyword, category);
-				map.put("cnt", (cnt - 1) / size + 1);
+				if(category.equals("TDsave")){
+					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = tdSaveRepository.queryCountByTitle(keyword, category);
+					map.put("cnt", (cnt -1) / size + 1);
+				}else{
+					List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = bRepository.queryCountByTitle(keyword, category);
+					map.put("cnt", (cnt - 1) / size + 1);
+				}
 			} else if (orderby.equals("old") && type.equals("writer")) {
-				List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
-				map.put("list", list);
-				int cnt = bRepository.queryCountByWriter(keyword, category);
-				map.put("cnt", (cnt - 1) / size + 1);
+				if(category.equals("TDsave")){
+					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = tdSaveRepository.queryCountByWriter(keyword, category);
+					map.put("cnt", (cnt -1) / size + 1);
+				}else{
+					List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
+					map.put("list", list);
+					int cnt = bRepository.queryCountByWriter(keyword, category);
+					map.put("cnt", (cnt - 1) / size + 1);
+				}
 			}
 			map.put("status", 200);
 		} catch (Exception e) {
