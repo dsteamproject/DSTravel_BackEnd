@@ -9,14 +9,17 @@ import java.util.Random;
 import com.example.entity.City;
 import com.example.entity.TD;
 import com.example.entity.Type;
+import com.example.entity.Worldcup;
 import com.example.repository.CityRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TypeRepository;
+import com.example.repository.WorldcupRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,9 @@ public class WorldCupController {
 
     @Autowired
     CityRepository cityRepository;
+
+    @Autowired
+    WorldcupRepository worldcupRepository;
 
     @Autowired
     TypeRepository typeRepository;
@@ -80,6 +86,21 @@ public class WorldCupController {
             map.put("randomlist2", list2);
             map.put("status", 200);
 
+        } catch (Exception e) {
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 월드컵 저장
+    @PostMapping(value = "/save", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> savePOST(@RequestBody TD td) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Worldcup worldcup = new Worldcup();
+            worldcup.setTd(td);
+            worldcupRepository.save(worldcup);
+            map.put("status", 200);
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }
