@@ -1,150 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>
+		4.0.0
+	</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>
+			org.springframework.boot
+		</groupId>
+		<artifactId>
+			spring-boot-starter-parent
+		</artifactId>
+		<version>
+			2.5.5
+		</version>
+		<relativePath />
+		<!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>bhk_travel</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>bhk_travel</name>
-	<description>Demo project for Spring Boot</description>
+	<groupId>
+		com.example
+	</groupId>
+	<artifactId>
+		bhk_travel
+	</artifactId>
+	<version>
+		0.0.1-SNAPSHOT
+	</version>
+	<name>
+		bhk_travel
+	</name>
+	<description>
+		Demo project for Spring Boot
+	</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>
+			11
+		</java.version>
 	</properties>
-
 	<!-- 패키징 포멧  jar(개발용), war(배포용) -->
-	<packaging>war</packaging>
-
+	<packaging>
+		war
+	</packaging>
 	<dependencies>
-	<!-- oauth2 인증-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20210307</version>
-		</dependency>
-			<dependency>
-    		<groupId>commons-io</groupId>
-   			 <artifactId>commons-io</artifactId>
-   				 <version>2.7</version>
-			</dependency>
-
-		<!--OkHttp-->
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>3.10.0</version>
-		</dependency>
-
 		<!-- war 배포용 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-tomcat
+			</artifactId>
+			<scope>
+				provided
+			</scope>
 		</dependency>
-
-		<!--email 인증-->
+		<!-- oauth2 인증 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-oauth2-client
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>
+				org.json
+			</groupId>
+			<artifactId>
+				json
+			</artifactId>
+			<version>
+				20210307
+			</version>
+		</dependency>
+		<dependency>
+			<groupId>
+				commons-io
+			</groupId>
+			<artifactId>
+				commons-io
+			</artifactId>
+			<version>
+				2.7
+			</version>
+		</dependency>
+		<!-- OkHttp -->
+		<dependency>
+			<groupId>
+				com.squareup.okhttp3
+			</groupId>
+			<artifactId>
+				okhttp
+			</artifactId>
+			<version>
+				3.10.0
+			</version>
+		</dependency>
+		<!-- war 배포용 -->
+		<dependency>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-tomcat
+			</artifactId>
+			<scope>
+				provided
+			</scope>
+		</dependency>
+		<!-- email 인증 -->
+		<dependency>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-mail
+			</artifactId>
 		</dependency>
 		<!-- jjwt -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
+			<groupId>
+				io.jsonwebtoken
+			</groupId>
+			<artifactId>
+				jjwt
+			</artifactId>
+			<version>
+				0.9.1
+			</version>
 		</dependency>
-
 		<!-- security -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-security
+			</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-taglibs</artifactId>
+			<groupId>
+				org.springframework.security
+			</groupId>
+			<artifactId>
+				spring-security-taglibs
+			</artifactId>
 		</dependency>
-
 		<!-- mybatis : SQL문으로 처리 -->
 		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.2.0</version>
+			<groupId>
+				org.mybatis.spring.boot
+			</groupId>
+			<artifactId>
+				mybatis-spring-boot-starter
+			</artifactId>
+			<version>
+				2.2.0
+			</version>
 		</dependency>
-
 		<!-- JPA vs mybatis -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-data-jpa
+			</artifactId>
 		</dependency>
-
 		<!-- 개발용 WAS tomcat -->
 		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
+			<groupId>
+				org.apache.tomcat.embed
+			</groupId>
+			<artifactId>
+				tomcat-embed-jasper
+			</artifactId>
+			<scope>
+				provided
+			</scope>
 		</dependency>
-
 		<!-- 개발용 h2 db embedded용 DB -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<groupId>
+				com.h2database
+			</groupId>
+			<artifactId>
+				h2
+			</artifactId>
+			<scope>
+				runtime
+			</scope>
 		</dependency>
-
-		<!--WEB-->
+		<!-- WEB -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-web
+			</artifactId>
 		</dependency>
-
-		<!--WAS가 자동으로 구동-->
+		<!-- WAS가 자동으로 구동 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-devtools
+			</artifactId>
+			<scope>
+				runtime
+			</scope>
+			<optional>
+				true
+			</optional>
 		</dependency>
-
-		<!--LOMBOK-->
+		<!-- LOMBOK -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<groupId>
+				org.projectlombok
+			</groupId>
+			<artifactId>
+				lombok
+			</artifactId>
+			<optional>
+				true
+			</optional>
 		</dependency>
-
-		<!--단위 테스트-->
+		<!-- 단위 테스트 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>
+				org.springframework.boot
+			</groupId>
+			<artifactId>
+				spring-boot-starter-test
+			</artifactId>
+			<scope>
+				test
+			</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>
+					org.springframework.boot
+				</groupId>
+				<artifactId>
+					spring-boot-maven-plugin
+				</artifactId>
 				<configuration>
 					<excludes>
 						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
+							<groupId>
+								org.projectlombok
+							</groupId>
+							<artifactId>
+								lombok
+							</artifactId>
 						</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
