@@ -317,11 +317,11 @@ public class TravelController {
                     tdImg.setImagesize(file.getSize());
                     tdImg.setImagetype(file.getContentType());
                     tdimgRepository.save(tdImg);
-                    td1.setFirstimage("127.0.0.1:8080/REST/travel/select_image?no=" + tdImg.getTd().getNo());
+                    td1.setFirstimage("//127.0.0.1:8080/REST/travel/select_image?no=" + tdImg.getTd().getNo());
                     tdRepository.save(td1);
                     map.put("no", tdImg.getTd().getNo());
                 } else {
-                    td1.setFirstimage("127.0.0.1:8080/REST/travel/select_image?no=" + tdRepository.save(td1).getNo());
+                    td1.setFirstimage("//127.0.0.1:8080/REST/travel/select_image?no=" + tdRepository.save(td1).getNo());
                     tdRepository.save(td1);
                     map.put("no", tdRepository.save(td1).getNo());
                 }
