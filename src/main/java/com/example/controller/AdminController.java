@@ -1,8 +1,10 @@
 package com.example.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.example.dto.BoardDTO;
 import com.example.dto.MemberDTO;
@@ -483,6 +485,8 @@ public class AdminController {
 
 	}
 
+	// 지역은 지역번호로 입력해야함(DB City 번호)
+	// 월드컵 지역별 1등수
 	@GetMapping(value = "/worldcup", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> worldcup(@RequestHeader("token") String token, @RequestParam("city") Integer city) {
 		Map<String, Object> map = new HashMap<>();
@@ -493,11 +497,19 @@ public class AdminController {
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
 				City city1 = cityRepository.getById(city);
 				List<Worldcup> list = worldcupRepository.findByTd_city(city1);
+				Map<String, Object> map1 = new HashMap<>();
 				for(Worldcup worldcup : list){
-					map.put(worldcup.getTd().getTitle(), worldcupRepository.countByTd_no(worldcup.getTd().getNo()));
+					map1.put(worldcup.getTd().getTitle(), worldcupRepository.countByTd_no(worldcup.getTd().getNo()));
 				}
+				List<Map<String,Object>> list2 = new ArrayList<>();
+				for(Entry<String, Object> elem : map1.entrySet()){ 
+					Map<String, Object> map2 = new HashMap<>();
+					map2.put("title", elem.getKey());
+					map2.put("cnt", elem.getValue());
+					list2.add(map2);
+				}
+				map.put("list", list2);
 				map.put("total", list.size());
-						
 				map.put("status", 200);
 			} else {
 				map.put("status", 578);
