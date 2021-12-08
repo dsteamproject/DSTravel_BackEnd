@@ -40,7 +40,32 @@
 	<packaging>
 		war
 	</packaging>
+	<repositories>
+		<repository>
+			<id>
+				oracle
+			</id>
+			<name>
+				ORACLE JDBC Repository
+			</name>
+			<url>
+				https://maven.jahia.org/maven2
+			</url>
+		</repository>
+	</repositories>
 	<dependencies>
+		<!-- oracle -->
+		<dependency>
+			<groupId>
+				com.oracle
+			</groupId>
+			<artifactId>
+				ojdbc7
+			</artifactId>
+			<version>
+				12.1.0.2
+			</version>
+		</dependency>
 		<!-- war 배포용 -->
 		<dependency>
 			<groupId>

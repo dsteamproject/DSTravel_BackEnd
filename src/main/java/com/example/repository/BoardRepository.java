@@ -24,10 +24,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Query(value = "SELECT COUNT(*) FROM Board WHERE board.member LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1", nativeQuery = true)
         public int queryCountByWriter(@Param("Keyword") String keyword, @Param("a") String category1);
 
-        @Query(value = "SELECT * FROM Board WHERE CATEGORY=:a AND NO<:b AND STATE=1 ORDER BY NO DESC LIMIT 1;", nativeQuery = true)
+        @Query(value = "SELECT * FROM(SELECT * FROM Board WHERE CATEGORY=:a AND NO<:b AND STATE=1 ORDER BY NO DESC) WHERE ROWNUM<=1", nativeQuery = true)
         public Board queryByCategoryTop1OrderByNoDesc(@Param("a") String category1, @Param("b") long no);
 
-        @Query(value = "SELECT * FROM Board WHERE CATEGORY=:a AND NO>:b AND STATE=1 ORDER BY NO ASC LIMIT 1;", nativeQuery = true)
+        @Query(value = "SELECT * FROM(SELECT * FROM Board WHERE CATEGORY=:a AND NO>:b AND STATE=1 ORDER BY NO ASC)WHERE ROWNUM <=1", nativeQuery = true)
         public Board queryByCategoryTop1OrderByNoAsc(@Param("a") String category1, @Param("b") long no);
 
         @Transactional
@@ -35,10 +35,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Modifying(clearAutomatically = true)
         public int queryDelete(@Param("a") long no);
 
-        @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=1;", nativeQuery = true)
+        @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=1", nativeQuery = true)
         public Board querySelectByIdstate1(@Param("b") long no);
 
-        @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=0;", nativeQuery = true)
+        @Query(value = "SELECT * FROM Board WHERE NO=:b AND STATE=0", nativeQuery = true)
         public Board querySelectByIdstate0(@Param("b") long no);
 
         @Query(value = "SELECT * FROM Board WHERE TITLE LIKE '%' || :Keyword || '%' AND CATEGORY=:a AND STATE=1 ORDER BY NO DESC", nativeQuery = true)

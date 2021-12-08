@@ -28,30 +28,30 @@ public class Member {
 
     @Id
     @Column(name = "ID")
-    private String Id;
+    private String Id = null;
 
     @Column(name = "PASSWORD")
     @JsonProperty(access = Access.WRITE_ONLY)
-    private String password;
+    private String password = null;
 
     @Column(name = "NEWPW")
     @JsonProperty(access = Access.WRITE_ONLY)
-    private String newpw;
+    private String newpw = null;
 
     @Column(name = "LOGIN")
     private String login = "TRAVEL";
 
     @Column(name = "NAME")
-    private String name;
+    private String name = null;
 
     @Column(name = "NICNAME")
-    private String nicname;
+    private String nicname = null;
 
     @Column(name = "EMAIL")
-    private String email;
+    private String email = null;
 
     @Column(name = "GENDER")
-    private String gender;
+    private String gender = null;
 
     @Column(name = "ROLE")
     private String role = "USER";
@@ -61,11 +61,11 @@ public class Member {
 
     @Column(name = "TOKEN")
     @JsonProperty(access = Access.WRITE_ONLY)
-    private String token;
+    private String token = null;
 
     // "yyyy-MM-dd HH:mm:ss"
     @CreationTimestamp
     @Column(name = "REGDATE", updatable = false)
-    private Date regdate;
+    private Date regdate = null;
 
 }

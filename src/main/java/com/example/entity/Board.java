@@ -52,10 +52,10 @@ public class Board {
     @Column(name = "GOOD")
     private int good = 0; // 좋아요수
 
-    @Column(name = "reply")
+    @Column(name = "REPLY")
     private int reply = 0; // 리플수
 
-    @Column(name = "warning")
+    @Column(name = "WARNING")
     private int warning = 0; // 신고수
 
     @CreationTimestamp // 날짜는 자동으로 추가

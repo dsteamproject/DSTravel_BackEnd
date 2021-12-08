@@ -85,7 +85,8 @@ public class TourApiController {
                     // System.out.println(jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items")
                     // .getJSONObject("item"));
                     JSONObject j1 = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items");
-
+                    System.out.println(areacode.equals("8"));
+                    System.out.println("12312");
                     if (areacode.equals("")) {
                         // List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
                         // Map<String, Object> a = new HashMap<>();

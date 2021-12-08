@@ -61,6 +61,7 @@ public class MemberController {
             map.put("status", 200);
         } catch (Exception e) {
             map.put("status", e.hashCode());
+            map.put("test", e.getStackTrace());
         }
         return map;
     }
