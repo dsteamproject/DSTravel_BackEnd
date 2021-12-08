@@ -8,7 +8,7 @@ import java.util.Random;
 
 import com.example.entity.City;
 import com.example.entity.TD;
-import com.example.entity.Type;
+import com.example.entity.TDType;
 import com.example.entity.Worldcup;
 import com.example.repository.CityRepository;
 import com.example.repository.TDRepository;
@@ -45,7 +45,7 @@ public class WorldCupController {
         Map<String, Object> map = new HashMap<>();
         try {
             City city2 = cityRepository.findById(city).get();
-            Type type2 = typeRepository.findById(type).get();
+            TDType type2 = typeRepository.findById(type).get();
             List<TD> list = tdRepository.selectTDWorldCup(city2, type2);
             map.put("listCnt", list.size());
             map.put("status", 200);
@@ -62,7 +62,7 @@ public class WorldCupController {
         Map<String, Object> map = new HashMap<>();
         try {
             City city2 = cityRepository.findById(city).get();
-            Type type2 = typeRepository.findById(type).get();
+            TDType type2 = typeRepository.findById(type).get();
             List<TD> list = tdRepository.selectTDWorldCup(city2, type2);
             List<TD> list1 = new ArrayList<>();
             List<TD> list2 = new ArrayList<>();

@@ -14,7 +14,6 @@ import com.example.entity.Member;
 import com.example.entity.Notice;
 import com.example.entity.TD;
 import com.example.entity.TodayVisitCount;
-import com.example.entity.Type;
 import com.example.entity.VisitorCount;
 import com.example.entity.Worldcup;
 import com.example.jwt.JwtUtil;
@@ -25,7 +24,6 @@ import com.example.repository.CityRepository;
 import com.example.repository.MemberRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TodayVisitCountRepository;
-import com.example.repository.TypeRepository;
 import com.example.repository.VisitorCountRepository;
 import com.example.repository.WorldcupRepository;
 

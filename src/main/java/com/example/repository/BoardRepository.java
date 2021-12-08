@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.example.dto.GoodDTO;
 import com.example.entity.Board;
 import com.example.entity.Member;
 

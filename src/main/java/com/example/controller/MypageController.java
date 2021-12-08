@@ -13,7 +13,7 @@ import com.example.entity.Member;
 import com.example.entity.MemberImg;
 import com.example.entity.TD;
 import com.example.entity.TDSave;
-import com.example.entity.Type;
+import com.example.entity.TDType;
 import com.example.jwt.JwtUtil;
 import com.example.mappers.GoodMapper;
 import com.example.repository.BoardRepository;
@@ -84,9 +84,10 @@ public class MypageController {
     // 127.0.0.1:8080/REST/mypage/select_image?id=
     // 이미지주소
     @GetMapping(value = "/select_image")
-    public ResponseEntity<byte[]> selectImage(@RequestParam("id") Member member) throws IOException {
+    public ResponseEntity<byte[]> selectImage(@RequestParam("id") String member) throws IOException {
         try {
-            MemberImg mImg = mImgRepository.querySelectByMemberId(member);
+            Member member1 = mRepository.findById(member).get();
+            MemberImg mImg = mImgRepository.querySelectByMemberId(member1);
             if (mImg.getImage().length > 0) {
                 HttpHeaders headers = new HttpHeaders();
                 if (mImg.getImagetype().equals("image/jpeg")) {
@@ -313,7 +314,7 @@ public class MypageController {
             Member member1 = mRepository.findById(id).orElseThrow();
             if (member1 != null && member1.getToken().equals(token.substring(6))
                     && !jwtUtil.isTokenExpired(token.substring(6))) {
-                Type type1 = typeRepository.findById(type).get();
+                TDType type1 = typeRepository.findById(type).get();
                 List<GoodDTO> list = goodMapper.selectGoodTD(member1.getId());
                 // System.out.println(list);
                 List<TD> list1 = new ArrayList<>();

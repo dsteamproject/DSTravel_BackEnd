@@ -1,18 +1,14 @@
 package com.example.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.example.entity.City;
-import com.example.entity.Sigungu;
 import com.example.entity.TD;
-import com.example.entity.Type;
-import com.example.repository.Cat1Repository;
-import com.example.repository.Cat2Repository;
-import com.example.repository.Cat3Repository;
+import com.example.entity.TDType;
 import com.example.repository.CityRepository;
-import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TypeRepository;
 
@@ -42,18 +38,6 @@ public class TourApiController {
 
     @Autowired
     CityRepository cityRepository;
-
-    @Autowired
-    SigunguRepository sigunguRepository;
-
-    @Autowired
-    Cat1Repository cat1Repository;
-
-    @Autowired
-    Cat2Repository cat2Repository;
-
-    @Autowired
-    Cat3Repository cat3Repository;
 
     @Autowired
     TypeRepository typeRepository;
@@ -112,62 +96,7 @@ public class TourApiController {
                                 System.out.println(i + ":DB에 존재하는 데이터");
                             }
                         }
-                        // map.put("list", list1);
-                    } else if (areacode.equals("8")) {
-                        Sigungu sigungu = new Sigungu();
-                        sigungu.setCity(cityRepository.findById(Integer.parseInt(areacode)).orElseThrow());
-                        if (!j1.getJSONObject("item").isNull("code")) {
-                            // a.put("code", j1.getJSONObject(i).getInt("code"));
-                            sigungu.setCode(j1.getJSONObject("item").getInt("code"));
-                        }
-                        if (!j1.getJSONObject("item").isNull("name")) {
-                            // a.put("name", j1.getJSONObject(i).getString("name"));
-                            sigungu.setName(j1.getJSONObject("item").getString("name"));
-                        }
-                        // if (a.size() != 0)
-                        // list1.add(a);
-                        if (!sigunguRepository
-                                .queryfindByCode(j1.getJSONObject("item").getInt("code"),
-                                        cityRepository.findById(Integer.parseInt(areacode)).orElseThrow())
-                                .isPresent()) {
-                            System.err.println(sigungu.toString());
-                            sigunguRepository.save(sigungu);
-                            // map.put("result", "DB에 저장 성공");
-                            System.out.println("DB에 저장됨");
-                        } else {
-                            // map.put("result", "중복된 데이터");
-                            System.out.println("DB에 존재하는 데이터");
-                        }
-
-                    } else {
-                        for (int i = 0; i < j1.getJSONArray("item").length(); i++) {
-                            Sigungu sigungu = new Sigungu();
-                            sigungu.setCity(cityRepository.findById(Integer.parseInt(areacode)).orElseThrow());
-                            if (!j1.getJSONArray("item").getJSONObject(i).isNull("code")) {
-                                // a.put("code", j1.getJSONObject(i).getInt("code"));
-                                sigungu.setCode(j1.getJSONArray("item").getJSONObject(i).getInt("code"));
-                            }
-                            if (!j1.getJSONArray("item").getJSONObject(i).isNull("name")) {
-                                // a.put("name", j1.getJSONObject(i).getString("name"));
-                                sigungu.setName(j1.getJSONArray("item").getJSONObject(i).getString("name"));
-                            }
-                            // if (a.size() != 0)
-                            // list1.add(a);
-                            if (!sigunguRepository
-                                    .queryfindByCode(j1.getJSONArray("item").getJSONObject(i).getInt("code"),
-                                            cityRepository.findById(Integer.parseInt(areacode)).orElseThrow())
-                                    .isPresent()) {
-                                System.err.println(sigungu.toString());
-                                sigunguRepository.save(sigungu);
-                                // map.put("result", "DB에 저장 성공");
-                                System.out.println(i + ":DB에 저장됨");
-                            } else {
-                                // map.put("result", "중복된 데이터");
-                                System.out.println(i + ":DB에 존재하는 데이터");
-                            }
-                        }
                     }
-
                 }
             } else {
                 System.err.println("Error Occurred");
@@ -184,7 +113,7 @@ public class TourApiController {
     // type DB저장용
     // Body : code, name
     @PostMapping(value = "/tourapi/DB/type")
-    public Map<String, Object> getTourApiTypeDB(@RequestBody List<Type> list) {
+    public Map<String, Object> getTourApiTypeDB(@RequestBody List<TDType> list) {
         Map<String, Object> map = new HashMap<>();
         try {
             for (int i = 0; i < list.size(); i++) {
@@ -234,19 +163,21 @@ public class TourApiController {
                     // .getInt("totalCount");
                     // System.out.println(j1.getJSONObject(i).getInt("contentid"));
 
-                    // List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
+                    List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
                     for (int i = 0; i < j1.length(); i++) {
-                        // Map<String, Object> a = new HashMap<>();
+                        Map<String, Object> a = new HashMap<>();
                         TD td = new TD();
-                        if (!j1.getJSONObject(i).isNull("contentid"))
+                        System.out.println(j1.getJSONObject(i));
+                        if (!j1.getJSONObject(i).isNull("contentid")){
                             if (!tdRepository.findById(j1.getJSONObject(i).getInt("contentid")).isPresent()) {
                                 if (!j1.getJSONObject(i).isNull("mapx") && !j1.getJSONObject(i).isNull("mapy")) {
 
                                     td.setCode(j1.getJSONObject(i).getInt("contentid"));
-                                    // a.put("contentid", j1.getJSONObject(i).getInt("contentid"));
-                                    if (!j1.getJSONObject(i).isNull("title"))
+                                    a.put("contentid", j1.getJSONObject(i).getInt("contentid"));
+                                    if (!j1.getJSONObject(i).isNull("title")){
                                         td.setTitle(j1.getJSONObject(i).getString("title"));
-                                    // a.put("title", j1.getJSONObject(i).getString("title"));
+                                        a.put("title", j1.getJSONObject(i).getString("title"));
+                                    }
                                     if (!j1.getJSONObject(i).isNull("addr1"))
                                         td.setAddr(j1.getJSONObject(i).getString("addr1"));
                                     // a.put("addr", j1.getJSONObject(i).getString("addr1"));
@@ -257,29 +188,13 @@ public class TourApiController {
                                     // a.put("areacode", j1.getJSONObject(i).getInt("areacode"));
                                     if (!j1.getJSONObject(i).isNull("firstimage"))
                                         td.setFirstimage(j1.getJSONObject(i).getString("firstimage"));
-                                    if (!j1.getJSONObject(i).isNull("cat1"))
-                                        if (cat1Repository.findById(j1.getJSONObject(i).getString("cat1")).isPresent())
-                                            td.setCat1(cat1Repository.findById(j1.getJSONObject(i).getString("cat1"))
-                                                    .orElseThrow());
-                                    if (!j1.getJSONObject(i).isNull("cat2"))
-                                        if (cat2Repository.findById(j1.getJSONObject(i).getString("cat2")).isPresent())
-                                            td.setCat1(cat1Repository.findById(j1.getJSONObject(i).getString("cat2"))
-                                                    .orElseThrow());
-                                    if (!j1.getJSONObject(i).isNull("cat3"))
-                                        if (cat3Repository.findById(j1.getJSONObject(i).getString("cat3")).isPresent())
-                                            td.setCat1(cat1Repository.findById(j1.getJSONObject(i).getString("cat3"))
-                                                    .orElseThrow());
-                                    if (!j1.getJSONObject(i).isNull("sigungucode"))
-                                        if (sigunguRepository.findById(j1.getJSONObject(i).getInt("sigungucode"))
-                                                .isPresent())
-                                            td.setSigungu(sigunguRepository
-                                                    .findById(j1.getJSONObject(i).getInt("sigungucode")).orElseThrow());
+                                    
                                     if (!j1.getJSONObject(i).isNull("tel"))
                                         td.setTel(j1.getJSONObject(i).getString("tel"));
                                     if (!j1.getJSONObject(i).isNull("contenttypeid"))
                                         if (typeRepository.findById(j1.getJSONObject(i).getInt("contenttypeid"))
                                                 .isPresent())
-                                            td.setType(
+                                            td.setTdtype(
                                                     typeRepository.findById(j1.getJSONObject(i).getInt("contenttypeid"))
                                                             .orElseThrow());
                                     // a.put("firstimage", j1.getJSONObject(i).getString("firstimage"));
@@ -289,19 +204,19 @@ public class TourApiController {
                                     // a.put("mapy", j1.getJSONObject(i).getFloat("mapy"));
                                 }
 
-                                System.out.println(j1.getJSONObject(i).getInt("contentid"));
+                                // System.out.println(j1.getJSONObject(i).getInt("contentid"));
                                 System.out.println(i + ":저장완료");
                                 tdRepository.save(td);
                             } else {
-                                System.out.println(j1.getJSONObject(i).getInt("contentid"));
+                                // System.out.println(j1.getJSONObject(i).getInt("contentid"));
                                 System.out.println(i + ":이미 저장된 데이터");
                             }
-
-                        // list1.add(a);
+                        }
+                        list1.add(a);
 
                     }
                     // System.out.println(list1);
-                    // map.put("list", list1);
+                    map.put("list", list1);
                     // map.put("areatotal", totalCount);
                 }
             } else

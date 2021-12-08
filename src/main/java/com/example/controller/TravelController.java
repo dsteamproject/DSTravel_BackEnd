@@ -10,18 +10,13 @@ import org.apache.commons.io.IOUtils;
 import com.example.entity.City;
 import com.example.entity.Good;
 import com.example.entity.Member;
-import com.example.entity.Sigungu;
 import com.example.entity.TD;
 import com.example.entity.TDImg;
 import com.example.entity.TDSave;
 import com.example.jwt.JwtUtil;
-import com.example.repository.Cat1Repository;
-import com.example.repository.Cat2Repository;
-import com.example.repository.Cat3Repository;
 import com.example.repository.CityRepository;
 import com.example.repository.GoodRepository;
 import com.example.repository.MemberRepository;
-import com.example.repository.SigunguRepository;
 import com.example.repository.TDRepository;
 import com.example.repository.TDSaveRepository;
 import com.example.repository.TDimgRepository;
@@ -74,18 +69,6 @@ public class TravelController {
 
     @Autowired
     TDimgRepository tdimgRepository;
-
-    @Autowired
-    SigunguRepository sigunguRepository;
-
-    @Autowired
-    Cat1Repository cat1Repository;
-
-    @Autowired
-    Cat2Repository cat2Repository;
-
-    @Autowired
-    Cat3Repository cat3Repository;
 
     @Autowired
     TypeRepository typeRepository;
@@ -176,16 +159,10 @@ public class TravelController {
             @RequestParam(name = "areacode", defaultValue = "") String areacode) {
         Map<String, Object> map = new HashMap<>();
         try {
-
             PageRequest pageRequest = PageRequest.of(page - 1, size);
             List<City> citylist = cityRepository.findAll(pageRequest).toList();
             if (areacode.equals(""))
                 map.put("Citylist", citylist);
-            else {
-                List<Sigungu> sigungulist = sigunguRepository
-                        .queryfindByCode(cityRepository.findById(Integer.parseInt(areacode)).orElseThrow());
-                map.put("Sigungulist", sigungulist);
-            }
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,7 +279,7 @@ public class TravelController {
                 TD td1 = new TD();
                 td1.setTitle(td.getTitle());
                 td1.setAddr(td.getAddr());
-                td1.setType(typeRepository.getById(type));
+                td1.setTdtype(typeRepository.getById(type));
                 td1.setXlocation(td.getXlocation());
                 td1.setYlocation(td.getYlocation());
                 td1.setCity(cityRepository.getById(city));

@@ -15,13 +15,14 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@Table(name = "CAT3")
-public class Cat3 {
+@Table(name = "TDTYPE")
+public class TDType {
 
     @Id
     @Column(name = "Code")
-    private String Code;
+    private Integer Code;
 
     @Column(name = "NAME")
     private String Name;
+
 }
