@@ -7,15 +7,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class RestJsonService {
     private final String GRANT_TYPE = "authorization_code";
     private final String KAKAO_CLIENT_ID = "ce61cbedf2c1d5758c73ec734dc1af08";
-    private final String KAKAO_REDIRECT_URI = "http://localhost:9090/login";
+    private final String KAKAO_REDIRECT_URI = "http://http://ibyeong.shop/login";
     private final String KAKAO_CLIENT_SECRET = "Qg7KSM8Cj7NGqt0UxJwXQQHJi8uETVLv";
     private final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private final String NAVER_CLIENT_ID = "WCxe47guG90KEPP6lIWu";
-    private final String NAVER_REDIRECT_URI = "http://localhost:9090/login";
+    private final String NAVER_REDIRECT_URI = "http://http://ibyeong.shop/login";
     private final String NAVER_CLIENT_SECRET = "xLn4x5ySzK";
     private final String NAVER_TOKEN_URL = "https://nid.naver.com/oauth2.0/token";
     private final String GOOGLE_CLIENT_ID = "74537161972-j2r3otdejq6fs24eeo09tlpsm5lho3u0.apps.googleusercontent.com";
-    private final String GOOGLE_REDIRECT_URI = "http://localhost:9090/login";
+    private final String GOOGLE_REDIRECT_URI = "http://http://ibyeong.shop/login";
     private final String GOOGLE_CLIENT_SECRET = "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";
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 

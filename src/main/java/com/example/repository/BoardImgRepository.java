@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardImgRepository extends JpaRepository<BoardImg, Long> {
 
-    @Query(value = "SELECT * FROM BoardImg WHERE bno=:board ", nativeQuery = true)
+    @Query(value = "SELECT * FROM BoardImg WHERE bno=:board", nativeQuery = true)
     public BoardImg querySelectByBoardno(@Param("board") Board board);
 
 }
