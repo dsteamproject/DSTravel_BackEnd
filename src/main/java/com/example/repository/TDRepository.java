@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -86,27 +87,33 @@ public interface TDRepository extends JpaRepository<TD, Integer> {
                         @Param("contentTypeId") String contentTypeId, @Param("id") String id);
 
         // ----------------distance--------------------
+
+
         // 여행지 선택시 거리에 따른 List + 임시여행지 포함
-        @Query(value = "SELECT * FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 OR STATE=0 AND USERS=:id) WHERE (6371*acos(cos(radians(:ymap))*cos(radians(YLOCATION))*cos(radians(XLOCATION)-radians(:xmap))+sin(radians(:ymap))*sin(radians(YLOCATION)))) <= :distance AND XLocation !=:xmap", nativeQuery = true)
+        @Query(value = "SELECT * FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 OR STATE=0 AND USERS=:id)"
+        +" WHERE ASSESSMENT(:ymap,:xmap,YLOCATION,XLOCATION) <= :distance AND XLocation !=:xmap", nativeQuery = true)
         public List<TD> querySelectdistanceTDtem(@Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, @Param("xmap") Float xmap,
                         @Param("ymap") Float ymap, @Param("distance") double distance, @Param("id") String id,
                         Pageable pageable);
 
         // 여행지 선택시 거리에 따른 List 수 + 임시여행지 포함
-        @Query(value = "SELECT Count(*) FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 OR STATE=0 AND USERS=:id) WHERE (6371*acos(cos(radians(:ymap))*cos(radians(YLOCATION))*cos(radians(XLOCATION)-radians(:xmap))+sin(radians(:ymap))*sin(radians(YLOCATION)))) <= :distance AND XLocation !=:xmap", nativeQuery = true)
+        @Query(value = "SELECT Count(*) FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 OR STATE=0 AND USERS=:id)"
+        +" WHERE ASSESSMENT(:ymap,:xmap,YLOCATION,XLOCATION) <= :distance AND XLocation !=:xmap", nativeQuery = true)
         public int CountSelectdistanceTDtem(@Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, @Param("xmap") Float xmap,
                         @Param("ymap") Float ymap, @Param("distance") double distance, @Param("id") String id);
 
         // 여행지 선택시 거리에 따른 List
-        @Query(value = "SELECT * FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 ) WHERE (6371*acos(cos(radians(:ymap))*cos(radians(YLOCATION))*cos(radians(XLOCATION)-radians(:xmap))+sin(radians(:ymap))*sin(radians(YLOCATION)))) <= :distance AND XLocation !=:xmap", nativeQuery = true)
+        @Query(value = "SELECT * FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1 )"
+        +" WHERE ASSESSMENT(:ymap,:xmap,YLOCATION,XLOCATION) <= :distance AND XLocation !=:xmap", nativeQuery = true)
         public List<TD> querySelectdistanceTD(@Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, @Param("xmap") Float xmap,
                         @Param("ymap") Float ymap, @Param("distance") double distance, Pageable pageable);
 
         // 여행지 선택시 거리에 따른 List 수
-        @Query(value = "SELECT Count(*) FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1) WHERE (6371*acos(cos(radians(:ymap))*cos(radians(YLOCATION))*cos(radians(XLOCATION)-radians(:xmap))+sin(radians(:ymap))*sin(radians(YLOCATION)))) <= :distance AND XLocation !=:xmap", nativeQuery = true)
+        @Query(value = "SELECT Count(*) FROM (SELECT *FROM TD WHERE CITY=:areaCode AND TDTYPE=:contentTypeId AND STATE=1)"
+        +" WHERE ASSESSMENT(:ymap,:xmap,YLOCATION,XLOCATION) <= :distance AND XLocation !=:xmap", nativeQuery = true)
         public int CountSelectdistanceTD(@Param("areaCode") String areaCode,
                         @Param("contentTypeId") String contentTypeId, @Param("xmap") Float xmap,
                         @Param("ymap") Float ymap, @Param("distance") double distance);
