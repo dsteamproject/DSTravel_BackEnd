@@ -82,8 +82,11 @@ public class BoardController {
 	@Autowired
 	TDSaveRepository tdSaveRepository;
 
-	// 게시판 목록 {no, title, category, content, hit, good(int), reply(int), regdate,
-	// state, member}
+	// 게시판 목록
+	// parameter
+	// param data = category(카테고리명), type(검색타입명), keyword(검색어), page(페이지수), size(1페이지당 내용수), orderby(정렬명)
+	// response data = list(게시판 리스트), cnt(총페이지수/1페이지당 내용수)
+	// 2021.12.13 by hsyu
 	@GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> selectAll(
 			@RequestParam(name = "category", required = false, defaultValue = "review") String category,
