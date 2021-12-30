@@ -9,7 +9,7 @@
 - 공공데이터(한국관광공사_관광정보 서비스) API 트래픽 초과로 인한 데이터 조회 불가
 
 ### 3. 조사방법결정
-- REST API, HTTP기반의 요청, 응답을 처리할 수 있는 라이브러리를 활용한 데이터 추출
+- REST API, HTTP기반의 요청, 응답을 처리할 수 있는 라이브러리 **[OkHttp]** 를 활용한 데이터 추출
 
 ### 4. 조사방법구현
 ``` Java
@@ -96,10 +96,18 @@
         return map;
     }
 ```
+- `OkHttpClient client = new OkHttpClient();`를 입력하여 client 객체를 생성한다.
+- `Request.Builder builder = new Request.Builder().url(url).get();`를 입력하여 GET 요청 객체를 생성한다.
+- `Response response = client.newCall(request).execute();`를 통해 OkHttp 클라이언트로 GET 요청 객체를 전송한다.
+- `ResponseBody body = response.body();`와 같이 응답을 받는다.
+- String 정보를 JSON타입으로 변형 후 필요한 값을 추출하여 DB에 저장한다.
 
 ### 5. 문제해결
 - DB에 저장된 데이터를 이용하여 Front에 Data제공하므로 공공데이터 트래픽 사용 최소화
 
+**[결과화면]**
+
+![image](https://user-images.githubusercontent.com/82141580/147756778-4a36d16a-0763-4450-845f-6bd03331ee93.png)
 
 
 ---
