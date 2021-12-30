@@ -341,7 +341,6 @@ public class AdminController {
 	public Map<String, Object> boardupdate(@RequestHeader("token") String token, @RequestParam(name = "no") long no) {
 		Map<String, Object> map = new HashMap<>();
 		try {
-
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
 			if (member != null && member.getToken().equals(token.substring(6))
@@ -360,7 +359,7 @@ public class AdminController {
 		return map;
 	}
 
-	// 방문자수 저장(방문자수만 넘어오면 됨. 하루에 한번만 넘어와야함.)
+	// 방문자수 저장
 	@PostMapping(value = "/visitorCount", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> visitorPOST(@RequestHeader("token") String token,
 			@RequestBody VisitorCount visitorCount) {
@@ -524,7 +523,6 @@ public class AdminController {
 
 	}
 
-	// 지역은 지역번호로 입력해야함(DB City 번호)
 	// 월드컵 지역별 1등수
 	@GetMapping(value = "/worldcup", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> worldcup(@RequestHeader("token") String token, @RequestParam("city") Integer city) {

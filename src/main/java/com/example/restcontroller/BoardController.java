@@ -84,8 +84,6 @@ public class BoardController {
 
 	// 게시판 목록
 	// GET > http://localhost:8080/REST/board/select_all
-	// 2021.12.13 by hsyu
-	// 수정내용 > 
 	@GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> selectAll(
 			@RequestParam(name = "category", required = false, defaultValue = "review") String category,
@@ -96,8 +94,11 @@ public class BoardController {
 			@RequestParam(name = "orderby", required = false, defaultValue = "latest") String orderby) {
 		Map<String, Object> map = new HashMap<>();
 		try {
+			// PageRequest 객체 생성
 			PageRequest pageRequest = PageRequest.of(page - 1, size);
+			// 검색타입:글제목, 정렬:내림차순
 			if (orderby.equals("latest") && type.equals("title")) {
+				// 게시물(여행일정) 조회 (state=2 : 여행일정 공유허용, state=1 : 여행일정 미공유, state=0 : 여행일정 삭제)
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByDesc(keyword, pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
@@ -115,13 +116,17 @@ public class BoardController {
 					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
-				}else{
+				}
+				// 게시물 조회
+				else{
 				List<Board> list = bRepository.querySelectAllByTitleOrderByDesc(keyword, category, pageRequest);
 				map.put("list", list);
 				int cnt = bRepository.queryCountByTitle(keyword, category);
 				map.put("cnt", (cnt - 1) / size + 1);
 				}
+			// 검색타입:작성자, 정렬:내림차순
 			} else if (orderby.equals("latest") && type.equals("writer")) {
+				// 게시물(여행일정) 조회
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByDesc(keyword,  pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
@@ -139,13 +144,17 @@ public class BoardController {
 					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
-				}else{
+				}
+				// 게시물 조회
+				else{
 					List<Board> list = bRepository.querySelectAllByWriterOrderByDesc(keyword, category, pageRequest);
 					map.put("list", list);
 					int cnt = bRepository.queryCountByWriter(keyword, category);
 					map.put("cnt", (cnt - 1) / size + 1);
 				}
+			// 검색타입:글제목, 정렬:오름차순
 			} else if (orderby.equals("old") && type.equals("title")) {
+				// 게시물(여행일정) 조회
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByTitleOrderByAsc(keyword,  pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
@@ -163,13 +172,17 @@ public class BoardController {
 					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByTitle(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
-				}else{
+				}
+				// 게시물 조회
+				else{
 					List<Board> list = bRepository.querySelectAllByTitleOrderByAsc(keyword, category, pageRequest);
 					map.put("list", list);
 					int cnt = bRepository.queryCountByTitle(keyword, category);
 					map.put("cnt", (cnt - 1) / size + 1);
 				}
+			// 검색타입:작성자, 정렬:오름차순
 			} else if (orderby.equals("old") && type.equals("writer")) {
+				// 게시물(여행일정) 조회
 				if(category.equals("TDsave")){
 					List<TDSave> list = tdSaveRepository.querySelectAllByWriterOrderByAsc(keyword,pageRequest);
 					List<Map<String, Object>> list1 = new ArrayList<>();
@@ -187,7 +200,9 @@ public class BoardController {
 					map.put("list", list1);
 					int cnt = tdSaveRepository.queryCountByWriter(keyword);
 					map.put("cnt", (cnt -1) / size + 1);
-				}else{
+				}
+				// 게시물 조회
+				else{
 					List<Board> list = bRepository.querySelectAllByWriterOrderByAsc(keyword, category, pageRequest);
 					map.put("list", list);
 					int cnt = bRepository.queryCountByWriter(keyword, category);
@@ -195,10 +210,13 @@ public class BoardController {
 				}
 			}
 			map.put("status", 200);
+			map.put("data", "게시물 조회에 성공하였습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "게시물 조회에 실패하였습니다.");
 		}
+		// 결과 값 리턴
 		return map;
 	}
 
@@ -243,37 +261,15 @@ public class BoardController {
 		return map;
 	}
 
-	// @RequestMapping(value = "/insert_all", method = RequestMethod.POST)
-	// public String insertAllPost(@RequestParam(name = "title") String[] title,
-	// @RequestParam(name = "content") String[] content, @RequestParam(name =
-	// "writer") String[] writer,
-	// @RequestParam(name = "file") MultipartFile[] file) throws IOException {
-
-	// List<Board> list = new ArrayList<>();
-	// for (int i = 0; i < title.length; i++) {
-	// Board board = new Board();
-	// board.setTitle(title[i]);
-	// board.setContent(content[i]);
-	// board.setWriter(writer[i]);
-
-	// board.setImage(file[i].getBytes());
-	// board.setImagename(file[i].getOriginalFilename());
-	// board.setImagesize(file[i].getSize());
-	// board.setImagetype(file[i].getContentType());
-	// list.add(board);
-	// }
-	// bRepository.saveAll(list);
-	// return "redirect:select_all";
-	// }
-
-	// 127.0.0.1:8080/REST/board/select_image?no=이미지주소
+	// 게시글 이미지 조회
+	// GET > http://localhost:8080/REST/board/select_image?no=
 	@GetMapping(value = "/select_image")
 	public ResponseEntity<byte[]> selectImage(@RequestParam(name = "no") Board board) throws IOException {
 		try {
-
-			System.out.println(board.getNo());
-			BoardImg bImg = bImgRepository.querySelectByBoardno(board);
-			System.out.println(bImg.getNo());
+			// 게시글 이미지 조회
+			BoardImg bImg = bImgRepository.querySelectBoardImg(board);
+			
+			// 이미지 타입 확인
 			if (bImg.getImage().length > 0) {
 				HttpHeaders headers = new HttpHeaders();
 				if (bImg.getImagetype().equals("image/jpeg")) {
@@ -284,13 +280,14 @@ public class BoardController {
 					headers.setContentType(MediaType.IMAGE_GIF);
 				}
 
-				// 클래스명 response = new 클래스명( 생성자선택 )
+				// response 객체 생성
 				ResponseEntity<byte[]> response = new ResponseEntity<>(bImg.getImage(), headers, HttpStatus.OK);
-				System.out.println(bImg.getImage());
+
+				// 이미지 리턴
 				return response;
 			}
+			// 타입이 맞지않을 경우 null값 리턴
 			return null;
-
 		}
 		// 오라클에 이미지를 읽을 수 없을 경우
 		catch (Exception e) {
@@ -405,7 +402,7 @@ public class BoardController {
 				board1.setContent(board.getContent());
 				bRepository.save(board1);
 				if (file != null) {
-					BoardImg bImg = bImgRepository.querySelectByBoardno(board);
+					BoardImg bImg = bImgRepository.querySelectBoardImg(board);
 					bImg.setImage(file.getBytes());
 					bImg.setImagename(file.getOriginalFilename());
 					bImg.setImagesize(file.getSize());
