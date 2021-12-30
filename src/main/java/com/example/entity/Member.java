@@ -27,45 +27,44 @@ import lombok.ToString;
 public class Member {
 
     @Id
-    @Column(name = "ID")
-    private String Id = null;
+    @Column
+    private String Id = null;               // 아이디
 
-    @Column(name = "PASSWORD")
+    @Column
+    @JsonProperty(access = Access.WRITE_ONLY)   
+    private String password = null;         // 암호(조회불가)
+
+    @Column
     @JsonProperty(access = Access.WRITE_ONLY)
-    private String password = null;
+    private String newpw = null;            // 임시 및 신규암호(조회불가)
 
-    @Column(name = "NEWPW")
+    @Column
+    private String login = "TRAVEL";        // 로그인 방법(Travel : 홈페이지 로그인, SNS : SNS계정 로그인)
+
+    @Column
+    private String name = null;             // 이름
+
+    @Column
+    private String nicname = null;          // 별명
+
+    @Column
+    private String email = null;            // 이메일
+
+    @Column
+    private String gender = null;           // 성별
+
+    @Column
+    private String role = "USER";           // 권한
+
+    @Column
+    private int state = 1;                  // 상태(0 : 삭제된 계정, 1 : 등록된 계정)
+
+    @Column
     @JsonProperty(access = Access.WRITE_ONLY)
-    private String newpw = null;
+    private String token = null;            // JWT token
 
-    @Column(name = "LOGIN")
-    private String login = "TRAVEL";
-
-    @Column(name = "NAME")
-    private String name = null;
-
-    @Column(name = "NICNAME")
-    private String nicname = null;
-
-    @Column(name = "EMAIL")
-    private String email = null;
-
-    @Column(name = "GENDER")
-    private String gender = null;
-
-    @Column(name = "ROLE")
-    private String role = "USER";
-
-    @Column(name = "STATE")
-    private int state = 1;
-
-    @Column(name = "TOKEN")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private String token = null;
-
-    // "yyyy-MM-dd HH:mm:ss"
     @CreationTimestamp
     @Column(name = "REGDATE", updatable = false)
-    private Date regdate = null;
+    private Date regdate = null;            // 등록일자(수정불가)
 
 }

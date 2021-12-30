@@ -32,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            // const headers = {"Content-Type":"application/json", "token" :'123456_aaaa'}
+            
             String token = request.getHeader("TOKEN");
             String username = null;
 

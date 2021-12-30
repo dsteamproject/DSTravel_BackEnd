@@ -18,10 +18,10 @@ import lombok.ToString;
 public class City {
 
     @Id
-    @Column(name = "Code")
-    private Integer Code;
+    @Column
+    private Integer code; // 지역코드 (한국관광공사 공공데이터에 등록된 지역코드)
 
-    @Column(name = "NAME")
-    private String Name;
+    @Column
+    private String name; // 지역명
 
 }

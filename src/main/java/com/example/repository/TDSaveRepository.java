@@ -17,6 +17,11 @@ public interface TDSaveRepository extends JpaRepository<TDSave, Long> {
     @Query(value = "SELECT * FROM TDSAVE WHERE MEMBER=:member AND STATE != 0", nativeQuery = true)
     public List<TDSave> selectMyTDsave(@Param("member") Member member);
 
+    // 게시판 전체 조회
+    // 수정 전
+    // @Query(value = "SELECT * FROM TDSAVE WHERE TITLE LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO DESC", nativeQuery = true)
+    // 수정 후 (쿼리에서 로직빼기 -> 주요 로직을 단위 테스트하기 어려움을 해소)
+    // 참고했던 자료(https://www.youtube.com/watch?v=fnH_SR3n9Ew)
     @Query(value = "SELECT * FROM TDSAVE WHERE TITLE LIKE '%' || :Keyword || '%' AND STATE=2 ORDER BY NO DESC", nativeQuery = true)
     public List<TDSave> querySelectAllByTitleOrderByDesc(@Param("Keyword") String keyword,
                      Pageable pageable);

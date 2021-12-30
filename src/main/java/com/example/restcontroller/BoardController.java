@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.restcontroller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,10 +83,9 @@ public class BoardController {
 	TDSaveRepository tdSaveRepository;
 
 	// 게시판 목록
-	// parameter
-	// param data = category(카테고리명), type(검색타입명), keyword(검색어), page(페이지수), size(1페이지당 내용수), orderby(정렬명)
-	// response data = list(게시판 리스트), cnt(총페이지수/1페이지당 내용수)
+	// GET > http://localhost:8080/REST/board/select_all
 	// 2021.12.13 by hsyu
+	// 수정내용 > 
 	@GetMapping(value = "/select_all", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> selectAll(
 			@RequestParam(name = "category", required = false, defaultValue = "review") String category,

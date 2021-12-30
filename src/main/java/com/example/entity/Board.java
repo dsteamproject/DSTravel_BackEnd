@@ -31,43 +31,42 @@ import lombok.ToString;
 @Table(name = "BOARD")
 public class Board {
 
-    @Column(name = "NO") // 컬럼명
-    @Id // 기본키(중복X)
-    // 여기 추가되는 정보는 위에 생성한 시퀀스 사용
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BOARD_NO")
+    @Column 
+    @Id // 기본키
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BOARD_NO") // 시퀀스 사용
     private Long no = 0L; // 글번호
 
-    @Column(name = "TITLE")
+    @Column
     private String title = null; // 글제목
 
-    @Column(name = "CATEGORY")
-    private String category = null;
+    @Column
+    private String category = null; // 카테고리
 
     @Lob
-    @Column(name = "CONTENT")
-    private String content = null; // 내용
+    @Column
+    private String content = null; // 내용(Front에서 html형식으로 내용저장하기로 함)
 
-    @Column(name = "HIT")
+    @Column
     private int hit = 1; // 조회수
 
-    @Column(name = "GOOD")
+    @Column
     private int good = 0; // 좋아요수
 
-    @Column(name = "REPLY")
+    @Column
     private int reply = 0; // 리플수
 
-    @Column(name = "WARNING")
+    @Column
     private int warning = 0; // 신고수
 
-    @CreationTimestamp // 날짜는 자동으로 추가
-    @Column(updatable = false, name = "REGDATE")
-    private Date regdate = null; // 날짜
+    @CreationTimestamp 
+    @Column(updatable = false) // 최초등록일자는 수정불가
+    private Date regdate = null; // 등록일자
 
-    @Column(name = "STATE")
-    private int state = 1;
+    @Column
+    private int state = 1; // 상태(1:등록된 게시물 0:삭제된 게시물)
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "MEMBER")
+    @JoinColumn
     private Member member;
 
 }

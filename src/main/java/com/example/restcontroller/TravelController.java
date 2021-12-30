@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.restcontroller;
 
 import java.io.IOException;
 import java.io.InputStream;

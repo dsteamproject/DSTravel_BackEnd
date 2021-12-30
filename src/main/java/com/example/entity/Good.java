@@ -27,19 +27,19 @@ public class Good {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GOOD_NO")
-    @Column(name = "NO")
+    @Column
     private Long no;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BOARD")
-    private Board board;
+    private Board board;    // 게시글 번호
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER")
-    private Member member;
+    private Member member;  // 회원정보 ID
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TD")
-    private TD td;
+    private TD td;          // 여행지 번호
 
 }

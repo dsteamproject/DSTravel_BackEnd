@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.restcontroller;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,7 +52,6 @@ public class HomeController {
         return map;
     }
 
-    // https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ce61cbedf2c1d5758c73ec734dc1af08&redirect_uri=http://localhost:8080/login/oauth2/code/kakao
     @PostMapping("/kakaologin")
     public Map<String, Object> kakaologin(@RequestParam("code") String code) {
         Map<String, Object> map = new HashMap<>();

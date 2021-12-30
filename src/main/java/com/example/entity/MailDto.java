@@ -18,12 +18,12 @@ import lombok.ToString;
 @Table(name = "MAILDTO")
 public class MailDto {
     @Id
-    @Column(name = "ADDRESS")
-    private String address;
+    @Column
+    private String address;     // 이메일 주소
 
     @Column(name = "TITLE")
-    private String title;
+    private String title;       // 이메일 제목
 
     @Column(name = "MESSAGE")
-    private String message;
+    private String message;     // 이메일 내용
 }

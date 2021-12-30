@@ -28,23 +28,23 @@ public class BoardImg {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BOARDIMG_NO")
-    @Column(name = "NO")
-    private Long no;
+    @Column
+    private Long no; // 번호
 
     @Lob
-    @Column(name = "IMAGE")
-    private byte[] image;
+    @Column
+    private byte[] image; // 이미지 데이터
 
-    @Column(name = "IMAGENAME")
-    private String imagename;
+    @Column
+    private String imagename; // 이미지 명
 
-    @Column(name = "IMAGESIZE")
-    private long imagesize;
+    @Column
+    private long imagesize; // 이미지 크기
 
-    @Column(name = "IMAGETYPE")
-    private String imagetype;
+    @Column
+    private String imagetype; // 이미지 타입
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "BNO")
+    @JoinColumn(name = "BOARD_NO") // Column명 : BOARD_NO
     private Board board;
 }

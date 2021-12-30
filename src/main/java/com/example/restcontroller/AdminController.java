@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.restcontroller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+// 관리자 페이지
 @RequestMapping(value = "/admin")
 public class AdminController {
 
@@ -72,53 +73,66 @@ public class AdminController {
 	@Autowired
 	CityRepository cityRepository;
 
-	// 모든 회원정보
+	// 회원정보 조회
+	// GET > http://localhost:8080/REST/admin/member
 	@GetMapping(value = "/member", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> memberGET(@RequestHeader("token") String token,
-			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
-			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
-			@RequestParam(name = "state", required = false) String state,
-			@RequestParam(name = "orderbytype", defaultValue = "regdate") String orderbytype,
-			@RequestParam(name = "orderby", defaultValue = "DESC") String orderby,
-			@RequestParam(name = "keywordtype", defaultValue = "ID") String keywordtype,
-			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
+	public Map<String, Object> memberGET(@RequestHeader("token") String token,						// JWT token
+			@RequestParam(name = "page", required = false, defaultValue = "1") int page,			// 페이지번호
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,			// 1페이지당 게시물수
+			@RequestParam(name = "state", required = false) String state,							// 0 : 삭제된 게시물 , 1 : 등록된 게시물
+			@RequestParam(name = "orderbytype", defaultValue = "regdate") String orderbytype,		// 정렬시킬 column명
+			@RequestParam(name = "orderby", defaultValue = "DESC") String orderby,					// DESC : 오름차순, ASC : 내림차순
+			@RequestParam(name = "keywordtype", defaultValue = "ID") String keywordtype,			// 검색타입
+			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {	// 검색키워드
 		Map<String, Object> map = new HashMap<>();
 		try {
+			// 토큰 값으로 member정보 추출
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-				List<MemberDTO> memberlist = mMapper.selectMemberAdmin(keywordtype, keyword, 1 + (size * (page - 1)),
+				
+				// ListMember 메소드 호출
+				List<MemberDTO> memberlist = mMapper.ListMember(keywordtype, keyword, 1 + (size * (page - 1)),
 						page * size, orderbytype, orderby, state);
-				int cnt = mMapper.CountMemberAdmin(keywordtype, keyword, state);
+				// ListMemberTotalCount 메소드 호출
+				int cnt = mMapper.ListMemberTotalCount(keywordtype, keyword, state);
 				map.put("cnt", (cnt - 1) / size + 1);
 				map.put("memberlist", memberlist);
 				map.put("status", 200);
+				map.put("data", "회원정보 조회를 성공했습니다.");
 
 			} else {
 				map.put("status", 578);
+				map.put("data", "회원정보 조회를 실패했습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "회원정보 조회를 실패했습니다.");
 		}
 		return map;
 
 	}
 
 	// 회원정보 수정
-	// id(아이디를 주면 해당 아이디의 정보 수정), email, gender, name, nicname, role, state
-	// [{"id":"user02", "gender":"man"},{"id":"user03","gender":"man"}]
+	// PUT > http://localhost:8080/REST/admin/memberupdate
 	@PutMapping(value = "/memberupdate", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Object> memberPUT(@RequestHeader("token") String token, @RequestBody Member[] member1) {
+	public Map<String, Object> memberPUT(@RequestHeader("token") String token 			// JWT token
+			, @RequestBody Member[] member1) {											// 수정할 member 정보
 		Map<String, Object> map = new HashMap<>();
 		try {
-			System.out.println(member1);
+			// 토큰 값으로 member정보 추출
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				
 				for (Member mem : member1) {
+					// Member 객체 설정
 					Member member2 = mRepository.findById(mem.getId()).get();
 					member2.setEmail(mem.getEmail());
 					member2.setGender(mem.getGender());
@@ -126,33 +140,39 @@ public class AdminController {
 					member2.setNicname(mem.getNicname());
 					member2.setRole(mem.getRole());
 					member2.setState(mem.getState());
+					// Member 객체 변경사항 저장
 					mRepository.save(member2);
 				}
 				map.put("status", 200);
+				map.put("data", "회원정보 수정을 성공했습니다.");
 
 			} else {
 				map.put("status", 578);
+				map.put("data", "회원정보 수정을 실패했습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "회원정보 수정을 실패했습니다.");
 		}
 		return map;
 	}
 
 	// 회원정보 삭제
-	// id(아이디를 주면 해당 아이디의 정보 수정), email, gender, name, nicname, role, state
-	// [{"id":"user02"},{"id":"user03"}]
+	// PUT > http://localhost:8080/REST/admin/memberdelete
 	@PutMapping(value = "/memberdelete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> memberDELETE(@RequestHeader("token") String token, @RequestBody Member[] member1) {
 		Map<String, Object> map = new HashMap<>();
 		try {
-			System.out.println(member1);
+			// 토큰 값으로 member정보 추출
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				
 				for (Member mem : member1) {
+					// Member 객체 설정
 					Member member2 = mRepository.findById(mem.getId()).get();
 					member2.setEmail("");
 					member2.setPassword("");
@@ -164,27 +184,26 @@ public class AdminController {
 					member2.setRole("");
 					member2.setToken("");
 					member2.setState(0);
+					// Member 객체 저장
 					mRepository.save(member2);
 				}
 				map.put("status", 200);
+				map.put("data", "회원정보 삭제를 완료하였습니다.");
 
 			} else {
 				map.put("status", 578);
+				map.put("data", "회원정보 삭제를 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "회원정보 삭제를 실패하였습니다.");
 		}
 		return map;
 	}
 
-	// 모든 게시물데이터
-	// 페이지네이션 타이틀검색 카테고리별 분류
-	// 필수 Parmeter : 헤더(토큰)
-	// Parmeter : 페이지번호, 페이지당사이즈, 카테고리명, 게시물상태(0 or 1), 검색키워드,
-	// 검색키워드타입(title or member), orderby(번호기준 DESC or ASC),
-	// orderbytpye(정렬기준: DBcolumn명)
-	// 성공 return : 200, boardlist, cnt(게시물수/페이지당사이즈)
+	// 게시물 조회
+	// GET > http://localhost:8080/REST/admin/board
 	@GetMapping(value = "/board", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardGET(@RequestHeader("token") String token,
 			@RequestParam(name = "page", required = false, defaultValue = "1") int page,
@@ -197,105 +216,127 @@ public class AdminController {
 			@RequestParam(name = "keyword", required = false, defaultValue = "") String keyword) {
 		Map<String, Object> map = new HashMap<>();
 		try {
-			System.out.println(category);
+			// 토큰 값으로 member정보 추출 
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-
-				List<BoardDTO> boardlist = bMapper.selectBoardAdmin(keywordtype, keyword, category,
+				// ListBoard 메소드 호출
+				List<BoardDTO> boardlist = bMapper.ListBoard(keywordtype, keyword, category,
 						1 + (size * (page - 1)), page * size, orderbytype, orderby, state);
-
-				int cnt = bMapper.CountBoardAdmin(keywordtype, keyword, category, state);
+				// ListBoardTotalCount 메소드 호출
+				int cnt = bMapper.ListBoardTotalCount(keywordtype, keyword, category, state);
 				map.put("cnt", (cnt - 1) / size + 1);
 				map.put("boardlist", boardlist);
 				map.put("status", 200);
+				map.put("data", "게시글 조회를 성공하였습니다.");
 			} else {
 				map.put("status", 578);
+				map.put("data", "게시글 조회를 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "게시글 조회를 실패하였습니다.");
 		}
 		return map;
 	}
 
+	// 게시물 내용 조회
+	// GET > http://localhost:8080/REST/admin/board/selectOne
 	@GetMapping(value = "/board/selectOne", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardselectOne(@RequestHeader("token") String token, @RequestParam("no") Long no) {
 		Map<String, Object> map = new HashMap<>();
 		try {
+			// 토큰 값으로 member정보 추출 
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				// BoardSelectOneAdmin 메소드 호출
 				BoardDTO board = bMapper.BoardSelectOneAdmin(no);
 				map.put("board", board);
 				map.put("status", 200);
+				map.put("data", "게시물 조회에 성공하였습니다.");
 			} else {
 				map.put("status", 578);
+				map.put("data", "게시물 조회에 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "게시물 조회에 실패하였습니다.");
 		}
 		return map;
 	}
 
 	// 게시물 내용 수정
+	// PUT > http://localhost:8080/REST/admin/boardupdate
 	@PutMapping(value = "/boardupdate", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardPUT(@RequestHeader("token") String token, @RequestBody Board board) {
 		Map<String, Object> map = new HashMap<>();
 		try {
+			// 토큰 값으로 member정보 추출 
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
+				// 글번호에 해당하는 게시글 조회 
 				Board board1 = bRepository.findById(board.getNo()).get();
 				board1.setCategory(board.getCategory());
 				board1.setContent(board.getContent());
 				board1.setTitle(board.getTitle());
+				// 변경된 객체 저장
 				bRepository.save(board1);
 				map.put("status", 200);
-
+				map.put("data", "게시물 수정에 성공하였습니다.");
 			} else {
 				map.put("status", 578);
+				map.put("data", "게시물 수정에 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "게시물 수정에 실패하였습니다.");
 		}
 		return map;
 	}
 
-	// 게시물 내용 삭제(STATE = 0 일때만 삭제됨)
-	// Parmeter : 삭제할 게시물 번호
-	// return : 성공 200, 실패 901
+	// 게시물 삭제
+	// PUT > http://localhost:8080/REST/admin/board/delete
 	@PutMapping(value = "/board/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardDelete(@RequestHeader("token") String token, @RequestParam(name = "no") String no) {
 		Map<String, Object> map = new HashMap<>();
 		try {
-
+			// 토큰 값으로 member정보 추출 
 			String id = jwtUtil.extractUsername(token.substring(6));
 			Member member = mRepository.findById(id).orElseThrow();
+			// 로그인된 사용자 검증
 			if (member != null && member.getToken().equals(token.substring(6))
 					&& !jwtUtil.isTokenExpired(token.substring(6))) {
-
+				// 게시글 번호로 Admindelete 메소드 호출
 				int result = bMapper.Admindelete(no);
 				if (result != 1) {
 					map.put("status", 901);
+					map.put("data", "게시글 삭제에 실패했습니다.");
 				} else {
 					map.put("status", 200);
+					map.put("data", "게시글 삭제에 성공했습니다.");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			map.put("status", e.hashCode());
+			map.put("status", 0);
+			map.put("data", "게시글 삭제에 실패했습니다.");
 		}
 		return map;
 	}
 
-	// 게시물 state=0 => state=1 로 복원
-	// Parmeter : param(no)
+	// 게시글 복원
+	// PUT > http://localhost:8080/REST/admin/board/update
 	@PutMapping(value = "/board/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, Object> boardupdate(@RequestHeader("token") String token, @RequestParam(name = "no") long no) {
 		Map<String, Object> map = new HashMap<>();
